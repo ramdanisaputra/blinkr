@@ -79,137 +79,84 @@
         h3 { font-size: 1.25rem; }
         p { color: var(--text-secondary); font-size: 1.125rem; }
 
-        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 5%; }
+        /* WIDE LAYOUT UPDATE: max-width increased to 1536px */
+        .container { width: 100%; max-width: 1536px; margin: 0 auto; padding: 0 4%; }
         .section-padding { padding: 120px 0; }
         .text-center { text-align: center; }
 
         /* 3. COMPONENTS */
-        /* Buttons */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            padding: 14px 28px; border-radius: var(--radius-md); font-weight: 600; font-size: 1rem;
-            transition: var(--transition-interaction); gap: 8px;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 600; font-size: 1rem; transition: var(--transition-interaction); gap: 8px; }
         .btn-primary { background-color: var(--brand-orange); color: #FFFFFF; }
         .btn-primary:hover { background-color: var(--brand-orange-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3); }
-        
         .btn-secondary { background-color: var(--bg-surface-hover); color: var(--text-primary); border: 1px solid var(--border-default); }
         .btn-secondary:hover { border-color: var(--text-primary); transform: translateY(-2px); }
-
         .btn-nav { padding: 10px 20px; font-size: 0.875rem; border-radius: var(--radius-sm); }
 
-        /* Logo */
         .logo { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); display: flex; align-items: baseline; }
         .logo .dot { color: var(--brand-orange); font-size: 2rem; line-height: 0; margin-left: 1px; }
 
         /* 4. NAVIGATION */
-        nav {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-default);
-            transition: var(--transition-theme);
-        }
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; background-color: var(--bg-surface); border-bottom: 1px solid var(--border-default); transition: var(--transition-theme); }
         .nav-container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
         .nav-links a { font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-size: 0.95rem; }
         .nav-links a:hover { color: var(--text-primary); }
         .nav-actions { display: flex; gap: 1rem; align-items: center; }
         
-        /* Theme Toggle Button */
-        .theme-toggle {
-            display: flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px; border-radius: var(--radius-full);
-            background-color: var(--bg-surface-hover); color: var(--icon-color);
-            border: 1px solid var(--border-default); transition: var(--transition-interaction);
-        }
+        .theme-toggle { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-full); background-color: var(--bg-surface-hover); color: var(--icon-color); border: 1px solid var(--border-default); transition: var(--transition-interaction); }
         .theme-toggle:hover { border-color: var(--text-primary); }
         .theme-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
         
-        /* Mobile Menu */
         .mobile-menu-btn { display: none; color: var(--text-primary); font-size: 1.5rem; }
-        .mobile-nav-panel {
-            display: none; position: absolute; top: 80px; left: 0; width: 100%;
-            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-default);
-            padding: 2rem 5%; flex-direction: column; gap: 1.5rem;
-            box-shadow: var(--shadow-card);
-        }
+        .mobile-nav-panel { display: none; position: absolute; top: 80px; left: 0; width: 100%; background-color: var(--bg-surface); border-bottom: 1px solid var(--border-default); padding: 2rem 5%; flex-direction: column; gap: 1.5rem; box-shadow: var(--shadow-card); }
         .mobile-nav-panel.active { display: flex; }
 
         /* 5. SECTIONS */
-        /* Hero */
         .hero { padding-top: 160px; padding-bottom: 80px; }
-        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
         .hero-content h1 { margin-bottom: 1.5rem; }
         .hero-content p { margin-bottom: 2.5rem; font-size: 1.25rem; max-width: 90%; }
         .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
         
-        /* Hero Visual (Abstract AI Discovery) */
-        .hero-visual {
-            position: relative; height: 500px; border-radius: var(--radius-lg);
-            background-color: var(--bg-surface); border: 1px solid var(--border-default);
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-            box-shadow: var(--shadow-card);
-        }
-        .visual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 2rem; opacity: 0.3; }
-        .visual-card { width: 100px; height: 140px; background-color: var(--bg-surface-hover); border-radius: var(--radius-sm); border: 1px solid var(--border-default); }
-        .visual-focus {
-            position: absolute; width: 180px; height: 240px; background-color: var(--bg-surface);
-            border-radius: var(--radius-md); box-shadow: var(--shadow-card);
-            border: 2px solid var(--brand-orange); display: flex; flex-direction: column; padding: 1rem; z-index: 10;
-        }
+        .hero-visual { position: relative; height: 500px; border-radius: var(--radius-lg); background-color: var(--bg-surface); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: var(--shadow-card); }
+        .visual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 2rem; opacity: 0.3; }
+        .visual-card { width: 120px; height: 160px; background-color: var(--bg-surface-hover); border-radius: var(--radius-sm); border: 1px solid var(--border-default); }
+        .visual-focus { position: absolute; width: 200px; height: 260px; background-color: var(--bg-surface); border-radius: var(--radius-md); box-shadow: var(--shadow-card); border: 2px solid var(--brand-orange); display: flex; flex-direction: column; padding: 1.25rem; z-index: 10; }
         .focus-corners::before, .focus-corners::after { content: ''; position: absolute; width: 16px; height: 16px; border: 2px solid var(--brand-orange); }
         .focus-corners::before { top: -6px; left: -6px; border-right: none; border-bottom: none; }
         .focus-corners::after { bottom: -6px; right: -6px; border-left: none; border-top: none; }
-        .ai-scan-line {
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background-color: var(--brand-orange); box-shadow: 0 0 10px var(--brand-orange);
-            animation: scan 3s infinite ease-in-out;
-        }
+        .ai-scan-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background-color: var(--brand-orange); box-shadow: 0 0 10px var(--brand-orange); animation: scan 3s infinite ease-in-out; }
         @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
-        /* How It Works */
         .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; margin-top: 4rem; }
         .step-card { padding: 2.5rem; background-color: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-default); box-shadow: var(--shadow-card); transition: var(--transition-interaction); }
         .step-card:hover { transform: translateY(-4px); border-color: var(--border-active); }
         .step-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: white; }
         
-        /* Photographer Section */
         .photographer-section { background-color: var(--bg-surface); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
         .feature-list { margin: 2rem 0 3rem 0; }
         .feature-list li { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; font-size: 1.125rem; font-weight: 500; }
         .feature-list svg { color: var(--brand-orange); width: 24px; height: 24px; }
         .mock-dashboard { background-color: var(--bg-app); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-card); }
         .mock-dash-header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-default); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-        .mock-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .mock-stat { background-color: var(--bg-surface); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-default); }
+        .mock-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .mock-stat { background-color: var(--bg-surface); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-default); }
 
-        /* Participants Demo */
         .demo-container { background-color: var(--bg-surface); border-radius: var(--radius-lg); padding: 3rem; border: 1px solid var(--border-default); box-shadow: var(--shadow-card); margin-top: 3rem; }
         .filter-controls { display: flex; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
-        .filter-btn {
-            padding: 8px 20px; border: 1px solid var(--border-default); border-radius: var(--radius-full);
-            font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); transition: var(--transition-interaction);
-        }
+        .filter-btn { padding: 8px 20px; border: 1px solid var(--border-default); border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); transition: var(--transition-interaction); }
         .filter-btn.active { background-color: var(--brand-navy); color: #FFFFFF; border-color: var(--brand-navy); }
         [data-theme="dark"] .filter-btn.active { background-color: var(--brand-lavender); border-color: var(--brand-lavender); }
         
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
-        .gallery-item {
-            aspect-ratio: 3/4; background-color: var(--bg-app); border-radius: var(--radius-md);
-            border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center;
-            transition: var(--transition-interaction); position: relative; overflow: hidden;
-        }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .gallery-item { aspect-ratio: 3/4; background-color: var(--bg-app); border-radius: var(--radius-md); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; transition: var(--transition-interaction); position: relative; overflow: hidden; }
         .gallery-item.hidden { display: none; }
         .gallery-item:hover { transform: translateY(-4px); border-color: var(--brand-orange); }
-        .match-badge {
-            position: absolute; top: 12px; right: 12px; background-color: var(--brand-orange); color: white;
-            font-size: 0.75rem; padding: 4px 10px; border-radius: var(--radius-full); font-weight: 700;
-            opacity: 0; transition: var(--transition-interaction);
-        }
+        .match-badge { position: absolute; top: 12px; right: 12px; background-color: var(--brand-orange); color: white; font-size: 0.75rem; padding: 4px 10px; border-radius: var(--radius-full); font-weight: 700; opacity: 0; transition: var(--transition-interaction); }
         .gallery-item:hover .match-badge { opacity: 1; }
         .mock-photo-shape { width: 60px; height: 30px; border-radius: 6px; }
 
-        /* Footer */
         footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-default); padding: 4rem 0; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 4rem; }
         .footer-brand p { margin-top: 1rem; font-size: 0.875rem; max-width: 250px; }
@@ -219,10 +166,9 @@
         .footer-nav ul li a:hover { color: var(--brand-orange); }
         .footer-bottom { border-top: 1px solid var(--border-default); padding-top: 2rem; display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary); }
 
-        /* 6. RESPONSIVE DESIGN */
         @media (max-width: 1024px) {
             .hero-grid, .photo-grid { grid-template-columns: 1fr; gap: 3rem; }
-            .hero-visual { height: 400px; order: -1; } /* Visual on top for mobile */
+            .hero-visual { height: 400px; order: -1; }
             .steps-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
         }
@@ -241,34 +187,23 @@
 </head>
 <body>
 
-    <!-- NAVIGATION -->
     <nav>
         <div class="container nav-container">
             <a href="#" class="logo">blinkr<span class="dot">.</span></a>
-            
-            <!-- Desktop Links -->
             <ul class="nav-links">
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#photographers">For Photographers</a></li>
                 <li><a href="#participants">For Participants</a></li>
                 <li><a href="#about">About</a></li>
             </ul>
-            
-            <!-- Actions -->
             <div class="nav-actions">
-                <!-- Theme Toggle Button -->
-                <button id="themeToggleBtn" class="theme-toggle" aria-label="Toggle Theme" title="Toggle Theme (System/Light/Dark)">
-                    <!-- SVG will be injected by JS -->
-                </button>
+                <button id="themeToggleBtn" class="theme-toggle" aria-label="Toggle Theme" title="Toggle Theme"></button>
                 <button class="btn btn-secondary btn-nav btn-route" data-route="photographer">Log In</button>
                 <button class="btn btn-primary btn-nav btn-route" data-route="photoFinder">Find My Photos</button>
-                
-                <!-- Mobile Hamburger -->
                 <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
             </div>
         </div>
 
-        <!-- Mobile Panel -->
         <div class="mobile-nav-panel" id="mobileNavPanel">
             <a href="#how-it-works">How It Works</a>
             <a href="#photographers">For Photographers</a>
@@ -278,7 +213,6 @@
         </div>
     </nav>
 
-    <!-- SECTION B: HERO -->
     <section class="hero" id="about">
         <div class="container hero-grid">
             <div class="hero-content">
@@ -309,7 +243,6 @@
         </div>
     </section>
 
-    <!-- SECTION C: HOW IT WORKS -->
     <section id="how-it-works" class="section-padding">
         <div class="container">
             <div class="text-center">
@@ -342,7 +275,6 @@
         </div>
     </section>
 
-    <!-- SECTION D: FOR PHOTOGRAPHERS -->
     <section id="photographers" class="section-padding photographer-section">
         <div class="container photo-grid">
             <div>
@@ -381,7 +313,6 @@
         </div>
     </section>
 
-    <!-- SECTION E: FOR PARTICIPANTS -->
     <section id="participants" class="section-padding">
         <div class="container">
             <div class="text-center">
@@ -398,27 +329,11 @@
                 </div>
                 
                 <div class="gallery-grid" id="galleryGrid">
-                    <!-- Gallery Items (Abstract SVGs) -->
-                    <div class="gallery-item" data-category="red-bike black-helmet">
-                        <span class="match-badge">Match</span>
-                        <div class="mock-photo-shape" style="background-color: #FF4D4D;"></div>
-                    </div>
-                    <div class="gallery-item" data-category="blue-bike">
-                        <span class="match-badge">Match</span>
-                        <div class="mock-photo-shape" style="background-color: #4D79FF;"></div>
-                    </div>
-                    <div class="gallery-item" data-category="red-bike">
-                        <span class="match-badge">Match</span>
-                        <div class="mock-photo-shape" style="background-color: #FF4D4D;"></div>
-                    </div>
-                    <div class="gallery-item" data-category="blue-bike black-helmet">
-                        <span class="match-badge">Match</span>
-                        <div class="mock-photo-shape" style="background-color: #4D79FF;"></div>
-                    </div>
-                    <div class="gallery-item" data-category="black-helmet">
-                        <span class="match-badge">Match</span>
-                        <div style="width: 40px; height: 40px; background-color: #222; border-radius: 50%;"></div>
-                    </div>
+                    <div class="gallery-item" data-category="red-bike black-helmet"><span class="match-badge">Match</span><div class="mock-photo-shape" style="background-color: #FF4D4D;"></div></div>
+                    <div class="gallery-item" data-category="blue-bike"><span class="match-badge">Match</span><div class="mock-photo-shape" style="background-color: #4D79FF;"></div></div>
+                    <div class="gallery-item" data-category="red-bike"><span class="match-badge">Match</span><div class="mock-photo-shape" style="background-color: #FF4D4D;"></div></div>
+                    <div class="gallery-item" data-category="blue-bike black-helmet"><span class="match-badge">Match</span><div class="mock-photo-shape" style="background-color: #4D79FF;"></div></div>
+                    <div class="gallery-item" data-category="black-helmet"><span class="match-badge">Match</span><div style="width: 40px; height: 40px; background-color: #222; border-radius: 50%;"></div></div>
                 </div>
                 <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 2rem; text-align: center;">
                     *This is sample data demonstrating attribute matching for a motorsport event. Blinkr scales to running, cycling, and festivals.
@@ -430,7 +345,6 @@
         </div>
     </section>
 
-    <!-- SECTION F: FINAL CTA -->
     <section class="section-padding" style="background-color: var(--brand-navy); color: #FFF; text-align: center;">
         <div class="container">
             <h2 style="color: #FFF;">Every moment deserves to be found.</h2>
@@ -439,7 +353,6 @@
         </div>
     </section>
 
-    <!-- SECTION G: FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-grid">
@@ -483,40 +396,25 @@
         </div>
     </footer>
 
-    <!-- 7. JAVASCRIPT: ROUTING, THEME, & INTERACTIONS -->
     <script>
-        /**
-         * A. CENTRALIZED ROUTING CONFIGURATION
-         * Ganti nilai string di bawah ini dengan URL produksi ketika sudah tersedia.
-         */
         const BLINKR_ROUTES = {
-    home: "./index.html",
-    photographer: "./blinkr_photographer.html",
-    photoFinder: "./blinkr_client.html"
-};
+            home: "./index.html",
+            photographer: "./blinkr_photographer.html",
+            photoFinder: "./blinkr_client.html"
+        };
 
-document.querySelectorAll(".btn-route").forEach(button => {
-    button.addEventListener("click", (e) => {
-        e.preventDefault();
+        document.querySelectorAll(".btn-route").forEach(button => {
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+                const routeKey = button.dataset.route;
+                const targetURL = BLINKR_ROUTES[routeKey];
+                if (!targetURL) return alert("URL portal belum dikonfigurasi.");
+                window.location.href = targetURL;
+            });
+        });
 
-        const routeKey = button.dataset.route;
-        const targetURL = BLINKR_ROUTES[routeKey];
-
-        if (!targetURL) {
-            alert("URL portal belum dikonfigurasi.");
-            return;
-        }
-
-        window.location.href = targetURL;
-    });
-});
-        /**
-         * C. THEME MANAGEMENT (System, Light, Dark)
-         */
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const htmlElement = document.documentElement;
-        
-        // Ikon SVG untuk masing-masing mode
         const icons = {
             system: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
             light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
@@ -528,42 +426,27 @@ document.querySelectorAll(".btn-route").forEach(button => {
 
         function applyTheme(themeName) {
             let activeTheme = themeName;
-            
             if (themeName === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                activeTheme = prefersDark ? 'dark' : 'light';
+                activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 localStorage.removeItem('blinkr-theme');
-            } else {
-                localStorage.setItem('blinkr-theme', themeName);
-            }
-            
+            } else localStorage.setItem('blinkr-theme', themeName);
             htmlElement.setAttribute('data-theme', activeTheme);
             themeToggleBtn.innerHTML = icons[themeName];
         }
 
-        // Inisialisasi Tema saat load
         const savedTheme = localStorage.getItem('blinkr-theme');
-        if (savedTheme && themes.includes(savedTheme)) {
-            currentThemeIndex = themes.indexOf(savedTheme);
-        }
+        if (savedTheme && themes.includes(savedTheme)) currentThemeIndex = themes.indexOf(savedTheme);
         applyTheme(themes[currentThemeIndex]);
 
-        // Event Listener Tombol Toggle
         themeToggleBtn.addEventListener('click', () => {
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             applyTheme(themes[currentThemeIndex]);
         });
 
-        // Listener jika OS mengganti tema (berlaku saat System mode)
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            if (themes[currentThemeIndex] === 'system') {
-                applyTheme('system');
-            }
+            if (themes[currentThemeIndex] === 'system') applyTheme('system');
         });
 
-        /**
-         * D. MOBILE MENU TOGGLE
-         */
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileNavPanel = document.getElementById('mobileNavPanel');
 
@@ -572,7 +455,6 @@ document.querySelectorAll(".btn-route").forEach(button => {
             mobileMenuBtn.textContent = mobileNavPanel.classList.contains('active') ? '✕' : '☰';
         });
 
-        // Menutup menu mobile saat link diklik
         document.querySelectorAll('.mobile-nav-panel a, .mobile-nav-panel button').forEach(link => {
             link.addEventListener('click', () => {
                 mobileNavPanel.classList.remove('active');
@@ -580,31 +462,18 @@ document.querySelectorAll(".btn-route").forEach(button => {
             });
         });
 
-        /**
-         * E. FILTER DEMO LOGIC (For Participants Section)
-         */
         const filterBtns = document.querySelectorAll('.filter-btn');
         const galleryItems = document.querySelectorAll('.gallery-item');
-
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Hapus state aktif dari semua tombol
                 filterBtns.forEach(b => b.classList.remove('active'));
-                // Tambah state aktif ke tombol yg ditekan
                 btn.classList.add('active');
-
                 const filterValue = btn.getAttribute('data-filter');
-
                 galleryItems.forEach(item => {
-                    if (filterValue === 'all') {
-                        item.classList.remove('hidden');
-                    } else {
+                    if (filterValue === 'all') item.classList.remove('hidden');
+                    else {
                         const categories = item.getAttribute('data-category').split(' ');
-                        if (categories.includes(filterValue)) {
-                            item.classList.remove('hidden');
-                        } else {
-                            item.classList.add('hidden');
-                        }
+                        categories.includes(filterValue) ? item.classList.remove('hidden') : item.classList.add('hidden');
                     }
                 });
             });
