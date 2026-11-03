@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blinkr Photographer - Dashboard</title>
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind for layout utilities only -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Blinkr Design System CSS -->
+  <style>
+    /* 1. BRAND TOKENS & CSS VARIABLES */
+    :root {
+      --brand-navy: #101D38;
+      --brand-orange: #FF914D;
+      --brand-orange-hover: #E67A35;
+      --brand-lavender: #8580CF;
+      
+      --font-primary: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --transition-theme: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      --transition-interaction: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Semantic Colors */
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
+      --color-danger: #EF4444;
+      --color-info: #3B82F6;
+    }
+
+    /* LIGHT MODE TOKENS (SaaS Approach) */
+    [data-theme="light"] {
+      --bg-app: #F7F8FA;
+      --bg-surface: #FFFFFF;
+      --bg-surface-hover: #F0F1F5;
+      --text-primary: #101D38;
+      --text-secondary: #667085;
+      --text-tertiary: #98A2B3;
+      --border-default: #E4E7EC;
+      --border-active: #101D38;
+      --shadow-card: 0 4px 12px rgba(16, 29, 56, 0.04);
+      --shadow-modal: 0 20px 40px rgba(16, 29, 56, 0.1);
+      --icon-color: #101D38;
+      --modal-overlay: rgba(16, 29, 56, 0.4);
+      
+      /* Status subtle backgrounds */
+      --bg-danger-subtle: rgba(239, 68, 68, 0.08);
+      --bg-info-subtle: rgba(59, 130, 246, 0.08);
+      --bg-warning-subtle: rgba(245, 158, 11, 0.08);
+    }
+
+    /* DARK MODE TOKENS */
+    [data-theme="dark"] {
+      --bg-app: #0B1426; 
+      --bg-surface: #101D38;
+      --bg-surface-hover: #17243E;
+      --text-primary: #F0F1F5;
+      --text-secondary: #A0AABF;
+      --text-tertiary: #718096;
+      --border-default: rgba(255, 255, 255, 0.1);
+      --border-active: rgba(255, 255, 255, 0.3);
+      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.5);
+      --icon-color: #F0F1F5;
+      --modal-overlay: rgba(11, 20, 38, 0.8);
+      
+      --bg-danger-subtle: rgba(239, 68, 68, 0.15);
+      --bg-info-subtle: rgba(59, 130, 246, 0.15);
+      --bg-warning-subtle: rgba(245, 158, 11, 0.15);
+    }
+
+    /* 2. BASE STYLES */
+    body {
+      font-family: var(--font-primary);
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      transition: var(--transition-theme);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Typography & Utilities */
+    .text-primary { color: var(--text-primary); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+    .bg-app { background-color: var(--bg-app); }
+    .bg-surface { background-color: var(--bg-surface); }
+    .border-default { border-color: var(--border-default); }
+    
+    /* Semantic Texts for JS Injection */
+    .text-success { color: var(--color-success); }
+    .text-warning { color: var(--color-warning); }
+    .text-danger { color: var(--color-danger); }
+    .text-info { color: var(--color-info); }
+    .bg-warning-subtle { background-color: var(--bg-warning-subtle); }
+    .bg-danger-subtle { background-color: var(--bg-danger-subtle); }
+    .bg-info-subtle { background-color: var(--bg-info-subtle); }
+    .border-warning { border-color: rgba(245, 158, 11, 0.3); }
+    .border-danger { border-color: rgba(239, 68, 68, 0.3); }
+    .border-info { border-color: rgba(59, 130, 246, 0.3); }
+
+    /* 3. COMPONENTS */
+    /* Brand Logo */
+    .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); display: flex; align-items: baseline; }
+    .logo .dot { color: var(--brand-orange); font-size: 1.5rem; line-height: 0; margin-left: 1px; }
+
+    /* Theme Toggle */
+    .theme-toggle {
+        display: flex; align-items: center; justify-content: center;
+        width: 36px; height: 36px; border-radius: var(--radius-full);
+        background-color: var(--bg-surface-hover); color: var(--icon-color);
+        border: 1px solid var(--border-default); transition: var(--transition-interaction);
+        cursor: pointer;
+    }
+    .theme-toggle:hover { border-color: var(--border-active); }
+    .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* Cards & Modals */
+    .blinkr-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition-theme);
+    }
+    .modal-backdrop-custom {
+      background: var(--modal-overlay);
+      backdrop-filter: blur(4px);
+    }
+    .modal-content-custom {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      box-shadow: var(--shadow-modal);
+      border-radius: var(--radius-lg);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background-color: var(--brand-orange);
+      color: #FFFFFF;
+      transition: var(--transition-interaction);
+    }
+    .btn-primary:hover {
+      background-color: var(--brand-orange-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 145, 77, 0.25);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-secondary {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+      transition: var(--transition-interaction);
+    }
+    .btn-secondary:hover { border-color: var(--border-active); }
+    
+    .btn-danger-outline {
+      color: var(--color-danger);
+      background-color: var(--bg-danger-subtle);
+      border: 1px solid var(--border-danger);
+      transition: var(--transition-interaction);
+    }
+    .btn-danger-outline:hover { background-color: rgba(239, 68, 68, 0.15); }
+
+    /* Form Inputs */
+    .form-control {
+      width: 100%;
+      background-color: var(--bg-app);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: var(--transition-interaction);
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.15);
+    }
+    .form-label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    /* Table Styles */
+    .table-header-cell {
+      padding: 1rem 1.25rem;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      background-color: var(--bg-surface-hover);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .table-row {
+      border-bottom: 1px solid var(--border-default);
+      transition: background-color 0.2s;
+    }
+    .table-row:hover { background-color: var(--bg-surface-hover); }
+
+    /* Profile Badge */
+    .badge-master {
+      background-color: var(--brand-orange);
+      color: #FFFFFF;
+      font-size: 0.55rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      margin-left: 6px;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-blue-500 selection:text-white">
+
+  <!-- ================= LOG IN SECTION ================= -->
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div class="blinkr-card p-10 max-w-md w-full relative z-10 text-center">
+      <!-- Abstract Focus Icon -->
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 bg-info-subtle border border-info text-info">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3" stroke-width="2"/></svg>
+      </div>
+      <h1 class="text-2xl font-extrabold text-primary mb-2">Blinkr Photographer</h1>
+      <p class="text-sm text-secondary mb-8">Professional event management & AI processing portal.</p>
+      <button id="btnLogin" class="btn-primary w-full font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-3">
+        Continue with Google
+      </button>
+      <!-- Optional route back to home -->
+      <div class="mt-6">
+    <a href="./index.html"
+       class="text-xs font-semibold text-secondary hover:text-primary transition btn-route"
+       data-route="home">
+       ← Back to Blinkr Home
+    </a>
+</div>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD MAIN SECTION ================= -->
+  <div id="adminSection" class="hidden min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-surface border-b border-default sticky top-0 z-30 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-6">
+          <a href="#" class="logo btn-route" data-route="home">blinkr<span class="dot">.</span></a>
+          <span class="text-xs font-semibold text-secondary px-3 py-1 rounded-full bg-surface-hover border border-default hidden sm:block">Photographer Portal</span>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4">
+          <!-- Theme Toggle -->
+          <button id="themeToggleBtn" class="theme-toggle" title="Toggle Theme (System/Light/Dark)"></button>
+          
+          <!-- Profile Edit -->
+          <div id="btnEditProfile" class="flex items-center gap-3 bg-app hover:bg-surface-hover p-1.5 pr-4 rounded-full border border-default cursor-pointer transition">
+            <img id="userAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
+            <div class="text-left hidden sm:block">
+              <p id="userName" class="text-xs font-bold text-primary leading-tight flex items-center"></p>
+              <p id="userEmail" class="text-[10px] text-secondary leading-tight mt-0.5"></p>
+            </div>
+          </div>
+          
+          <button id="btnLogout" class="btn-danger-outline text-xs font-semibold py-2 px-4 rounded-full">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+      
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="blinkr-card p-5">
+          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Total Events</p>
+          <p id="statTotal" class="text-3xl font-extrabold text-primary mt-2">0</p>
+        </div>
+        <div class="blinkr-card p-5">
+          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Processing AI</p>
+          <p id="statPending" class="text-3xl font-extrabold text-warning mt-2">0</p>
+        </div>
+        <div class="blinkr-card p-5">
+          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Completed</p>
+          <p id="statSelesai" class="text-3xl font-extrabold text-success mt-2">0</p>
+        </div>
+        <div class="blinkr-card p-5 border-info">
+          <p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p>
+          <p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p>
+        </div>
+      </div>
+
+      <!-- Events Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4">
+        <div>
+          <h2 class="text-xl font-bold text-primary">Event Management</h2>
+          <p class="text-sm text-secondary mt-1">Manage processing queue and AI-generated database for your events.</p>
+        </div>
+        <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center gap-2 text-sm shadow-sm">
+          + Upload New Event
+        </button>
+      </div>
+
+      <!-- Events Table -->
+      <div class="blinkr-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr>
+                <th class="table-header-cell">Event Name</th>
+                <th class="table-header-cell">Date</th>
+                <th class="table-header-cell">Status</th>
+                <th class="table-header-cell">Photo Summary</th>
+                <th class="table-header-cell">JSON Database</th>
+                <th class="table-header-cell text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eventListTable" class="text-sm">
+              <tr><td colspan="6" class="py-12 text-center text-secondary">Loading data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
+    <div class="modal-content-custom max-w-md w-full p-6 relative">
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
+        <h3 class="text-lg font-bold text-primary">Edit Profile</h3>
+        <button id="btnCloseProfileModal" class="text-tertiary hover:text-primary transition">✕</button>
+      </div>
+      <form id="profileForm" class="space-y-4">
+        <div>
+          <label class="form-label">Display Name</label>
+          <input type="text" id="editDisplayName" required class="form-control">
+        </div>
+        <div>
+          <label class="form-label">Profile Photo URL</label>
+          <input type="url" id="editPhotoURL" class="form-control">
+        </div>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" id="btnCancelProfileModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
+          <button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
+    <div class="modal-content-custom max-w-lg w-full p-6 relative">
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
+        <h3 class="text-lg font-bold text-primary">Add New Event</h3>
+        <button id="btnCloseModal" class="text-tertiary hover:text-primary transition">✕</button>
+      </div>
+      <form id="eventForm" class="space-y-4">
+        <div>
+          <label class="form-label">Event Name</label>
+          <input type="text" id="eventName" required class="form-control">
+        </div>
+        <div>
+          <label class="form-label">Event Date</label>
+          <input type="date" id="eventDate" required class="form-control">
+        </div>
+        <div>
+          <label class="form-label">Google Drive Link</label>
+          <input type="url" id="gdriveUrl" required class="form-control" placeholder="https://drive.google.com/drive/folders/...">
+        </div>
+        <div class="rounded-xl border border-info bg-info-subtle p-4 text-xs leading-relaxed text-info">
+          <p class="font-semibold mb-1">Information:</p>
+          Processing follows your daily quota. If the number of photos exceeds the quota, only photos within the limit are processed by AI. The rest remain safely in Google Drive.
+          <p class="mt-2 opacity-80">Folder must be owned by the logged-in Google account and shared with the worker email.</p>
+        </div>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" id="btnCancelModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
+          <button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Send to AI</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Append Photo Modal -->
+  <div id="appendModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
+    <div class="modal-content-custom max-w-lg w-full p-6 relative">
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
+        <div>
+          <h3 class="text-lg font-bold text-primary">Add Photos to Event</h3>
+          <p id="appendEventTitle" class="text-xs text-secondary mt-1"></p>
+        </div>
+        <button id="btnCloseAppendModal" type="button" class="text-tertiary hover:text-primary transition">✕</button>
+      </div>
+      <form id="appendForm" class="space-y-4">
+        <div>
+          <label for="appendSourceType" class="form-label">Additional Photo Source</label>
+          <select id="appendSourceType" class="form-control">
+            <option value="existing_folder">Existing registered event folder (scan new photos)</option>
+            <option value="new_folder">New Google Drive folder</option>
+          </select>
+        </div>
+        <div id="appendExistingFolderWrap">
+          <label for="appendExistingFolder" class="form-label">Select Event Folder</label>
+          <select id="appendExistingFolder" required class="form-control"></select>
+          <p class="text-[11px] text-tertiary mt-2">The system compares photo IDs with the existing JSON. Existing photos won't be re-analyzed.</p>
+        </div>
+        <div id="appendNewFolderWrap" class="hidden">
+          <label for="appendNewFolderUrl" class="form-label">New Google Drive Folder Link</label>
+          <input type="url" id="appendNewFolderUrl" placeholder="https://drive.google.com/drive/folders/..." class="form-control">
+          <p class="text-[11px] text-tertiary mt-2">New folder must be owned by the logged-in Google account and shared with worker access.</p>
+        </div>
+        <div class="rounded-xl border border-info bg-info-subtle p-3 text-xs leading-relaxed text-info">
+          Additional photos consume the same daily quota. New results will be appended to the existing JSON without creating a new event database.
+        </div>
+        <div id="appendError" class="hidden rounded-lg bg-danger-subtle border border-danger p-3 text-xs text-danger font-medium"></div>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" id="btnCancelAppendModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
+          <button type="submit" id="btnSubmitAppend" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Add to Queue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ================= FIREBASE ENGINE & LOGIC (PRESERVED) ================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // -------------------------------------------------------------
+    // BLINKR CENTRAL ROUTING & THEME LOGIC
+    // -------------------------------------------------------------
+    const BLINKR_ROUTES = {
+    home: "./index.html",
+    photographer: "./blinkr_photographer.html",
+    photoFinder: "./blinkr_client.html"
+};
+
+    document.querySelectorAll('.btn-route').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const routeKey = button.getAttribute('data-route');
+            if (BLINKR_ROUTES[routeKey] && BLINKR_ROUTES[routeKey] !== "REPLACE_WITH_" + routeKey.toUpperCase() + "_URL") {
+                window.location.href = BLINKR_ROUTES[routeKey];
+            } else {
+                alert(`Routing to: ${routeKey}\n(URL belum dikonfigurasi di BLINKR_ROUTES)`);
+            }
+        });
+    });
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlElement = document.documentElement;
+    const icons = {
+        system: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+        light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
+        dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+    };
+    const themes = ['system', 'light', 'dark'];
+    let currentThemeIndex = 0;
+
+    function applyTheme(themeName) {
+        let activeTheme = themeName;
+        if (themeName === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            activeTheme = prefersDark ? 'dark' : 'light';
+            localStorage.removeItem('blinkr-theme');
+        } else {
+            localStorage.setItem('blinkr-theme', themeName);
+        }
+        htmlElement.setAttribute('data-theme', activeTheme);
+        themeToggleBtn.innerHTML = icons[themeName];
+    }
+
+    const savedTheme = localStorage.getItem('blinkr-theme');
+    if (savedTheme && themes.includes(savedTheme)) {
+        currentThemeIndex = themes.indexOf(savedTheme);
+    }
+    applyTheme(themes[currentThemeIndex]);
+
+    themeToggleBtn.addEventListener('click', () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        applyTheme(themes[currentThemeIndex]);
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (themes[currentThemeIndex] === 'system') applyTheme('system');
+    });
+
+
+    // -------------------------------------------------------------
+    // ORIGINAL FIREBASE LOGIC
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCO2QRZMA1Ui8J1eQA89o76oSc_YpfdEiU",
+      authDomain: "find-your-photo-188a0.firebaseapp.com",
+      projectId: "find-your-photo-188a0",
+      storageBucket: "find-your-photo-188a0.firebasestorage.app",
+      messagingSenderId: "212497999030",
+      appId: "1:212497999030:web:82380565489f6140ebf217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentCustomName = "";
+    let currentCustomPhoto = "";
+    let currentQuota = 0;
+    let currentPublicId = "";
+    let isMasterAccount = false;
+    let unsubscribeSnapshot = null;
+    let userSnapshotUnsubscribe = null;
+    let userEventsById = {};
+    let appendTasksByParent = {};
+    let appendSelectedEventId = null;
+
+    function extractFolderId(url) {
+      const match = url.match(/folders\/([a-zA-Z0-9_-]+)/);
+      return match ? match[1] : null;
+    }
+
+    document.getElementById("btnOpenModal").addEventListener("click", () => {
+      if (!isMasterAccount && currentQuota <= 0) {
+        alert("Kuota foto gratis Anda sudah habis (0). Hubungi admin untuk isi ulang.");
+        return;
+      }
+      document.getElementById("eventModal").classList.remove("hidden");
+    });
+    
+    document.getElementById("btnCloseModal").addEventListener("click", () => document.getElementById("eventModal").classList.add("hidden"));
+    document.getElementById("btnCancelModal").addEventListener("click", () => document.getElementById("eventModal").classList.add("hidden"));
+
+    document.getElementById("btnEditProfile").addEventListener("click", () => {
+      document.getElementById("editDisplayName").value = currentCustomName;
+      document.getElementById("editPhotoURL").value = currentCustomPhoto;
+      document.getElementById("profileModal").classList.remove("hidden");
+    });
+    document.getElementById("btnCloseProfileModal").addEventListener("click", () => document.getElementById("profileModal").classList.add("hidden"));
+    document.getElementById("btnCancelProfileModal").addEventListener("click", () => document.getElementById("profileModal").classList.add("hidden"));
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        
+        userSnapshotUnsubscribe = onSnapshot(userDocRef, async (userDocSnap) => {
+          if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            currentCustomName = data.custom_name || user.displayName;
+            currentCustomPhoto = data.photo_url || user.photoURL;
+            currentQuota = data.remaining_quota ?? 500;
+            currentPublicId = data.public_id || "";
+            isMasterAccount = data.role === "master"; 
+          } else {
+            await setDoc(userDocRef, {
+              custom_name: user.displayName || "Fotografer",
+              photo_url: user.photoURL,
+              email: user.email,
+              remaining_quota: 500,
+              role: "user",
+              updated_at: new Date()
+            });
+            currentCustomName = user.displayName;
+            currentCustomPhoto = user.photoURL;
+            currentQuota = 500;
+            currentPublicId = "";
+            isMasterAccount = false;
+          }
+
+          document.getElementById("userName").innerHTML = currentCustomName + 
+            (isMasterAccount ? ` <span class="badge-master">UNLIMITED</span>` : ``);
+          
+          document.getElementById("userEmail").textContent = user.email;
+          document.getElementById("userAvatar").src = currentCustomPhoto;
+          document.getElementById("statQuota").innerHTML = isMasterAccount ? "∞ <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Unlimited</span>" : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
+        });
+
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("adminSection").classList.remove("hidden");
+        loadUserEvents(user.email);
+      } else {
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("adminSection").classList.add("hidden");
+        if (unsubscribeSnapshot) unsubscribeSnapshot();
+        if (userSnapshotUnsubscribe) userSnapshotUnsubscribe();
+      }
+    });
+
+    document.getElementById("btnLogin").addEventListener("click", () => signInWithPopup(auth, provider));
+    document.getElementById("btnLogout").addEventListener("click", () => signOut(auth));
+
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nName = document.getElementById("editDisplayName").value.trim();
+      const nPhoto = document.getElementById("editPhotoURL").value.trim() || auth.currentUser.photoURL;
+      
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        custom_name: nName,
+        photo_url: nPhoto,
+        updated_at: new Date()
+      }, { merge: true });
+
+      try {
+        const publicDocs = currentPublicId ? await getDocs(query(
+          collection(db, "public_events"),
+          where("is_public", "==", true),
+          where("photographer_id", "==", currentPublicId)
+        )) : { docs: [] };
+        for (const publicDoc of publicDocs.docs) {
+          await setDoc(doc(db, "public_events", publicDoc.id), {
+            photographer_name: nName,
+            photo_url: nPhoto,
+            profile_updated_at: new Date()
+          }, { merge: true });
+        }
+      } catch (publicProfileError) {
+        console.warn("Profil tersimpan, tetapi snapshot katalog publik belum ter-update:", publicProfileError);
+      }
+
+      document.getElementById("profileModal").classList.add("hidden");
+    });
+
+    function closeAppendModal() {
+      document.getElementById("appendModal").classList.add("hidden");
+      document.getElementById("appendForm").reset();
+      document.getElementById("appendError").classList.add("hidden");
+      appendSelectedEventId = null;
+    }
+
+    function updateAppendSourceFields() {
+      const useNew = document.getElementById("appendSourceType").value === "new_folder";
+      document.getElementById("appendExistingFolderWrap").classList.toggle("hidden", useNew);
+      document.getElementById("appendNewFolderWrap").classList.toggle("hidden", !useNew);
+      document.getElementById("appendExistingFolder").required = !useNew;
+      document.getElementById("appendNewFolderUrl").required = useNew;
+    }
+
+    document.getElementById("appendSourceType").addEventListener("change", updateAppendSourceFields);
+    document.getElementById("btnCloseAppendModal").addEventListener("click", closeAppendModal);
+    document.getElementById("btnCancelAppendModal").addEventListener("click", closeAppendModal);
+
+    window.openAppendModal = (eventId) => {
+      const ev = userEventsById[eventId];
+      if (!ev) return alert("Data event tidak ditemukan. Muat ulang dashboard.");
+      if (ev.status !== "Selesai") return alert("Foto hanya bisa ditambahkan setelah event selesai diproses.");
+      if (!auth.currentUser || String(ev.photographer_email || "").toLowerCase() !== String(auth.currentUser.email || "").toLowerCase()) {
+        return alert("Kamu tidak memiliki akses ke event ini.");
+      }
+
+      appendSelectedEventId = eventId;
+      document.getElementById("appendEventTitle").textContent = `${ev.event_name || "Event"} · ${ev.event_date || "-"}`;
+      const folderSelect = document.getElementById("appendExistingFolder");
+      const previousBatchFolders = (appendTasksByParent[eventId] || []).map(batch => batch.gdrive_folder_id).filter(Boolean);
+      const folderIds = [...new Set([ev.gdrive_folder_id, ...previousBatchFolders].filter(Boolean))];
+      folderSelect.innerHTML = "";
+      folderIds.forEach((folderId, index) => {
+        const option = document.createElement("option");
+        option.value = folderId;
+        option.textContent = index === 0 ? "Main folder" : `Additional folder ${index}`;
+        folderSelect.appendChild(option);
+      });
+      if (!folderIds.length) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No registered folders";
+        folderSelect.appendChild(option);
+      }
+      document.getElementById("appendSourceType").value = "existing_folder";
+      document.getElementById("appendError").classList.add("hidden");
+      document.getElementById("appendModal").classList.remove("hidden");
+      updateAppendSourceFields();
+    };
+
+    document.getElementById("appendForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitButton = document.getElementById("btnSubmitAppend");
+      const errorBox = document.getElementById("appendError");
+      errorBox.classList.add("hidden");
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+
+      try {
+        const user = auth.currentUser;
+        const parentId = appendSelectedEventId;
+        if (!user || !parentId) throw new Error("Login session or event not available.");
+        if (!isMasterAccount && currentQuota <= 0) throw new Error("Daily quota is exhausted. Adding photos requires available quota.");
+
+        const parentRef = doc(db, "queues", parentId);
+        const parentSnap = await getDoc(parentRef);
+        if (!parentSnap.exists()) throw new Error("Main event not found.");
+        const parent = parentSnap.data();
+        if (String(parent.photographer_email || "").toLowerCase() !== String(user.email || "").toLowerCase()) {
+          throw new Error("Access denied.");
+        }
+        if (parent.status !== "Selesai" || parent.task_type === "append_batch") {
+          throw new Error("Main event must be completed before receiving additional photos.");
+        }
+
+        const sourceType = document.getElementById("appendSourceType").value;
+        let folderId = "";
+        if (sourceType === "existing_folder") {
+          folderId = document.getElementById("appendExistingFolder").value.trim();
+        } else {
+          folderId = extractFolderId(document.getElementById("appendNewFolderUrl").value.trim()) || "";
+        }
+        if (!folderId) throw new Error("Invalid Google Drive folder link or selection.");
+
+        await addDoc(collection(db, "queues"), {
+          task_type: "append_batch",
+          parent_event_id: parentId,
+          event_name: parent.event_name || "Unnamed Event",
+          event_date: parent.event_date || "-",
+          photographer_name: currentCustomName || user.displayName || "Fotografer",
+          photographer_email: user.email,
+          photographer_uid: user.uid,
+          gdrive_folder_id: folderId,
+          append_source_type: sourceType,
+          status: "Pending",
+          created_at: new Date()
+        });
+
+        closeAppendModal();
+        alert("Additional photos added to queue successfully. The JSON database will update upon completion.");
+      } catch (error) {
+        errorBox.textContent = error.message || "Failed to create photo queue.";
+        errorBox.classList.remove("hidden");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Add to Queue";
+      }
+    });
+
+    document.getElementById("eventForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isMasterAccount && currentQuota <= 0) {
+        alert("Free quota exhausted!");
+        return;
+      }
+
+      const folderId = extractFolderId(document.getElementById("gdriveUrl").value.trim());
+      if (!folderId) {
+        alert("Invalid Google Drive Link!");
+        return;
+      }
+
+      await addDoc(collection(db, "queues"), {
+        photographer_name: currentCustomName || auth.currentUser.displayName,
+        photographer_email: auth.currentUser.email,
+        photographer_uid: auth.currentUser.uid,
+        task_type: "event",
+        event_name: document.getElementById("eventName").value.trim(),
+        event_date: document.getElementById("eventDate").value,
+        gdrive_folder_id: folderId,
+        status: "Pending",
+        created_at: new Date()
+      });
+
+      document.getElementById("eventModal").classList.add("hidden");
+      document.getElementById("eventForm").reset();
+    });
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+
+    // -------------------------------------------------------------
+    // JS HTML TEMPLATE OVERRIDES (WITH BLINKR SEMANTIC CLASSES)
+    // -------------------------------------------------------------
+    function loadUserEvents(email) {
+      const q = query(collection(db, "queues"), where("photographer_email", "==", email));
+      unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+        let allDocs = [];
+        snapshot.forEach(docSnap => allDocs.push({ id: docSnap.id, ...docSnap.data() }));
+        allDocs.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+
+        const appendTasks = allDocs.filter(d => d.task_type === "append_batch");
+        const eventDocs = allDocs.filter(d => d.task_type !== "append_batch" && !d.parent_event_id);
+        userEventsById = Object.fromEntries(eventDocs.map(ev => [ev.id, ev]));
+        appendTasksByParent = {};
+        appendTasks.forEach(batch => {
+          if (!appendTasksByParent[batch.parent_event_id]) appendTasksByParent[batch.parent_event_id] = [];
+          appendTasksByParent[batch.parent_event_id].push(batch);
+        });
+
+        document.getElementById("statTotal").textContent = eventDocs.length;
+        document.getElementById("statPending").textContent =
+          eventDocs.filter(d => d.status === "Pending" || d.status === "Diproses").length +
+          appendTasks.filter(d => ["Pending", "Diproses", "Menunggu_Batch"].includes(d.status)).length;
+        document.getElementById("statSelesai").textContent = eventDocs.filter(d => d.status === "Selesai").length;
+
+        const tableBody = document.getElementById("eventListTable");
+        if (eventDocs.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-tertiary">No events found.</td></tr>`;
+          return;
+        }
+
+        tableBody.innerHTML = eventDocs.map(ev => {
+          const relatedBatches = appendTasks.filter(batch => batch.parent_event_id === ev.id);
+          const pendingBatches = relatedBatches.filter(batch => ["Pending", "Diproses", "Menunggu_Batch"].includes(batch.status)).length;
+          const failedBatches = relatedBatches.filter(batch => batch.status === "Gagal").length;
+          const totalFound = Number(ev.jumlah_foto_ditemukan ?? 0);
+          const excluded = Number(ev.jumlah_foto_dibatasi_kuota ?? ev.quota_excluded_count ?? 0);
+          const isDone = ev.status === "Selesai";
+          const isLimited = excluded > 0;
+
+          const quotaTooltip = `${excluded} foto tidak diproses karena melebihi kuota harian. Foto tetap berada di Google Drive, tidak masuk JSON hasil AI, dan tidak diproses otomatis.`;
+          
+          const badge = isDone
+            ? `<span class="text-success font-semibold">Selesai</span>${isLimited ? `<div class="mt-1"><span title="${escapeHtml(quotaTooltip)}" class="inline-flex rounded-full bg-warning-subtle border border-warning px-2 py-0.5 text-[10px] font-semibold text-warning cursor-help">Sebagian dibatasi kuota</span></div>` : ""}`
+            : ev.status === "Diproses" ? `<span class="text-info font-semibold animate-pulse">Memproses AI</span>`
+            : ev.status === "Gagal_Kuota_Habis" ? `<span class="text-danger font-bold">Kuota Habis</span>`
+            : `<span class="text-warning font-semibold">Menunggu antrean</span>`;
+
+          const hasQuotaInfo =
+            ev.kuota_foto_dicadangkan !== undefined ||
+            ev.quota_reserved_count !== undefined ||
+            ev.pemrosesan_tanpa_batas === true;
+          const accepted = ev.pemrosesan_tanpa_batas === true
+            ? totalFound
+            : Number(ev.kuota_foto_dicadangkan ?? ev.quota_reserved_count ?? 0);
+          const quotaUsed = Number(ev.kuota_foto_terpakai ?? ev.jumlah_foto_dikirim_ke_api ?? 0);
+          const unresolved = Number(ev.jumlah_foto_belum_berhasil ?? 0);
+          
+          const quotaSummary = hasQuotaInfo ? `
+            <div class="space-y-1 min-w-[180px]">
+              <div class="flex justify-between gap-3 text-xs"><span class="text-secondary">Foto ditemukan</span><strong class="text-primary">${totalFound}</strong></div>
+              <div class="flex justify-between gap-3 text-xs"><span class="text-secondary">Diterima kuota</span><strong class="text-success">${accepted}</strong></div>
+              <div class="flex justify-between gap-3 text-xs"><span class="text-secondary">Kuota terpakai</span><strong class="text-info">${ev.pemrosesan_tanpa_batas === true ? "Unlimited" : quotaUsed}</strong></div>
+              <div class="flex justify-between gap-3 text-xs"><span class="text-secondary">Tidak diproses</span><strong class="${excluded > 0 ? "text-warning" : "text-tertiary"}">${excluded}</strong></div>
+              ${unresolved > 0 ? `<div class="text-[10px] text-danger">${unresolved} foto gagal diproses</div>` : ""}
+            </div>`
+            : `<span class="text-xs text-tertiary">Menunggu pemeriksaan kuota</span>`;
+
+          const statusMessage = !isLimited && ev.pesan_status
+            ? `<p class="mt-1 max-w-[220px] text-[10px] leading-relaxed text-warning">${escapeHtml(ev.pesan_status)}</p>`
+            : "";
+          const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
+          const batchInfo = relatedBatches.length
+            ? `<p class="mt-1 text-[10px] text-secondary">${relatedBatches.length} batch tambahan${pendingBatches ? ` · ${pendingBatches} menunggu/diproses` : ""}${failedBatches ? ` · ${failedBatches} gagal` : ""}</p>`
+            : "";
+          const addButton = isDone
+            ? `<button onclick="window.openAppendModal('${ev.id}')" class="text-info hover:text-primary transition text-xs font-semibold whitespace-nowrap">+ Tambah Foto</button>`
+            : `<button disabled title="Event harus selesai dahulu" class="text-tertiary text-xs cursor-not-allowed whitespace-nowrap">+ Tambah Foto</button>`;
+
+          return `
+            <tr class="table-row align-top">
+              <td class="py-4 px-5 text-primary font-semibold">${escapeHtml(ev.event_name || "Tanpa nama")}${batchInfo}</td>
+              <td class="py-4 px-5 text-secondary whitespace-nowrap">${escapeHtml(ev.event_date || "-")}</td>
+              <td class="py-4 px-5">${badge}${statusMessage}</td>
+              <td class="py-4 px-5">${quotaSummary}</td>
+              <td class="py-4 px-5 text-tertiary font-mono text-xs">${escapeHtml(jsonName)}</td>
+              <td class="py-4 px-5 text-right"><div class="flex flex-col items-end gap-3">${addButton}<button onclick="deleteEvent('${ev.id}')" class="text-danger hover:opacity-80 transition text-xs font-semibold">Hapus Event</button></div></td>
+            </tr>`;
+        }).join("");
+      });
+    }
+
+    window.deleteEvent = async (docId) => {
+      try {
+        const related = await getDocs(query(
+          collection(db, "queues"),
+          where("parent_event_id", "==", docId),
+          where("photographer_email", "==", auth.currentUser.email)
+        ));
+        const active = related.docs.some(d => ["Pending", "Diproses", "Menunggu_Batch"].includes((d.data() || {}).status));
+        if (active) {
+          alert("Event masih memiliki batch tambahan yang menunggu atau sedang diproses. Hapus setelah seluruh batch selesai.");
+          return;
+        }
+        if (confirm("Hapus event ini beserta riwayat batch tambahannya dari dashboard dan katalog publik? File JSON di Google Drive tidak ikut dihapus.")) {
+          const eventData = userEventsById[docId] || {};
+          if (eventData.public_index_synced === true) {
+            await deleteDoc(doc(db, "public_events", docId));
+            await deleteDoc(doc(db, "public_event_owners", docId));
+          }
+          for (const batchDoc of related.docs) await deleteDoc(batchDoc.ref);
+          await deleteDoc(doc(db, "queues", docId));
+        }
+      } catch (error) {
+        alert("Gagal menghapus event: " + (error.message || error));
+      }
+    };
+  </script>
+</body>
+</html>

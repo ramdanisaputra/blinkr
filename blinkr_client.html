@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinkr | Find your moment.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind for layout utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* 1. BRAND TOKENS & CSS VARIABLES */
+        :root {
+            --brand-navy: #101D38;
+            --brand-orange: #FF914D;
+            --brand-orange-hover: #E67A35;
+            --brand-lavender: #8580CF;
+            
+            --font-primary: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            
+            --transition-theme: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            --transition-interaction: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* LIGHT MODE TOKENS */
+        [data-theme="light"] {
+            --bg-app: #F7F8FA;
+            --bg-surface: #FFFFFF;
+            --bg-surface-hover: #F0F1F5;
+            --text-primary: #101D38;
+            --text-secondary: #667085;
+            --text-tertiary: #98A2B3;
+            --border-default: #E4E7EC;
+            --border-active: #101D38;
+            --shadow-card: 0 8px 24px rgba(16, 29, 56, 0.04);
+            --icon-color: #101D38;
+            
+            --bg-status: #F0F1F5;
+            --text-status: #667085;
+        }
+
+        /* DARK MODE TOKENS */
+        [data-theme="dark"] {
+            --bg-app: #0B1426; 
+            --bg-surface: #101D38;
+            --bg-surface-hover: #17243E;
+            --text-primary: #F0F1F5;
+            --text-secondary: #A0AABF;
+            --text-tertiary: #718096;
+            --border-default: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 255, 255, 0.3);
+            --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.3);
+            --icon-color: #F0F1F5;
+            
+            --bg-status: rgba(255, 255, 255, 0.05);
+            --text-status: #A0AABF;
+        }
+
+        /* 2. BASE STYLES & COMPONENTS */
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            transition: var(--transition-theme);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Brand Logo */
+        .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); display: flex; align-items: baseline; }
+        .logo .dot { color: var(--brand-orange); font-size: 1.5rem; line-height: 0; margin-left: 1px; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: var(--radius-full);
+            background-color: var(--bg-surface-hover); color: var(--icon-color);
+            border: 1px solid var(--border-default); transition: var(--transition-interaction);
+            cursor: pointer;
+        }
+        .theme-toggle:hover { border-color: var(--border-active); }
+        .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+        /* Cards */
+        .blinkr-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-theme);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--brand-orange);
+            color: #FFFFFF;
+            transition: var(--transition-interaction);
+        }
+        .btn-primary:hover {
+            background-color: var(--brand-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 145, 77, 0.25);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;
+        }
+        
+        /* Form Controls */
+        .form-label {
+            display: block; font-size: 0.65rem; font-weight: 700;
+            color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .form-select {
+            width: 100%;
+            background-color: var(--bg-app);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition-interaction);
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23667085'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+        .form-select:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.15);
+        }
+        .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Developer Toggle */
+        .dev-toggle-bg { background-color: var(--border-default); }
+        input:checked ~ .dev-toggle-bg { background-color: var(--brand-orange); }
+
+        /* Original Color Badges (Preserved logic, updated aesthetic) */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 9999px; font-size: 9px; font-weight: 700; text-transform: capitalize; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); letter-spacing: 0.02em; }
+        .hitam { background-color: rgba(15, 23, 42, 0.8); color: #f8fafc; }
+        .putih { background-color: rgba(255, 255, 255, 0.9); color: #0f172a; }
+        .merah { background-color: rgba(239, 68, 68, 0.85); color: white; }
+        .biru { background-color: rgba(59, 130, 246, 0.85); color: white; }
+        .biru-muda { background-color: rgba(96, 165, 250, 0.9); color: #0f172a; }
+        .biru-tua { background-color: rgba(30, 64, 175, 0.9); color: white; }
+        .hijau { background-color: rgba(34, 197, 94, 0.85); color: white; }
+        .hijau-muda { background-color: rgba(134, 239, 172, 0.9); color: #14532d; }
+        .kuning { background-color: rgba(234, 179, 8, 0.9); color: #422006; }
+        .oranye { background-color: rgba(249, 115, 22, 0.85); color: white; }
+        .abu-abu, .silver { background-color: rgba(148, 163, 184, 0.85); color: white; }
+        .pink { background-color: rgba(236, 72, 153, 0.85); color: white; }
+        .cyan { background-color: rgba(6, 182, 212, 0.85); color: #083344; }
+        .cokelat { background-color: rgba(139, 92, 246, 0.85); color: white; }
+        .ungu { background-color: rgba(168, 85, 247, 0.85); color: white; }
+        .marun { background-color: rgba(159, 18, 57, 0.85); color: white; }
+        .krem { background-color: rgba(245, 222, 179, 0.9); color: #451a03; }
+        .emas { background-color: rgba(234, 179, 8, 0.9); color: #422006; }
+        .tidak-terlihat { background-color: rgba(71, 85, 105, 0.8); color: white; }
+        .none { display: none; }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Header Navigation -->
+    <header class="bg-surface border-b border-default sticky top-0 z-40 px-4 py-3 shadow-sm transition-all duration-300">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                <a href="#" class="logo btn-route" data-route="home">blinkr<span class="dot">.</span></a>
+                <span class="text-[10px] font-bold text-secondary px-3 py-1 rounded-full border border-default hidden sm:block uppercase tracking-wider">Photo Finder</span>
+                
+                <!-- Mobile Theme Toggle -->
+                <button id="themeToggleBtnMobile" class="theme-toggle sm:hidden" title="Toggle Theme"></button>
+            </div>
+
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Status Bar -->
+                <div id="status-bar" class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] text-[var(--text-status)] border border-default text-xs font-semibold rounded-full transition-all">
+                    <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Connecting...
+                </div>
+                <!-- Desktop Theme Toggle -->
+                <button id="themeToggleBtnDesktop" class="theme-toggle hidden sm:flex" title="Toggle Theme (System/Light/Dark)"></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 md:px-6 pt-6">
+
+        <!-- Hero Title -->
+        <div class="mb-6 text-center sm:text-left">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-primary mb-1">Find your moment.</h1>
+            <p class="text-secondary text-sm md:text-base">Your event photos are closer than you think. Select an event to start.</p>
+        </div>
+
+        <!-- Selektor Event & Fotografer -->
+        <div class="blinkr-card p-5 md:p-6 mb-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-default">
+                <h2 class="text-sm font-bold text-primary flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Event Selection
+                </h2>
+
+                <div id="photographer-badge" class="hidden items-center gap-3 bg-app border border-default px-4 py-2 rounded-full transition">
+                    <img id="photographer-avatar" src="" class="w-6 h-6 rounded-full object-cover shadow-sm" alt="Foto fotografer">
+                    <div>
+                        <p id="photographer-display-name" class="text-xs font-bold text-primary leading-tight"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                <div class="md:col-span-4">
+                    <label for="select-photographer" class="form-label">1. Photographer</label>
+                    <select id="select-photographer" class="form-select" disabled>
+                        <option value="">Memuat Fotografer...</option>
+                    </select>
+                </div>
+                <div class="md:col-span-5">
+                    <label for="select-event" class="form-label">2. Event / Session</label>
+                    <select id="select-event" class="form-select" disabled>
+                        <option value="">Pilih Fotografer Dahulu</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3 flex items-end">
+                    <button id="btn-load-event" class="w-full btn-primary font-semibold rounded-md text-sm px-5 py-3 text-center transition" disabled>
+                        Load Photos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Ciri-ciri -->
+        <div id="filter-section" class="blinkr-card p-5 md:p-6 mb-8 transition-all duration-300 opacity-50 pointer-events-none">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                <h2 class="text-sm font-bold text-primary flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                    Visual Attributes
+                </h2>
+                
+                <!-- Toggle Developer Mode -->
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="dev-mode-toggle" class="sr-only peer" onchange="window.toggleDevMode()">
+                    <div class="relative w-8 h-4 dev-toggle-bg rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all border border-default"></div>
+                    <span class="ms-2 text-[10px] font-bold text-secondary uppercase tracking-wider">Dev Mode (Always Show Info)</span>
+                </label>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <select id="filter-waktu" onchange="cariFoto()" class="form-select">
+                    <option value="">⏱️ Semua Rentang Waktu</option>
+                </select>
+
+                <select id="filter-motor" onchange="cariFoto()" class="form-select">
+                    <option value="">🏍️ Semua Warna Motor</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+
+                <select id="filter-helm" onchange="cariFoto()" class="form-select">
+                    <option value="">🪖 Semua Helm Depan</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+
+                <select id="filter-jaket" onchange="cariFoto()" class="form-select">
+                    <option value="">🧥 Semua Jaket Depan</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Galeri Hasil -->
+        <div id="hasil-galeri" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <!-- Empty State -->
+            <div class="col-span-full text-center py-16">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app text-tertiary mb-4 border border-default">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-primary">No Event Selected</h3>
+                <p class="text-sm text-secondary mt-1 max-w-md mx-auto">Please select a photographer and an event from the menu above to start exploring photos.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= BLINKR ROUTING & THEME LOGIC ================= -->
+    <script>
+        // ROUTING
+        const BLINKR_ROUTES = {
+            home: "./index.html",
+            photographer: "./blinkr_photographer.html"
+        };
+
+        document.querySelectorAll('.btn-route').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const routeKey = button.getAttribute('data-route');
+                if (BLINKR_ROUTES[routeKey] && !BLINKR_ROUTES[routeKey].includes("REPLACE_WITH_")) {
+                    window.location.href = BLINKR_ROUTES[routeKey];
+                } else {
+                    alert(`Routing to: ${routeKey}\n(URL is not configured yet in BLINKR_ROUTES)`);
+                }
+            });
+        });
+
+        // THEME LOGIC
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        const icons = {
+            system: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+            light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
+            dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+        };
+
+        const themes = ['system', 'light', 'dark'];
+        let currentThemeIndex = 0;
+
+        function applyTheme(themeName) {
+            let activeTheme = themeName;
+            if (themeName === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                activeTheme = prefersDark ? 'dark' : 'light';
+                localStorage.removeItem('blinkr-theme');
+            } else {
+                localStorage.setItem('blinkr-theme', themeName);
+            }
+            htmlElement.setAttribute('data-theme', activeTheme);
+            themeToggleBtns.forEach(btn => btn.innerHTML = icons[themeName]);
+        }
+
+        const savedTheme = localStorage.getItem('blinkr-theme');
+        if (savedTheme && themes.includes(savedTheme)) {
+            currentThemeIndex = themes.indexOf(savedTheme);
+        }
+        applyTheme(themes[currentThemeIndex]);
+
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                applyTheme(themes[currentThemeIndex]);
+            });
+        });
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (themes[currentThemeIndex] === 'system') applyTheme('system');
+        });
+    </script>
+
+
+    <!-- ================= FIREBASE SCRIPT (PRESERVED) ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCO2QRZMA1Ui8J1eQA89o76oSc_YpfdEiU",
+            authDomain: "find-your-photo-188a0.firebaseapp.com",
+            projectId: "find-your-photo-188a0",
+            storageBucket: "find-your-photo-188a0.firebasestorage.app",
+            messagingSenderId: "212497999030",
+            appId: "1:212497999030:web:82380565489f6140ebf217"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwCnZTJmkfKnxjXiEudEEO01ApI4-kIcj0pJbXM-iLy4EqWuzPSRVVAuABuDAswhy7b/exec";
+
+        let eventMap = {};
+        window.database = [];
+
+        const selPhoto = document.getElementById('select-photographer');
+        const selEvent = document.getElementById('select-event');
+        const btnLoad = document.getElementById('btn-load-event');
+        const statusBar = document.getElementById('status-bar');
+        const badgePhotographer = document.getElementById('photographer-badge');
+        const avatarPhotographer = document.getElementById('photographer-avatar');
+        const namePhotographer = document.getElementById('photographer-display-name');
+
+        // 1. Ambil hanya katalog event publik. Tidak membaca users/queues privat.
+        async function fetchEventsFromFirebase() {
+            try {
+                const publicQuery = query(
+                    collection(db, "public_events"),
+                    where("is_public", "==", true)
+                );
+                const querySnapshot = await getDocs(publicQuery);
+
+                eventMap = {};
+                querySnapshot.forEach(docSnap => {
+                    const data = docSnap.data() || {};
+                    const photographerId = String(data.photographer_id || docSnap.id);
+                    const profile = {
+                        name: data.photographer_name || "Fotografer",
+                        photo: data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.photographer_name || "F")}`
+                    };
+
+                    if (!eventMap[photographerId]) {
+                        eventMap[photographerId] = {
+                            name: profile.name,
+                            photo: profile.photo,
+                            events: []
+                        };
+                    }
+
+                    if (data.json_filename) {
+                        eventMap[photographerId].events.push({
+                            eventId: docSnap.id,
+                            eventName: data.event_name || "Unnamed Event",
+                            jsonFile: String(data.json_filename).split(/[\\/]/).pop(),
+                            date: data.event_date || "-",
+                            version: data.updated_at && data.updated_at.seconds
+                                ? String(data.updated_at.seconds)
+                                : "1"
+                        });
+                    }
+                });
+
+                Object.values(eventMap).forEach(profile => {
+                    profile.events.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+                });
+                populatePhotographers();
+            } catch (error) {
+                console.error("Error fetching public event catalog:", error);
+                setStatus("🔴 Failed to load event catalog.", "text-red-500");
+            }
+        }
+
+        function populatePhotographers() {
+            const photographerIds = Object.keys(eventMap);
+            selPhoto.innerHTML = '<option value="">-- Select Photographer --</option>';
+
+            if (photographerIds.length === 0) {
+                selPhoto.innerHTML = '<option value="">No events available yet</option>';
+                setStatus("ℹ️ No processed events found.", "text-secondary");
+                return;
+            }
+
+            photographerIds.forEach(photographerId => {
+                const pInfo = eventMap[photographerId];
+                const option = document.createElement('option');
+                option.value = photographerId;
+                option.textContent = pInfo.name;
+                selPhoto.appendChild(option);
+            });
+
+            selPhoto.disabled = false;
+            setStatus("🟢 Connected. Please select a photographer.", "text-green-500");
+        }
+
+        selPhoto.addEventListener('change', function() {
+            const photographerId = this.value;
+            selEvent.innerHTML = '<option value="">-- Select Event --</option>';
+            btnLoad.disabled = true;
+
+            if (!photographerId || !eventMap[photographerId]) {
+                selEvent.disabled = true;
+                badgePhotographer.classList.add("hidden");
+                badgePhotographer.classList.remove("flex");
+                return;
+            }
+
+            const pInfo = eventMap[photographerId];
+            avatarPhotographer.src = pInfo.photo;
+            namePhotographer.textContent = pInfo.name;
+            badgePhotographer.classList.remove("hidden");
+            badgePhotographer.classList.add("flex");
+
+            pInfo.events.forEach(ev => {
+                if (ev.jsonFile) {
+                    const option = document.createElement('option');
+                    option.value = ev.jsonFile;
+                    option.dataset.version = ev.version || "1";
+                    option.textContent = `${ev.eventName || 'Unnamed Event'} (${ev.date})`;
+                    selEvent.appendChild(option);
+                }
+            });
+
+            selEvent.disabled = false;
+        });
+
+        selEvent.addEventListener('change', function() {
+            btnLoad.disabled = !this.value;
+        });
+
+        btnLoad.addEventListener('click', function() {
+            const jsonFilename = selEvent.value;
+            const selectedOption = selEvent.options[selEvent.selectedIndex];
+            const version = selectedOption ? selectedOption.dataset.version : "1";
+            if (jsonFilename) muatDataDariGAS(jsonFilename, version);
+        });
+
+        // 2. Ambil database JSON dari Apps Script / Google Drive.
+        async function muatDataDariGAS(filename, version = "1") {
+            setStatus(
+                '<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...',
+                "text-brand-orange"
+            );
+            btnLoad.disabled = true;
+
+            const fetchUrl = `${GAS_API_URL}?filename=${encodeURIComponent(filename)}&v=${encodeURIComponent(version || "1")}`;
+
+            try {
+                const response = await fetch(fetchUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                if (data.status === "error") {
+                    setStatus(`🔴 ${data.message || "Failed to fetch database."}`, "text-red-500");
+                    window.database = [];
+                } else {
+                    window.database = Array.isArray(data) ? data : [];
+                    setStatus(`✅ Successfully loaded ${window.database.length} photos!`, "text-green-500");
+                    document.getElementById('filter-section').classList.remove('opacity-50', 'pointer-events-none');
+                    updateDropdownWaktu();
+                    window.cariFoto();
+                }
+            } catch (error) {
+                console.error("Error loading JSON from GAS:", error);
+                setStatus("🔴 Failed to fetch data from Drive API.", "text-red-500");
+            } finally {
+                btnLoad.disabled = !selEvent.value;
+            }
+        }
+
+        function setStatus(html, colorClasses) {
+            // Keep the pill style but update text color dynamically
+            statusBar.className = `inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] border border-default text-xs font-semibold rounded-full transition-all ${colorClasses}`;
+            statusBar.innerHTML = html;
+        }
+
+        function updateDropdownWaktu() {
+            const selectWaktu = document.getElementById('filter-waktu');
+            const nilaiTerpilih = selectWaktu.value;
+            const daftarKelompok = [...new Set(window.database.map(i => i.kelompok_waktu || 'Lainnya'))].sort();
+
+            selectWaktu.innerHTML = '<option value="">⏱️ Semua Rentang Waktu</option>';
+            daftarKelompok.forEach(waktu => {
+                if (waktu && waktu !== '-') {
+                    const option = document.createElement('option');
+                    option.value = waktu;
+                    option.textContent = `⏰ Rentang ${waktu}`;
+                    if (waktu === nilaiTerpilih) option.selected = true;
+                    selectWaktu.appendChild(option);
+                }
+            });
+        }
+
+        function warnaCocok(filterValue, warnaData) {
+            if (filterValue === "") return true;
+            return filterValue.split(",").includes(String(warnaData || ""));
+        }
+
+        // ================= LOGIKA DEV MODE TOGGLE =================
+        window.isDevMode = false;
+        window.toggleDevMode = function() {
+            window.isDevMode = document.getElementById('dev-mode-toggle').checked;
+            if (window.database && window.database.length > 0) {
+                window.cariFoto();
+            }
+        };
+
+        window.cariFoto = function() {
+            const fWaktu = document.getElementById('filter-waktu').value;
+            const fMotor = document.getElementById('filter-motor').value;
+            const fHelm = document.getElementById('filter-helm').value;
+            const fJaket = document.getElementById('filter-jaket').value;
+
+            const hasilFilter = window.database.filter(item => {
+                const dataItem = item.data || {};
+                const pDepan = dataItem.pengendara_depan || {};
+
+                const cocokWaktu = fWaktu === "" || item.kelompok_waktu === fWaktu;
+                const cocokMotor = warnaCocok(fMotor, dataItem.motor);
+                const cocokHelm = warnaCocok(fHelm, pDepan.helm);
+                const cocokJaket = warnaCocok(fJaket, pDepan.jaket);
+
+                return cocokWaktu && cocokMotor && cocokHelm && cocokJaket;
+            });
+
+            tampilkanGaleri(hasilFilter);
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+            })[char]);
+        }
+
+        function classWarna(warna) {
+            const allowed = new Set([
+                "hitam", "putih", "abu-abu", "silver", "merah", "marun", "pink", "ungu",
+                "biru", "biru-muda", "biru-tua", "cyan", "hijau", "hijau-muda", "kuning",
+                "oranye", "cokelat", "krem", "emas", "tidak-terlihat", "none"
+            ]);
+            const value = String(warna || "none").trim().toLowerCase().replace(/\s+/g, "-");
+            return allowed.has(value) ? value : "none";
+        }
+
+        function safeDriveViewUrl(value) {
+            try {
+                const parsed = new URL(String(value || ""));
+                if (parsed.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(parsed.hostname)) {
+                    return parsed.href;
+                }
+            } catch (ignored) {}
+            return "#";
+        }
+
+        const GALLERY_PAGE_SIZE = 60;
+        let galleryFilteredData = [];
+        let galleryRenderedCount = 0;
+
+        function createGalleryCard(item) {
+            let fileId = "";
+            const webView = item.url_view_gdrive || "";
+            const gdriveUrl = item.url_gdrive || "";
+            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
+                || webView.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) fileId = match[1];
+
+            const imgSource = fileId
+                ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
+                : "https://via.placeholder.com/260?text=No+Image";
+            const fullResUrl = safeDriveViewUrl(webView);
+            const dataItem = item.data || {};
+            const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
+            const mColor = String(dataItem.motor || "none");
+            const hColor = String(pDepan.helm || "none");
+            const jColor = String(pDepan.jaket || "none");
+            const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
+            const waktuJam = escapeHtml(item.waktu_jam || "-");
+            const safeUrl = escapeHtml(fullResUrl);
+            
+            // Interaction classes
+            const infoOpacity = window.isDevMode ? "opacity-100" : "opacity-0 group-hover:opacity-100";
+            const infoTransform = window.isDevMode ? "translate-y-0" : "translate-y-4 group-hover:translate-y-0";
+            const infoPointer = window.isDevMode ? "pointer-events-auto" : "pointer-events-none group-hover:pointer-events-auto";
+            const gradientOverlay = window.isDevMode
+                ? "absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-900/90 to-transparent opacity-100 transition-opacity duration-300"
+                : "absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300";
+
+            return `
+                <div class="relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg hover:-translate-y-1 transition duration-300 flex flex-col justify-end bg-app">
+                    <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
+                    <div class="${gradientOverlay}"></div>
+                    
+                    <div class="relative z-20 p-4 flex flex-col justify-end transition-all duration-300 ${infoOpacity} ${infoTransform} ${infoPointer} h-full">
+                        <div class="flex justify-between items-center mb-2 mt-auto">
+                            <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
+                            <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
+                            ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
+                            ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
+                        </div>
+                        <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 text-center bg-white/20 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/20 transition-all shadow-sm active:scale-95 pointer-events-auto">Buka di Google Drive ↗</a>
+                    </div>
+                </div>`;
+        }
+
+        function renderNextGalleryPage() {
+            const galeri = document.getElementById("hasil-galeri");
+            const oldButton = document.getElementById("btn-load-more-gallery");
+            if (oldButton) oldButton.remove();
+
+            const nextItems = galleryFilteredData.slice(galleryRenderedCount, galleryRenderedCount + GALLERY_PAGE_SIZE);
+            if (nextItems.length) {
+                galeri.insertAdjacentHTML("beforeend", nextItems.map(createGalleryCard).join(""));
+                galleryRenderedCount += nextItems.length;
+            }
+
+            if (galleryRenderedCount < galleryFilteredData.length) {
+                const wrapper = document.createElement("div");
+                wrapper.id = "btn-load-more-gallery";
+                wrapper.className = "col-span-full flex justify-center py-6";
+                wrapper.innerHTML = `<button type="button" class="px-6 py-2.5 rounded-full bg-surface border border-default shadow-sm hover:border-brand-orange text-sm font-semibold text-primary transition-all">Load More (${galleryFilteredData.length - galleryRenderedCount} remaining)</button>`;
+                wrapper.querySelector("button").addEventListener("click", renderNextGalleryPage);
+                galeri.appendChild(wrapper);
+            }
+        }
+
+        function tampilkanGaleri(data) {
+            const galeri = document.getElementById("hasil-galeri");
+            galeri.innerHTML = "";
+            galleryFilteredData = Array.isArray(data) ? data : [];
+            galleryRenderedCount = 0;
+
+            if (galleryFilteredData.length === 0) {
+                galeri.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app text-tertiary mb-4 border border-default">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-primary">No Photos Found</h3>
+                        <p class="text-sm text-secondary mt-1">Try broadening your search criteria.</p>
+                    </div>`;
+                return;
+            }
+            renderNextGalleryPage();
+        }
+
+        fetchEventsFromFirebase();
+    </script>
+</body>
+</html>
