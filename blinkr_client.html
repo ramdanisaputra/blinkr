@@ -627,48 +627,55 @@
         let galleryRenderedCount = 0;
 
         function createGalleryCard(item) {
-            let fileId = "";
-            const webView = item.url_view_gdrive || "";
-            const gdriveUrl = item.url_gdrive || "";
-            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/) || webView.match(/id=([a-zA-Z0-9_-]+)/) || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/) || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (match && match[1]) fileId = match[1];
+    let fileId = "";
+    const webView = item.url_view_gdrive || "";
+    const gdriveUrl = item.url_gdrive || "";
+    const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
+        || webView.match(/id=([a-zA-Z0-9_-]+)/)
+        || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
+        || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) fileId = match[1];
 
-            const imgSource = fileId ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600` : "https://via.placeholder.com/260?text=No+Image";
-            const fullResUrl = safeDriveViewUrl(webView);
-            const dataItem = item.data || {};
-            const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
-            const mColor = String(dataItem.motor || "none");
-            const hColor = String(pDepan.helm || "none");
-            const jColor = String(pDepan.jaket || "none");
-            const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
-            const waktuJam = escapeHtml(item.waktu_jam || "-");
-            const safeUrl = escapeHtml(fullResUrl);
+    const imgSource = fileId
+        ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
+        : "https://via.placeholder.com/260?text=No+Image";
+    const fullResUrl = safeDriveViewUrl(webView);
+    const dataItem = item.data || {};
+    const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
+    const mColor = String(dataItem.motor || "none");
+    const hColor = String(pDepan.helm || "none");
+    const jColor = String(pDepan.jaket || "none");
+    const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
+    const waktuJam = escapeHtml(item.waktu_jam || "-");
+    const safeUrl = escapeHtml(fullResUrl);
+
+    return `
+        <div class="relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer" 
+             onclick="this.classList.toggle('active-info')">
+            <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
             
-            // Fixed JS Bug: Interaction classes for Clean Hover
-            const infoOpacity = "opacity-0 group-hover:opacity-100";
-            const infoTransform = "translate-y-4 group-hover:translate-y-0";
-            const infoPointer = "pointer-events-none group-hover:pointer-events-auto";
-            const gradientOverlay = "absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300";
-
-            return `
-                <div class="relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg hover:-translate-y-1 transition duration-300 flex flex-col justify-end bg-app">
-                    <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
-                    <div class="${gradientOverlay}"></div>
-                    
-                    <div class="relative z-20 p-4 flex flex-col justify-end transition-all duration-300 ${infoOpacity} ${infoTransform} ${infoPointer} h-full">
-                        <div class="flex justify-between items-center mb-2 mt-auto">
-                            <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
-                            <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 mb-3">
-                            ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
-                            ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
-                            ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
-                        </div>
-                        <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 text-center bg-white/20 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/20 transition-all shadow-sm active:scale-95 pointer-events-auto">Buka di Google Drive ↗</a>
-                    </div>
-                </div>`;
-        }
+            <!-- Gradient Overlay: Muncul saat hover di PC atau saat diklik (active-info) di HP -->
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 [.active-info_&]:opacity-100 transition-opacity duration-300"></div>
+            
+            <!-- Info Box: Muncul/hilang secara toggle -->
+            <div class="relative z-20 p-4 flex flex-col justify-end h-full transition-all duration-300 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto [.active-info_&]:opacity-100 [.active-info_&]:translate-y-0 [.active-info_&]:pointer-events-auto">
+                <div class="flex justify-between items-center mb-2 mt-auto">
+                    <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
+                    <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                    ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
+                    ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
+                    ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
+                </div>
+                <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" 
+                   onclick="event.stopPropagation()" 
+                   class="block w-full py-2.5 text-center bg-white/25 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/30 transition-all shadow-sm active:scale-95 pointer-events-auto">
+                   Buka di Google Drive ↗
+                </a>
+            </div>
+        </div>`;
+}
 
         function renderNextGalleryPage() {
             const galeri = document.getElementById("hasil-galeri");
