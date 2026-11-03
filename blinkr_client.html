@@ -141,10 +141,6 @@
         }
         .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Developer Toggle */
-        .dev-toggle-bg { background-color: var(--border-default); }
-        input:checked ~ .dev-toggle-bg { background-color: var(--brand-orange); }
-
         /* Original Color Badges (Preserved logic, updated aesthetic) */
         .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 9999px; font-size: 9px; font-weight: 700; text-transform: capitalize; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); letter-spacing: 0.02em; }
         .hitam { background-color: rgba(15, 23, 42, 0.8); color: #f8fafc; }
@@ -171,9 +167,9 @@
 </head>
 <body class="pb-20">
 
-   <!-- Header Navigation -->
-   <header class="bg-[var(--bg-surface)] border-b border-default sticky top-0 z-40 px-4 py-3 shadow-sm transition-all duration-300">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+   <!-- Header Navigation (Wide Layout) -->
+   <header class="bg-[var(--bg-surface)] border-b border-default sticky top-0 z-40 px-4 md:px-8 py-3 shadow-sm transition-all duration-300">
+        <div class="w-full max-w-[1536px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
                 <a href="#" class="logo btn-route" data-route="home">blinkr<span class="dot">.</span></a>
                 <span class="text-[10px] font-bold text-secondary px-3 py-1 rounded-full border border-default hidden sm:block uppercase tracking-wider">Photo Finder</span>
@@ -194,7 +190,7 @@
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 md:px-6 pt-6">
+    <main class="w-full max-w-[1536px] mx-auto px-4 md:px-8 pt-6">
 
         <!-- Hero Title -->
         <div class="mb-6 text-center sm:text-left">
@@ -246,13 +242,6 @@
                     <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                     Visual Attributes
                 </h2>
-                
-                <!-- Toggle Developer Mode -->
-                <!--<label class="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="dev-mode-toggle" class="sr-only peer" onchange="window.toggleDevMode()">
-                    <div class="relative w-8 h-4 dev-toggle-bg rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all border border-default"></div>
-                    <span class="ms-2 text-[10px] font-bold text-secondary uppercase tracking-wider">Dev Mode (Always Show Info)</span>
-                </label> -->
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <select id="filter-waktu" onchange="cariFoto()" class="form-select">
@@ -330,8 +319,8 @@
             </div>
         </div>
 
-        <!-- Galeri Hasil -->
-        <div id="hasil-galeri" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <!-- Galeri Hasil (Responsive Expansion) -->
+        <div id="hasil-galeri" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-5">
             <!-- Empty State -->
             <div class="col-span-full text-center py-16">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app text-tertiary mb-4 border border-default">
@@ -342,12 +331,12 @@
             </div>
         </div>
         
-        <!-- Scroll to Top Button (Fixed Color) -->
-    <button id="scrollTopBtn" title="Kembali ke atas" 
-        class="fixed bottom-6 right-6 md:bottom-8 md:right-8 p-3 md:p-4 rounded-full text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50 hover:-translate-y-1 hover:shadow-xl"
-        style="background-color: var(--brand-orange);">
-        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path></svg>
-    </button>
+        <!-- Scroll to Top Button -->
+        <button id="scrollTopBtn" title="Kembali ke atas" 
+            class="fixed bottom-6 right-6 md:bottom-8 md:right-8 p-3 md:p-4 rounded-full text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50 hover:-translate-y-1 hover:shadow-xl"
+            style="background-color: var(--brand-orange);">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path></svg>
+        </button>
     </main>
 
     <!-- ================= BLINKR ROUTING & THEME LOGIC ================= -->
@@ -414,7 +403,6 @@
         });
     </script>
 
-
     <!-- ================= FIREBASE SCRIPT (PRESERVED) ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -444,13 +432,9 @@
         const avatarPhotographer = document.getElementById('photographer-avatar');
         const namePhotographer = document.getElementById('photographer-display-name');
 
-        // 1. Ambil hanya katalog event publik. Tidak membaca users/queues privat.
         async function fetchEventsFromFirebase() {
             try {
-                const publicQuery = query(
-                    collection(db, "public_events"),
-                    where("is_public", "==", true)
-                );
+                const publicQuery = query(collection(db, "public_events"), where("is_public", "==", true));
                 const querySnapshot = await getDocs(publicQuery);
 
                 eventMap = {};
@@ -463,11 +447,7 @@
                     };
 
                     if (!eventMap[photographerId]) {
-                        eventMap[photographerId] = {
-                            name: profile.name,
-                            photo: profile.photo,
-                            events: []
-                        };
+                        eventMap[photographerId] = { name: profile.name, photo: profile.photo, events: [] };
                     }
 
                     if (data.json_filename) {
@@ -476,16 +456,12 @@
                             eventName: data.event_name || "Unnamed Event",
                             jsonFile: String(data.json_filename).split(/[\\/]/).pop(),
                             date: data.event_date || "-",
-                            version: data.updated_at && data.updated_at.seconds
-                                ? String(data.updated_at.seconds)
-                                : "1"
+                            version: data.updated_at && data.updated_at.seconds ? String(data.updated_at.seconds) : "1"
                         });
                     }
                 });
 
-                Object.values(eventMap).forEach(profile => {
-                    profile.events.sort((a, b) => String(b.date).localeCompare(String(a.date)));
-                });
+                Object.values(eventMap).forEach(profile => profile.events.sort((a, b) => String(b.date).localeCompare(String(a.date))));
                 populatePhotographers();
             } catch (error) {
                 console.error("Error fetching public event catalog:", error);
@@ -510,7 +486,6 @@
                 option.textContent = pInfo.name;
                 selPhoto.appendChild(option);
             });
-
             selPhoto.disabled = false;
             setStatus("🟢 Connected. Please select a photographer.", "text-green-500");
         }
@@ -542,13 +517,10 @@
                     selEvent.appendChild(option);
                 }
             });
-
             selEvent.disabled = false;
         });
 
-        selEvent.addEventListener('change', function() {
-            btnLoad.disabled = !this.value;
-        });
+        selEvent.addEventListener('change', function() { btnLoad.disabled = !this.value; });
 
         btnLoad.addEventListener('click', function() {
             const jsonFilename = selEvent.value;
@@ -557,12 +529,8 @@
             if (jsonFilename) muatDataDariGAS(jsonFilename, version);
         });
 
-        // 2. Ambil database JSON dari Apps Script / Google Drive.
         async function muatDataDariGAS(filename, version = "1") {
-            setStatus(
-                '<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...',
-                "text-brand-orange"
-            );
+            setStatus('<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...', "text-brand-orange");
             btnLoad.disabled = true;
 
             const fetchUrl = `${GAS_API_URL}?filename=${encodeURIComponent(filename)}&v=${encodeURIComponent(version || "1")}`;
@@ -591,7 +559,6 @@
         }
 
         function setStatus(html, colorClasses) {
-            // Keep the pill style but update text color dynamically
             statusBar.className = `inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] border border-default text-xs font-semibold rounded-full transition-all ${colorClasses}`;
             statusBar.innerHTML = html;
         }
@@ -627,7 +594,6 @@
             const hasilFilter = window.database.filter(item => {
                 const dataItem = item.data || {};
                 const pDepan = dataItem.pengendara_depan || {};
-
                 const cocokWaktu = fWaktu === "" || item.kelompok_waktu === fWaktu;
                 const cocokMotor = warnaCocok(fMotor, dataItem.motor);
                 const cocokHelm = warnaCocok(fHelm, pDepan.helm);
@@ -635,22 +601,15 @@
 
                 return cocokWaktu && cocokMotor && cocokHelm && cocokJaket;
             });
-
             tampilkanGaleri(hasilFilter);
         };
 
         function escapeHtml(value) {
-            return String(value ?? "").replace(/[&<>"']/g, char => ({
-                "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
-            })[char]);
+            return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char]);
         }
 
         function classWarna(warna) {
-            const allowed = new Set([
-                "hitam", "putih", "abu-abu", "silver", "merah", "marun", "pink", "ungu",
-                "biru", "biru-muda", "biru-tua", "cyan", "hijau", "hijau-muda", "kuning",
-                "oranye", "cokelat", "krem", "emas", "tidak-terlihat", "none"
-            ]);
+            const allowed = new Set(["hitam", "putih", "abu-abu", "silver", "merah", "marun", "pink", "ungu", "biru", "biru-muda", "biru-tua", "cyan", "hijau", "hijau-muda", "kuning", "oranye", "cokelat", "krem", "emas", "tidak-terlihat", "none"]);
             const value = String(warna || "none").trim().toLowerCase().replace(/\s+/g, "-");
             return allowed.has(value) ? value : "none";
         }
@@ -658,9 +617,7 @@
         function safeDriveViewUrl(value) {
             try {
                 const parsed = new URL(String(value || ""));
-                if (parsed.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(parsed.hostname)) {
-                    return parsed.href;
-                }
+                if (parsed.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(parsed.hostname)) return parsed.href;
             } catch (ignored) {}
             return "#";
         }
@@ -673,15 +630,10 @@
             let fileId = "";
             const webView = item.url_view_gdrive || "";
             const gdriveUrl = item.url_gdrive || "";
-            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
-                || webView.match(/id=([a-zA-Z0-9_-]+)/)
-                || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
-                || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/) || webView.match(/id=([a-zA-Z0-9_-]+)/) || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/) || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
             if (match && match[1]) fileId = match[1];
 
-            const imgSource = fileId
-                ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
-                : "https://via.placeholder.com/260?text=No+Image";
+            const imgSource = fileId ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600` : "https://via.placeholder.com/260?text=No+Image";
             const fullResUrl = safeDriveViewUrl(webView);
             const dataItem = item.data || {};
             const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
@@ -692,14 +644,11 @@
             const waktuJam = escapeHtml(item.waktu_jam || "-");
             const safeUrl = escapeHtml(fullResUrl);
             
-            // Interaction classes
-            // Interaction classes (Dev Mode dihapus, wajib hover)
-        const infoOpacity = "opacity-0 group-hover:opacity-100";
-        const infoTransform = "translate-y-4 group-hover:translate-y-0";
-        const infoPointer = "pointer-events-none group-hover:pointer-events-auto";
-        const gradientOverlay = "absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                ? "absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-900/90 to-transparent opacity-100 transition-opacity duration-300"
-                : "absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300";
+            // Fixed JS Bug: Interaction classes for Clean Hover
+            const infoOpacity = "opacity-0 group-hover:opacity-100";
+            const infoTransform = "translate-y-4 group-hover:translate-y-0";
+            const infoPointer = "pointer-events-none group-hover:pointer-events-auto";
+            const gradientOverlay = "absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300";
 
             return `
                 <div class="relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg hover:-translate-y-1 transition duration-300 flex flex-col justify-end bg-app">
@@ -762,20 +711,18 @@
             renderNextGalleryPage();
         }
 
-        // ================= SCROLL TO TOP LOGIC =================
-    const scrollBtn = document.getElementById("scrollTopBtn");
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 400) {
-            scrollBtn.classList.remove("opacity-0", "pointer-events-none");
-            scrollBtn.classList.add("opacity-100", "pointer-events-auto");
-        } else {
-            scrollBtn.classList.add("opacity-0", "pointer-events-none");
-            scrollBtn.classList.remove("opacity-100", "pointer-events-auto");
-        }
-    });
-    scrollBtn.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 400) {
+                scrollBtn.classList.remove("opacity-0", "pointer-events-none");
+                scrollBtn.classList.add("opacity-100", "pointer-events-auto");
+            } else {
+                scrollBtn.classList.add("opacity-0", "pointer-events-none");
+                scrollBtn.classList.remove("opacity-100", "pointer-events-auto");
+            }
+        });
+        scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
         fetchEventsFromFirebase();
     </script>
 </body>
