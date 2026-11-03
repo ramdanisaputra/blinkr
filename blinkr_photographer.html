@@ -184,9 +184,9 @@
           <p id="statSelesai" class="text-3xl font-extrabold text-success mt-2">0</p>
         </div>
         <div class="blinkr-card p-5 border-info">
-          <p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p>
-          <p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p>
-        </div>
+  <p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p>
+  <p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p>
+</div>
       </div>
 
       <!-- Events Header -->
@@ -405,7 +405,9 @@
           document.getElementById("userName").innerHTML = currentCustomName + (isMasterAccount ? ` <span class="badge-master">UNLIMITED</span>` : ``);
           document.getElementById("userEmail").textContent = user.email;
           document.getElementById("userAvatar").src = currentCustomPhoto;
-          document.getElementById("statQuota").innerHTML = isMasterAccount ? "∞ <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Unlimited</span>" : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
+          document.getElementById("statQuota").innerHTML = isMasterAccount 
+  ? `<div class="flex items-center gap-2 mt-2"><span class="text-3xl font-extrabold text-primary">∞</span><span class="text-xs font-bold text-brand-orange bg-orange-500/10 px-2 py-0.5 rounded">UNLIMITED</span></div>` 
+  : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
         });
         document.getElementById("loginSection").classList.add("hidden");
         document.getElementById("adminSection").classList.remove("hidden");
