@@ -162,7 +162,44 @@
         .krem { background-color: rgba(245, 222, 179, 0.9); color: #451a03; }
         .emas { background-color: rgba(234, 179, 8, 0.9); color: #422006; }
         .tidak-terlihat { background-color: rgba(71, 85, 105, 0.8); color: white; }
-        .none { display: none; }
+        
+        /* GALLERY INFO INTERACTION */
+
+        .gallery-card .gallery-card-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-card .gallery-card-info {
+            opacity: 0;
+            transform: translateY(16px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Ketika gambar diklik */
+        .gallery-card.active-info .gallery-card-overlay {
+            opacity: 1;
+        }
+
+        .gallery-card.active-info .gallery-card-info {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Hover hanya berlaku untuk perangkat yang mendukung hover */
+        @media (hover: hover) and (pointer: fine) {
+        .gallery-card:hover .gallery-card-overlay {
+            opacity: 1;
+        }
+
+        .gallery-card:hover .gallery-card-info {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+}
     </style>
 </head>
 <body class="pb-20">
@@ -626,7 +663,23 @@
         let galleryFilteredData = [];
         let galleryRenderedCount = 0;
 
-        function createGalleryCard(item) {
+        window.toggleCardInfo = function(element, event) {
+
+    const isActive = element.classList.contains('active-info');
+
+    // Tutup seluruh foto yang sedang terbuka
+    document.querySelectorAll('#hasil-galeri .gallery-card').forEach(card => {
+        card.classList.remove('active-info');
+    });
+
+    // Jika foto sebelumnya belum terbuka, tampilkan informasinya
+    // Jika sudah terbuka, biarkan tertutup
+    if (!isActive) {
+        element.classList.add('active-info');
+    }
+}
+
+function createGalleryCard(item) {
     let fileId = "";
     const webView = item.url_view_gdrive || "";
     const gdriveUrl = item.url_gdrive || "";
@@ -650,15 +703,15 @@
     const safeUrl = escapeHtml(fullResUrl);
 
     return `
-        <div class="relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer" 
-             onclick="this.classList.toggle('active-info')">
+        <div class="gallery-card relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer"
+     onclick="window.toggleCardInfo(this, event)">
             <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
             
-            <!-- Gradient Overlay: Muncul saat hover di PC atau saat diklik (active-info) di HP -->
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 [.active-info_&]:opacity-100 transition-opacity duration-300"></div>
+            <!-- Gradient Overlay -->
+            <div class="gallery-card-overlay absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
             
-            <!-- Info Box: Muncul/hilang secara toggle -->
-            <div class="relative z-20 p-4 flex flex-col justify-end h-full transition-all duration-300 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto [.active-info_&]:opacity-100 [.active-info_&]:translate-y-0 [.active-info_&]:pointer-events-auto">
+            <!-- Info Box -->
+            <div class="gallery-card-info relative z-20 p-4 flex flex-col justify-end h-full">
                 <div class="flex justify-between items-center mb-2 mt-auto">
                     <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
                     <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
