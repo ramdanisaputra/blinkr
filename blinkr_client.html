@@ -220,6 +220,50 @@
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y;
         }
+
+
+        /* VISUAL ATTRIBUTES COLLAPSE ON TABLET & MOBILE */
+        @media (max-width: 1023px) {
+            #filter-content {
+                display: none;
+            }
+
+            #filter-section.is-expanded #filter-content {
+                display: block;
+            }
+
+            #filter-section:not(.is-expanded) .filter-header {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: 0;
+            }
+
+            #filter-section.is-expanded .filter-header {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border-default);
+            }
+
+            #filter-section.is-expanded #filter-chevron {
+                transform: rotate(180deg);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #filter-content {
+                display: block !important;
+            }
+
+            #filter-toggle {
+                cursor: default;
+                pointer-events: none;
+            }
+
+            #filter-chevron {
+                display: none;
+            }
+        }
+
     </style>
 </head>
 <body class="pb-20">
@@ -349,12 +393,21 @@
 
         <!-- Filter Ciri-ciri -->
         <div id="filter-section" class="blinkr-card p-5 md:p-6 mb-8 transition-all duration-300 opacity-50 pointer-events-none">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
-                <h2 class="text-sm font-bold text-primary flex items-center gap-2">
-                    <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-                    Visual Attributes
-                </h2>
+            <div class="filter-header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 pb-4 border-b border-default gap-3">
+                <button type="button" id="filter-toggle"
+                    class="w-full flex items-center justify-between text-left focus:outline-none"
+                    aria-expanded="false" aria-controls="filter-content">
+                    <span class="text-sm font-bold text-primary flex items-center gap-2">
+                        <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586l-.293.707-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                        Visual Attributes
+                    </span>
+                    <span class="flex items-center gap-2 shrink-0 ml-3">
+                        <span id="filter-active-count" class="hidden text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-brand-orange">0 Active</span>
+                        <svg id="filter-chevron" class="w-4 h-4 text-secondary transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </span>
+                </button>
             </div>
+            <div id="filter-content">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <select id="filter-waktu" onchange="cariFoto()" class="form-select">
                     <option value="">⏱️ Semua Rentang Waktu</option>
@@ -428,6 +481,7 @@
                     <option value="emas">Emas</option>
                     <option value="tidak_terlihat">Tidak Terlihat</option>
                 </select>
+            </div>
             </div>
         </div>
 
@@ -594,6 +648,45 @@
                 delete document.body.dataset.pickerLocked;
                 window.scrollTo(0, savedPageScrollY);
             }
+        }
+
+        // VISUAL ATTRIBUTES: collapsible on mobile/tablet, always open on desktop
+        const filterSection = document.getElementById('filter-section');
+        const filterToggle = document.getElementById('filter-toggle');
+        const filterActiveCount = document.getElementById('filter-active-count');
+        const filterContent = document.getElementById('filter-content');
+        const filterResponsiveQuery = window.matchMedia('(max-width: 1023px)');
+
+        function syncFilterPanelLayout() {
+            if (filterResponsiveQuery.matches) {
+                filterSection.classList.remove('is-expanded');
+                filterToggle.setAttribute('aria-expanded', 'false');
+            } else {
+                filterSection.classList.add('is-expanded');
+                filterToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        filterToggle.addEventListener('click', () => {
+            if (!filterResponsiveQuery.matches) return;
+
+            const isExpanded = filterSection.classList.toggle('is-expanded');
+            filterToggle.setAttribute('aria-expanded', String(isExpanded));
+        });
+
+        if (filterResponsiveQuery.addEventListener) {
+            filterResponsiveQuery.addEventListener('change', syncFilterPanelLayout);
+        } else {
+            filterResponsiveQuery.addListener(syncFilterPanelLayout);
+        }
+        syncFilterPanelLayout();
+
+        function updateFilterActiveCount() {
+            const filterIds = ['filter-waktu', 'filter-motor', 'filter-helm', 'filter-jaket'];
+            const activeCount = filterIds.filter(id => document.getElementById(id).value !== '').length;
+
+            filterActiveCount.textContent = `${activeCount} Active`;
+            filterActiveCount.classList.toggle('hidden', activeCount === 0);
         }
 
         async function fetchEventsFromFirebase() {
@@ -854,6 +947,8 @@
         }
 
         window.cariFoto = function() {
+            updateFilterActiveCount();
+
             const fWaktu = document.getElementById('filter-waktu').value;
             const fMotor = document.getElementById('filter-motor').value;
             const fHelm = document.getElementById('filter-helm').value;
