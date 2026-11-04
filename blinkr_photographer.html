@@ -89,22 +89,6 @@
     .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-full); background-color: var(--bg-surface-hover); color: var(--icon-color); border: 1px solid var(--border-default); transition: var(--transition-interaction); cursor: pointer; }
     .theme-toggle:hover { border-color: var(--border-active); }
     .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
-    /* Logo theme switching */
-[data-theme="light"] .logo-light-mode {
-  display: block;
-}
-
-[data-theme="light"] .logo-dark-mode {
-  display: none;
-}
-
-[data-theme="dark"] .logo-light-mode {
-  display: none;
-}
-
-[data-theme="dark"] .logo-dark-mode {
-  display: block;
-}
     .blinkr-card { background-color: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: var(--transition-theme); }
     .modal-backdrop-custom { background: var(--modal-overlay); backdrop-filter: blur(4px); }
     .modal-content-custom { background-color: var(--bg-surface); border: 1px solid var(--border-default); box-shadow: var(--shadow-modal); border-radius: var(--radius-lg); }
@@ -131,6 +115,7 @@
     .plan-badge-free { color: var(--text-secondary); background: var(--bg-surface-hover); border: 1px solid var(--border-default); }
     .plan-badge-pro { color: #D96823; background: rgba(255, 145, 77, 0.13); border: 1px solid rgba(255, 145, 77, 0.3); }
     .plan-badge-master { color: var(--brand-lavender); background: rgba(133, 128, 207, 0.13); border: 1px solid rgba(133, 128, 207, 0.3); }
+    .plan-badge-custom { color: var(--brand-lavender); background: rgba(133, 128, 207, 0.13); border: 1px solid rgba(133, 128, 207, 0.3); }
 
     /* Branded delete confirmation */
     .delete-icon-wrap { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; color: var(--color-danger); background: var(--bg-danger-subtle); border: 1px solid rgba(239, 68, 68, 0.18); }
@@ -192,7 +177,14 @@
         <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Total Events</p><p id="statTotal" class="text-3xl font-extrabold text-primary mt-2">0</p></div>
         <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Processing AI</p><p id="statPending" class="text-3xl font-extrabold text-warning mt-2">0</p></div>
         <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Completed</p><p id="statSelesai" class="text-3xl font-extrabold text-success mt-2">0</p></div>
-        <div class="blinkr-card p-5 border-info"><p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p><p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p></div>
+        <div class="blinkr-card p-5 border-info">
+          <p class="text-[11px] font-semibold text-info uppercase tracking-wider">Total Available Quota</p>
+          <p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p>
+          <div id="quotaBreakdown" class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-secondary" aria-live="polite">
+            <span>Free daily: <strong id="statFreeQuota">—</strong></span>
+            <span>Purchased: <strong id="statPurchasedQuota">—</strong></span>
+          </div>
+        </div>
       </div>
 
       <!-- Events Header -->
@@ -248,7 +240,7 @@
         <div><label class="form-label">Event Name</label><input type="text" id="eventName" required class="form-control"></div>
         <div><label class="form-label">Event Date</label><input type="date" id="eventDate" required class="form-control"></div>
         <div><label class="form-label">Google Drive Link</label><input type="url" id="gdriveUrl" required class="form-control" placeholder="https://drive.google.com/drive/folders/..."></div>
-        <div class="rounded-xl border border-info bg-info-subtle p-4 text-xs leading-relaxed text-info"><p class="font-semibold mb-1">Information:</p>Processing follows your daily quota. If the number of photos exceeds the quota, only photos within the limit are processed by AI. The rest remain safely in Google Drive.</div>
+        <div class="rounded-xl border border-info bg-info-subtle p-4 text-xs leading-relaxed text-info"><p class="font-semibold mb-1">Information:</p>FREE accounts use their daily free quota first, followed by purchased quota. PRO and CUSTOM accounts use purchased quota. Photos beyond your available balance remain safely in Google Drive.</div>
         <div class="flex justify-end gap-3 pt-4"><button type="button" id="btnCancelModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button><button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Send to AI</button></div>
       </form>
     </div>
@@ -365,9 +357,14 @@
     let currentCustomName = "";
     let currentCustomPhoto = "";
     let currentQuota = 0;
+    let currentDailyFreeQuota = 0;
+    let currentPurchasedQuota = 0;
     let currentPublicId = "";
     let isMasterAccount = false;
-    let currentPlan = "free";
+    let currentPlan = "FREE";
+    let currentQuotaProfile = null;
+    let globalFreeDailyLimit = 500;
+    let globalQuotaSettingsUnsubscribe = null;
     let currentEventDocs = [];
     let eventSortMode = "date-desc";
     const collapsedWeekGroups = new Set();
@@ -388,13 +385,93 @@
     function updatePlanBadge() {
       const badge = document.getElementById("accountPlanBadge");
       if (!badge) return;
-      const planLabel = isMasterAccount ? "master" : currentPlan;
+      const planLabel = isMasterAccount ? "master" : String(currentPlan || "FREE").toLowerCase();
       badge.textContent = planLabel.toUpperCase();
       badge.className = `plan-badge plan-badge-${planLabel}`;
     }
 
+    function nonNegativeNumber(value, fallback = 0) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? Math.max(0, Math.floor(parsed)) : fallback;
+    }
+
+    function formatQuota(value) {
+      return nonNegativeNumber(value).toLocaleString("id-ID");
+    }
+
+    function getJakartaDateKey() {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Jakarta",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date());
+      const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+      return `${values.year}-${values.month}-${values.day}`;
+    }
+
+    function renderQuotaDisplay() {
+      const statQuota = document.getElementById("statQuota");
+      const breakdown = document.getElementById("quotaBreakdown");
+      if (!statQuota || !breakdown || !currentQuotaProfile) return;
+
+      const profile = currentQuotaProfile;
+      const rawPlan = String(profile.plan || "FREE").trim().toUpperCase() || "FREE";
+      isMasterAccount = String(profile.role || "").trim().toLowerCase() === "master" || rawPlan === "MASTER";
+      currentPlan = isMasterAccount
+        ? "MASTER"
+        : (["FREE", "PRO", "CUSTOM"].includes(rawPlan) ? rawPlan : "FREE");
+
+      currentPurchasedQuota = nonNegativeNumber(profile.purchased_quota_remaining, 0);
+      currentDailyFreeQuota = 0;
+
+      if (!isMasterAccount && currentPlan === "FREE") {
+        const hasDailyBalance = Object.prototype.hasOwnProperty.call(profile, "daily_free_remaining");
+        const resetDate = String(profile.daily_quota_reset_date || "");
+
+        if (hasDailyBalance && resetDate && resetDate !== getJakartaDateKey()) {
+          // Tampilkan saldo harian yang akan tersedia setelah lazy reset Worker.
+          // Worker akan menulis saldo aktual saat reservasi pertama hari ini.
+          currentDailyFreeQuota = globalFreeDailyLimit;
+        } else if (hasDailyBalance) {
+          // Jika batas global diturunkan, tampilkan batas baru langsung.
+          // Kenaikan batas baru berlaku pada reset harian berikutnya.
+          currentDailyFreeQuota = Math.min(
+            nonNegativeNumber(profile.daily_free_remaining, 0),
+            globalFreeDailyLimit
+          );
+        } else {
+          // Kompatibilitas akun baru/legacy sebelum field daily_free_remaining dibuat.
+          const legacyTotal = Object.prototype.hasOwnProperty.call(profile, "remaining_quota")
+            ? nonNegativeNumber(profile.remaining_quota, 0)
+            : globalFreeDailyLimit;
+          currentDailyFreeQuota = Math.min(
+            Math.max(0, legacyTotal - currentPurchasedQuota),
+            globalFreeDailyLimit
+          );
+        }
+      }
+
+      currentQuota = isMasterAccount
+        ? Number.POSITIVE_INFINITY
+        : currentDailyFreeQuota + currentPurchasedQuota;
+
+      if (isMasterAccount) {
+        statQuota.innerHTML = `<span class="text-3xl font-extrabold text-primary">∞</span><span class="text-xs font-bold text-brand-orange bg-orange-500/10 px-2 py-0.5 rounded">UNLIMITED</span>`;
+        breakdown.innerHTML = `<span class="font-semibold text-secondary">MASTER account · Unlimited AI processing</span>`;
+      } else {
+        statQuota.innerHTML = `${formatQuota(currentQuota)} <span class="text-[10px] text-secondary font-normal uppercase ml-1">Photos</span>`;
+        if (currentPlan === "FREE") {
+          breakdown.innerHTML = `<span>Free daily: <strong class="text-primary">${formatQuota(currentDailyFreeQuota)}</strong></span><span>Purchased: <strong class="text-primary">${formatQuota(currentPurchasedQuota)}</strong></span>`;
+        } else {
+          breakdown.innerHTML = `<span>Purchased: <strong class="text-primary">${formatQuota(currentPurchasedQuota)}</strong></span><span>Daily free: <strong>Not included</strong></span>`;
+        }
+      }
+      updatePlanBadge();
+    }
+
     document.getElementById("btnOpenModal").addEventListener("click", () => {
-      if (!isMasterAccount && currentQuota <= 0) return alert("Kuota foto gratis habis.");
+      if (!isMasterAccount && currentQuota <= 0) return alert("Kuota foto habis. Periksa saldo kuota harian atau kuota pembelian.");
       document.getElementById("eventModal").classList.remove("hidden");
     });
     document.getElementById("btnCloseModal").addEventListener("click", () => document.getElementById("eventModal").classList.add("hidden"));
@@ -411,42 +488,57 @@
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userDocRef = doc(db, "users", user.uid);
+
+        // Batas FREE bersifat global. Dokumen ini hanya perlu dapat dibaca oleh user login.
+        if (globalQuotaSettingsUnsubscribe) globalQuotaSettingsUnsubscribe();
+        globalQuotaSettingsUnsubscribe = onSnapshot(
+          doc(db, "settings", "quota"),
+          (settingsSnap) => {
+            const settingsData = settingsSnap.exists() ? settingsSnap.data() : {};
+            globalFreeDailyLimit = nonNegativeNumber(settingsData.free_daily_limit, 500);
+            renderQuotaDisplay();
+          },
+          (error) => {
+            console.warn("Tidak dapat membaca settings/quota; memakai fallback 500:", error);
+            globalFreeDailyLimit = 500;
+            renderQuotaDisplay();
+          }
+        );
+
+        if (userSnapshotUnsubscribe) userSnapshotUnsubscribe();
         userSnapshotUnsubscribe = onSnapshot(userDocRef, async (userDocSnap) => {
           if (userDocSnap.exists()) {
             const data = userDocSnap.data();
+            currentQuotaProfile = data;
             currentCustomName = data.custom_name || user.displayName;
             currentCustomPhoto = data.photo_url || user.photoURL;
-            currentQuota = data.remaining_quota ?? 500;
             currentPublicId = data.public_id || "";
-            isMasterAccount = data.role === "master";
-            // Plan defaults to FREE. PRO is assigned separately by an authorized admin/backend.
-            const requestedPlan = String(data.plan || "free").toLowerCase().trim();
-            currentPlan = requestedPlan === "pro" ? "pro" : "free";
           } else {
-            await setDoc(userDocRef, {
+            const initialProfile = {
               custom_name: user.displayName,
               photo_url: user.photoURL,
               email: user.email,
               remaining_quota: 500,
               role: "user",
               updated_at: new Date()
-            });
+            };
+            await setDoc(userDocRef, initialProfile);
+            currentQuotaProfile = initialProfile;
             currentCustomName = user.displayName;
             currentCustomPhoto = user.photoURL;
-            currentQuota = 500;
             currentPublicId = "";
-            isMasterAccount = false;
-            currentPlan = "free";
           }
 
           document.getElementById("userName").textContent = currentCustomName || "Photographer";
           document.getElementById("userEmail").textContent = user.email || "";
           document.getElementById("userAvatar").src = currentCustomPhoto || "https://via.placeholder.com/40";
-          document.getElementById("statQuota").innerHTML = isMasterAccount
-            ? `<div class="flex items-center gap-2 mt-2"><span class="text-3xl font-extrabold text-primary">∞</span><span class="text-xs font-bold text-brand-orange bg-orange-500/10 px-2 py-0.5 rounded">UNLIMITED</span></div>`
-            : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
-          updatePlanBadge();
+          renderQuotaDisplay();
+        }, (error) => {
+          console.error("Failed to load user quota/profile:", error);
+          document.getElementById("statQuota").textContent = "Unavailable";
+          document.getElementById("quotaBreakdown").textContent = "Failed to load quota information.";
         });
+
         document.getElementById("loginSection").classList.add("hidden");
         document.getElementById("adminSection").classList.remove("hidden");
         loadUserEvents(user.email);
@@ -455,6 +547,15 @@
         document.getElementById("adminSection").classList.add("hidden");
         if (unsubscribeSnapshot) unsubscribeSnapshot();
         if (userSnapshotUnsubscribe) userSnapshotUnsubscribe();
+        if (globalQuotaSettingsUnsubscribe) globalQuotaSettingsUnsubscribe();
+        userSnapshotUnsubscribe = null;
+        globalQuotaSettingsUnsubscribe = null;
+        currentQuotaProfile = null;
+        currentQuota = 0;
+        currentDailyFreeQuota = 0;
+        currentPurchasedQuota = 0;
+        isMasterAccount = false;
+        currentPlan = "FREE";
       }
     });
 
@@ -550,7 +651,7 @@
 
     document.getElementById("eventForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!isMasterAccount && currentQuota <= 0) return alert("Kuota habis!");
+      if (!isMasterAccount && currentQuota <= 0) return alert("Kuota habis. Periksa saldo kuota harian atau kuota pembelian.");
       const folderId = extractFolderId(document.getElementById("gdriveUrl").value.trim());
       if (!folderId) return alert("Link Drive tidak valid!");
       await addDoc(collection(db, "queues"), {
