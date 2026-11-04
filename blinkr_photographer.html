@@ -121,6 +121,15 @@
     .delete-event-name { overflow-wrap: anywhere; font-weight: 700; color: var(--text-primary); }
     .delete-toast { position: fixed; right: 20px; bottom: 20px; z-index: 80; max-width: min(420px, calc(100vw - 40px)); padding: 13px 16px; border-radius: 14px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-default); box-shadow: var(--shadow-modal); display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: all 0.25s ease; }
     .delete-toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Weekly event separators: centered, subtle, and theme-aware */
+    .week-group-cell { padding: 16px 20px; background: var(--bg-app); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
+    .week-group-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; max-width: 100%; padding: 8px 14px; border: 1px solid var(--border-default); border-radius: 999px; background: var(--bg-surface); color: var(--text-primary); box-shadow: var(--shadow-card); font-size: 11px; font-weight: 700; letter-spacing: .01em; transition: var(--transition-interaction); }
+    .week-group-button:hover { border-color: var(--brand-orange); }
+    .week-group-count { color: var(--text-secondary); font-size: 10px; font-weight: 600; white-space: nowrap; }
+    .week-group-chevron { color: var(--brand-orange); font-size: 13px; transition: transform .2s ease; }
+    .week-group-button[aria-expanded="false"] .week-group-chevron { transform: rotate(-90deg); }
+    .sort-header-button { cursor: pointer; }
   </style>
 </head>
 <body class="min-h-screen selection:bg-brand-orange selection:text-white">
@@ -154,7 +163,6 @@
           <div id="btnEditProfile" class="flex min-w-0 max-w-[180px] sm:max-w-[250px] items-center gap-2 bg-app hover:bg-surface-hover px-2.5 py-1.5 rounded-full border border-default cursor-pointer transition">
             <img id="userAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 rounded-full object-cover shrink-0">
             <div class="text-left min-w-0 flex flex-col justify-center gap-0.5">
-              <span id="userBadge" class="badge-master hidden">UNLIMITED</span>
               <p id="userName" class="text-[10px] sm:text-xs font-bold text-primary leading-tight truncate max-w-[115px] sm:max-w-[170px]"></p>
               <p id="userEmail" class="hidden sm:block text-[10px] text-secondary leading-tight mt-0.5 truncate"></p>
             </div>
@@ -178,12 +186,6 @@
           <p class="text-sm text-secondary mt-1">Manage processing queue and AI-generated database for your events.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-          <select id="eventSortSelect" class="form-control py-2.5 text-xs sm:w-48 cursor-pointer" aria-label="Sort events">
-            <option value="date-desc">Date: Newest first</option>
-            <option value="date-asc">Date: Oldest first</option>
-            <option value="name-asc">Event Name: A–Z</option>
-            <option value="name-desc">Event Name: Z–A</option>
-          </select>
           <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap">+ Upload New Event</button>
         </div>
       </div>
@@ -193,8 +195,8 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead><tr>
-              <th class="table-header-cell">Event Name</th>
-              <th class="table-header-cell">Date</th>
+              <th class="table-header-cell"><button type="button" id="sortNameBtn" class="inline-flex items-center gap-2 hover:text-primary transition" aria-label="Sort by event name">EVENT NAME <span id="sortNameIcon" class="text-primary">↕</span></button></th>
+              <th class="table-header-cell"><button type="button" id="sortDateBtn" class="inline-flex items-center gap-2 hover:text-primary transition" aria-label="Sort by date">DATE <span id="sortDateIcon" class="text-primary">↓</span></button></th>
               <th class="table-header-cell">Status</th>
               <th class="table-header-cell">Photo Summary</th>
               <th class="table-header-cell">JSON Database</th>
@@ -351,6 +353,8 @@
     let isMasterAccount = false;
     let currentPlan = "free";
     let currentEventDocs = [];
+    let eventSortMode = "date-desc";
+    const collapsedWeekGroups = new Set();
     let unsubscribeSnapshot = null;
     let userSnapshotUnsubscribe = null;
     let userEventsById = {};
@@ -420,8 +424,6 @@
           }
 
           document.getElementById("userName").textContent = currentCustomName || "Photographer";
-          const userBadge = document.getElementById("userBadge");
-          userBadge.classList.toggle("hidden", !isMasterAccount);
           document.getElementById("userEmail").textContent = user.email || "";
           document.getElementById("userAvatar").src = currentCustomPhoto || "https://via.placeholder.com/40";
           document.getElementById("statQuota").innerHTML = isMasterAccount
@@ -585,57 +587,80 @@
     }
 
     function compareEvents(a, b, mode) {
+      if (mode === "name-asc" || mode === "name-desc") {
+        const result = String(a.event_name || "").localeCompare(String(b.event_name || ""), "id", { sensitivity: "base" });
+        return mode === "name-asc" ? result : -result;
+      }
+
       const dateA = parseEventDate(a.event_date);
       const dateB = parseEventDate(b.event_date);
       const timeA = dateA ? dateA.getTime() : null;
       const timeB = dateB ? dateB.getTime() : null;
-
-      if (mode === "name-asc" || mode === "name-desc") {
-        const result = String(a.event_name || "").localeCompare(String(b.event_name || ""), "id", { sensitivity: "base" });
-        if (result !== 0) return mode === "name-asc" ? result : -result;
-      }
       if (timeA === null && timeB !== null) return 1;
       if (timeB === null && timeA !== null) return -1;
       if (timeA === null && timeB === null) return 0;
       return mode === "date-asc" ? timeA - timeB : timeB - timeA;
     }
 
+    function updateSortHeaderIcons() {
+      const nameIcon = document.getElementById("sortNameIcon");
+      const dateIcon = document.getElementById("sortDateIcon");
+      if (nameIcon) nameIcon.textContent = eventSortMode === "name-asc" ? "↑" : eventSortMode === "name-desc" ? "↓" : "↕";
+      if (dateIcon) dateIcon.textContent = eventSortMode === "date-asc" ? "↑" : eventSortMode === "date-desc" ? "↓" : "↕";
+    }
+
+    function toggleWeekGroup(key) {
+      if (collapsedWeekGroups.has(key)) collapsedWeekGroups.delete(key);
+      else collapsedWeekGroups.add(key);
+      renderEventTable(currentEventDocs);
+    }
+
+    window.toggleWeekGroup = toggleWeekGroup;
+
     function renderEventTable(eventDocs) {
       const tableBody = document.getElementById("eventListTable");
       if (!eventDocs || eventDocs.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-tertiary">No events found.</td></tr>`;
+        updateSortHeaderIcons();
         return;
       }
 
-      const sortMode = document.getElementById("eventSortSelect").value;
       const groups = new Map();
       eventDocs.forEach(ev => {
         const date = parseEventDate(ev.event_date);
         const weekStart = date ? getWeekStart(date) : null;
         const key = weekStart ? String(weekStart.getTime()) : "undated";
-        if (!groups.has(key)) groups.set(key, { weekStart, events: [] });
+        if (!groups.has(key)) groups.set(key, { key, weekStart, events: [] });
         groups.get(key).events.push(ev);
       });
 
       const sortedGroups = [...groups.values()].sort((a, b) => {
         if (!a.weekStart) return 1;
         if (!b.weekStart) return -1;
-        return b.weekStart.getTime() - a.weekStart.getTime();
+        return eventSortMode === "date-asc"
+          ? a.weekStart.getTime() - b.weekStart.getTime()
+          : b.weekStart.getTime() - a.weekStart.getTime();
       });
 
       let html = "";
       sortedGroups.forEach(group => {
-        group.events.sort((a, b) => compareEvents(a, b, sortMode));
-        const groupTitle = group.weekStart ? `Week: ${formatWeekRange(group.weekStart)}` : "Date Unavailable";
+        group.events.sort((a, b) => compareEvents(a, b, eventSortMode));
+        const groupTitle = group.weekStart ? formatWeekRange(group.weekStart) : "Date unavailable";
+        const isCollapsed = collapsedWeekGroups.has(group.key);
         html += `
           <tr>
-            <td colspan="6" class="px-5 py-3 bg-surface-hover border-b border-default">
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-xs font-extrabold text-primary uppercase tracking-wide">${groupTitle}</span>
-                <span class="text-[10px] font-semibold text-secondary bg-app px-2.5 py-1 rounded-full border border-default whitespace-nowrap">${group.events.length} Events</span>
+            <td colspan="6" class="week-group-cell text-center">
+              <div class="flex justify-center items-center">
+                <button type="button" class="week-group-button" onclick="window.toggleWeekGroup('${group.key}')" aria-expanded="${!isCollapsed}" aria-label="${isCollapsed ? "Show" : "Hide"} events for ${escapeHtml(groupTitle)}">
+                  <span>${escapeHtml(groupTitle)}</span>
+                  <span class="week-group-count">${group.events.length} events</span>
+                  <span class="week-group-chevron">⌄</span>
+                </button>
               </div>
             </td>
           </tr>`;
+
+        if (isCollapsed) return;
 
         group.events.forEach(ev => {
           const isDone = ev.status === "Selesai";
@@ -664,9 +689,17 @@
         });
       });
       tableBody.innerHTML = html;
+      updateSortHeaderIcons();
     }
 
-    document.getElementById("eventSortSelect").addEventListener("change", () => renderEventTable(currentEventDocs));
+    document.getElementById("sortNameBtn").addEventListener("click", () => {
+      eventSortMode = eventSortMode === "name-asc" ? "name-desc" : "name-asc";
+      renderEventTable(currentEventDocs);
+    });
+    document.getElementById("sortDateBtn").addEventListener("click", () => {
+      eventSortMode = eventSortMode === "date-desc" ? "date-asc" : "date-desc";
+      renderEventTable(currentEventDocs);
+    });
 
     function loadUserEvents(email) {
       if (unsubscribeSnapshot) unsubscribeSnapshot();
