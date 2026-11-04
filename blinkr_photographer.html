@@ -131,6 +131,14 @@
     .week-group-chevron { color: var(--brand-orange); font-size: 13px; transition: transform .2s ease; }
     .week-group-button[aria-expanded="false"] .week-group-chevron { transform: rotate(-90deg); }
     .sort-header-button { cursor: pointer; }
+    /* Theme-aware logo */
+[data-theme="light"] .logo-dark-mode {
+    display: none;
+}
+
+[data-theme="dark"] .logo-light-mode {
+    display: none;
+}
   </style>
 </head>
 <body class="min-h-screen selection:bg-brand-orange selection:text-white">
