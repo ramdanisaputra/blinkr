@@ -89,6 +89,22 @@
     .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-full); background-color: var(--bg-surface-hover); color: var(--icon-color); border: 1px solid var(--border-default); transition: var(--transition-interaction); cursor: pointer; }
     .theme-toggle:hover { border-color: var(--border-active); }
     .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    /* Logo theme switching */
+[data-theme="light"] .logo-light-mode {
+  display: block;
+}
+
+[data-theme="light"] .logo-dark-mode {
+  display: none;
+}
+
+[data-theme="dark"] .logo-light-mode {
+  display: none;
+}
+
+[data-theme="dark"] .logo-dark-mode {
+  display: block;
+}
     .blinkr-card { background-color: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: var(--transition-theme); }
     .modal-backdrop-custom { background: var(--modal-overlay); backdrop-filter: blur(4px); }
     .modal-content-custom { background-color: var(--bg-surface); border: 1px solid var(--border-default); box-shadow: var(--shadow-modal); border-radius: var(--radius-lg); }
