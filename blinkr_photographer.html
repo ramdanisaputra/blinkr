@@ -790,7 +790,19 @@
         group.events.forEach(ev => {
           const isDone = ev.status === "Selesai";
           const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
-          const statusText = String(ev.status || "Pending");
+          
+          const canDelete =
+    ["Selesai", "Gagal", "Gagal_Kuota_Habis", "Pending"].includes(statusText)
+    && !String(ev.append_lock_batch_id || "").trim();
+
+const deleteButton = canDelete
+    ? `<button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')"
+         class="text-danger text-xs font-semibold">
+         Hapus
+       </button>`
+    : `<span class="text-tertiary text-xs">
+         Sedang diproses
+       </span>`;
           const badge = isDone
             ? `<span class="text-success font-semibold">Selesai</span>`
             : `<span class="text-warning font-semibold">${escapeHtml(statusText)}</span>`;
@@ -807,7 +819,7 @@
               <td class="py-4 px-5 text-right">
                 <div class="flex flex-col items-end gap-3">
                   ${addButton}
-                  <button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>
+                  ${deleteButton}
                 </div>
               </td>
             </tr>`;
