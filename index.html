@@ -432,39 +432,42 @@
             });
         });
 
+       // THEME LOGIC (2 Modes: Light & Dark with Initial Device Detection)
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const htmlElement = document.documentElement;
+        
         const icons = {
-            system: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
             light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
             dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
         };
 
-        const themes = ['system', 'light', 'dark'];
-        let currentThemeIndex = 0;
-
-        function applyTheme(themeName) {
-            let activeTheme = themeName;
-            if (themeName === 'system') {
-                activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                localStorage.removeItem('blinkr-theme');
-            } else localStorage.setItem('blinkr-theme', themeName);
-            htmlElement.setAttribute('data-theme', activeTheme);
-            themeToggleBtn.innerHTML = icons[themeName];
+        const themes = ['light', 'dark'];
+        
+        const savedTheme = localStorage.getItem('blinkr-theme');
+        let currentTheme = savedTheme;
+        if (!currentTheme || !themes.includes(currentTheme)) {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
         }
 
-        const savedTheme = localStorage.getItem('blinkr-theme');
-        if (savedTheme && themes.includes(savedTheme)) currentThemeIndex = themes.indexOf(savedTheme);
-        applyTheme(themes[currentThemeIndex]);
+        function applyTheme(themeName) {
+            currentTheme = themeName;
+            localStorage.setItem('blinkr-theme', themeName);
+            htmlElement.setAttribute('data-theme', themeName);
+            if (themeToggleBtn) {
+                const nextIconKey = themeName === 'dark' ? 'light' : 'dark';
+                themeToggleBtn.innerHTML = icons[nextIconKey];
+            }
+        }
 
-        themeToggleBtn.addEventListener('click', () => {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            applyTheme(themes[currentThemeIndex]);
-        });
+        applyTheme(currentTheme);
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            if (themes[currentThemeIndex] === 'system') applyTheme('system');
-        });
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
+        }
 
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileNavPanel = document.getElementById('mobileNavPanel');
