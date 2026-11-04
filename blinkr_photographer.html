@@ -3,33 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Blinkr | Find your moment.</title>
-    
-<!-- Favicon SVG -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    
-    <!-- Fonts Lexend ultra-bold -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Blinkr | Find your moment.</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <!-- Tailwind for layout utilities only -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Blinkr Design System CSS -->
   <style>
     :root {
       --brand-navy: #101D38;
       --brand-orange: #FF914D;
       --brand-orange-hover: #E67A35;
       --brand-lavender: #8580CF;
-      
       --font-primary: 'Lexend', system-ui, -apple-system, sans-serif;
       --radius-md: 12px;
       --radius-lg: 16px;
       --radius-full: 9999px;
       --transition-theme: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
       --transition-interaction: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-      
       --color-success: #10B981;
       --color-warning: #F59E0B;
       --color-danger: #EF4444;
@@ -55,7 +51,7 @@
     }
 
     [data-theme="dark"] {
-      --bg-app: #0B1426; 
+      --bg-app: #0B1426;
       --bg-surface: #101D38;
       --bg-surface-hover: #17243E;
       --text-primary: #F0F1F5;
@@ -73,14 +69,12 @@
     }
 
     body { font-family: var(--font-primary); background-color: var(--bg-app); color: var(--text-primary); transition: var(--transition-theme); -webkit-font-smoothing: antialiased; }
-    
     .text-primary { color: var(--text-primary); }
     .text-secondary { color: var(--text-secondary); }
     .text-tertiary { color: var(--text-tertiary); }
     .bg-app { background-color: var(--bg-app); }
     .bg-surface { background-color: var(--bg-surface); }
     .border-default { border-color: var(--border-default); }
-    
     .text-success { color: var(--color-success); }
     .text-warning { color: var(--color-warning); }
     .text-danger { color: var(--color-danger); }
@@ -92,56 +86,42 @@
     .border-danger { border-color: rgba(239, 68, 68, 0.3); }
     .border-info { border-color: rgba(59, 130, 246, 0.3); }
 
-    .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); display: flex; align-items: baseline; }
-    .logo .dot { color: var(--brand-orange); font-size: 1.5rem; line-height: 0; margin-left: 1px; }
-
     .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-full); background-color: var(--bg-surface-hover); color: var(--icon-color); border: 1px solid var(--border-default); transition: var(--transition-interaction); cursor: pointer; }
     .theme-toggle:hover { border-color: var(--border-active); }
     .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
-
     .blinkr-card { background-color: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: var(--transition-theme); }
     .modal-backdrop-custom { background: var(--modal-overlay); backdrop-filter: blur(4px); }
     .modal-content-custom { background-color: var(--bg-surface); border: 1px solid var(--border-default); box-shadow: var(--shadow-modal); border-radius: var(--radius-lg); }
-
     .btn-primary { background-color: var(--brand-orange); color: #FFFFFF; transition: var(--transition-interaction); }
     .btn-primary:hover { background-color: var(--brand-orange-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255, 145, 77, 0.25); }
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-    
     .btn-secondary { background-color: var(--bg-surface-hover); color: var(--text-primary); border: 1px solid var(--border-default); transition: var(--transition-interaction); }
     .btn-secondary:hover { border-color: var(--border-active); }
-    
-    .btn-danger-outline { color: var(--color-danger); background-color: var(--bg-danger-subtle); border: 1px solid var(--border-danger); transition: var(--transition-interaction); }
+    .btn-danger-outline { color: var(--color-danger); background-color: var(--bg-danger-subtle); border: 1px solid rgba(239, 68, 68, 0.3); transition: var(--transition-interaction); }
     .btn-danger-outline:hover { background-color: rgba(239, 68, 68, 0.15); }
-
+    .btn-danger-solid { color: #FFFFFF; background: #EF4444; transition: var(--transition-interaction); }
+    .btn-danger-solid:hover { background: #DC2626; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+    .btn-danger-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
     .form-control { width: 100%; background-color: var(--bg-app); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 0.75rem 1rem; color: var(--text-primary); font-size: 0.875rem; transition: var(--transition-interaction); outline: none; }
     .form-control:focus { border-color: var(--brand-orange); box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.15); }
     .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
     .table-header-cell { padding: 1rem 1.25rem; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; background-color: var(--bg-surface-hover); border-bottom: 1px solid var(--border-default); }
     .table-row { border-bottom: 1px solid var(--border-default); transition: background-color 0.2s; }
     .table-row:hover { background-color: var(--bg-surface-hover); }
+    .badge-master { background-color: var(--brand-orange); color: #FFFFFF; font-size: 0.5rem; font-weight: 800; padding: 2px 6px; border-radius: var(--radius-full); margin-left: 0; letter-spacing: 0.05em; width: fit-content; line-height: 1.2; }
 
-    .badge-master {
-  background-color: var(--brand-orange);
-  color: #FFFFFF;
-  font-size: 0.5rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
-  margin-left: 0;
-  letter-spacing: 0.05em;
-  width: fit-content;
-  line-height: 1.2;
-}  
-      /* Pengaturan Logo Berdasarkan Tema */
-.logo-dark-mode { display: none; }
-.logo-light-mode { display: block; }
+    /* Account plan badges */
+    .plan-badge { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: var(--radius-full); font-size: 9px; font-weight: 800; letter-spacing: 0.06em; line-height: 1.2; white-space: nowrap; }
+    .plan-badge-free { color: var(--text-secondary); background: var(--bg-surface-hover); border: 1px solid var(--border-default); }
+    .plan-badge-pro { color: #D96823; background: rgba(255, 145, 77, 0.13); border: 1px solid rgba(255, 145, 77, 0.3); }
+    .plan-badge-master { color: var(--brand-lavender); background: rgba(133, 128, 207, 0.13); border: 1px solid rgba(133, 128, 207, 0.3); }
 
-/* Jika tema aktif adalah dark, balik tampilannya */
-[data-theme="dark"] .logo-dark-mode { display: block; }
-[data-theme="dark"] .logo-light-mode { display: none; }
-
-</style>
+    /* Branded delete confirmation */
+    .delete-icon-wrap { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; color: var(--color-danger); background: var(--bg-danger-subtle); border: 1px solid rgba(239, 68, 68, 0.18); }
+    .delete-event-name { overflow-wrap: anywhere; font-weight: 700; color: var(--text-primary); }
+    .delete-toast { position: fixed; right: 20px; bottom: 20px; z-index: 80; max-width: min(420px, calc(100vw - 40px)); padding: 13px 16px; border-radius: 14px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-default); box-shadow: var(--shadow-modal); display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: all 0.25s ease; }
+    .delete-toast.show { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
 <body class="min-h-screen selection:bg-brand-orange selection:text-white">
 
@@ -153,111 +133,74 @@
       </div>
       <h1 class="text-2xl font-extrabold text-primary mb-2">Blinkr Photographer</h1>
       <p class="text-sm text-secondary mb-8">Professional event management & AI processing portal.</p>
-      <button id="btnLogin" class="btn-primary w-full font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-3">
-        Continue with Google
-      </button>
-      <div class="mt-6">
-        <a href="./index.html" class="text-xs font-semibold text-secondary hover:text-primary transition btn-route" data-route="home">← Back to Blinkr Home</a>
-      </div>
+      <button id="btnLogin" class="btn-primary w-full font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-3">Continue with Google</button>
+      <div class="mt-6"><a href="./index.html" class="text-xs font-semibold text-secondary hover:text-primary transition btn-route" data-route="home">← Back to Blinkr Home</a></div>
     </div>
   </div>
 
-  <!-- ================= DASHBOARD MAIN SECTION (Wide Layout) ================= -->
+  <!-- ================= DASHBOARD MAIN SECTION ================= -->
   <div id="adminSection" class="hidden min-h-screen flex flex-col">
-    <!-- Header -->
     <header class="bg-surface border-b border-default sticky top-0 z-30 px-4 md:px-8 py-4">
       <div class="w-full max-w-[1536px] mx-auto flex justify-between items-center">
         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
-                <a href="#" class="btn-route block hover:opacity-85 transition-opacity" data-route="home">
-    <!-- Logo Light Mode (Gelap) -->
-    <img src="logo-full.svg" alt="Blinkr Logo" class="logo-light-mode h-8 sm:h-9 w-auto object-contain">
-    <!-- Logo Dark Mode (Putih) -->
-    <img src="logo-full-white.svg" alt="Blinkr Logo" class="logo-dark-mode h-8 sm:h-9 w-auto object-contain">
-</a>
+          <a href="#" class="btn-route block hover:opacity-85 transition-opacity" data-route="home">
+            <img src="logo-full.svg" alt="Blinkr Logo" class="logo-light-mode h-8 sm:h-9 w-auto object-contain">
+            <img src="logo-full-white.svg" alt="Blinkr Logo" class="logo-dark-mode h-8 sm:h-9 w-auto object-contain">
+          </a>
           <span class="text-xs font-semibold text-secondary px-3 py-1 rounded-full bg-surface-hover border border-default hidden sm:block">Photographer Portal</span>
         </div>
-
         <div class="flex items-center gap-3 sm:gap-4">
           <button id="themeToggleBtn" class="theme-toggle" title="Toggle Theme"></button>
-          
-          <div id="btnEditProfile"
-  class="flex min-w-0 max-w-[180px] sm:max-w-[250px] items-center gap-2 bg-app hover:bg-surface-hover px-2.5 py-1.5 rounded-full border border-default cursor-pointer transition">
-
-  <img id="userAvatar"
-    src="https://via.placeholder.com/40"
-    alt="Avatar"
-    class="w-9 h-9 rounded-full object-cover shrink-0">
-
-  <div class="text-left min-w-0 flex flex-col justify-center gap-0.5">
-
-    <span id="userBadge" class="badge-master hidden">
-      UNLIMITED
-    </span>
-
-    <p id="userName"
-      class="text-[10px] sm:text-xs font-bold text-primary leading-tight truncate max-w-[115px] sm:max-w-[170px]">
-    </p>
-
-    <p id="userEmail"
-      class="hidden sm:block text-[10px] text-secondary leading-tight mt-0.5 truncate">
-    </p>
-
-  </div>
-</div>
-          
+          <div id="btnEditProfile" class="flex min-w-0 max-w-[180px] sm:max-w-[250px] items-center gap-2 bg-app hover:bg-surface-hover px-2.5 py-1.5 rounded-full border border-default cursor-pointer transition">
+            <img id="userAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 rounded-full object-cover shrink-0">
+            <div class="text-left min-w-0 flex flex-col justify-center gap-0.5">
+              <span id="userBadge" class="badge-master hidden">UNLIMITED</span>
+              <p id="userName" class="text-[10px] sm:text-xs font-bold text-primary leading-tight truncate max-w-[115px] sm:max-w-[170px]"></p>
+              <p id="userEmail" class="hidden sm:block text-[10px] text-secondary leading-tight mt-0.5 truncate"></p>
+            </div>
+          </div>
         </div>
       </div>
     </header>
 
     <main class="flex-1 w-full max-w-[1536px] mx-auto p-4 md:px-8 space-y-6 mt-2">
-      <!-- Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="blinkr-card p-5">
-          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Total Events</p>
-          <p id="statTotal" class="text-3xl font-extrabold text-primary mt-2">0</p>
-        </div>
-        <div class="blinkr-card p-5">
-          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Processing AI</p>
-          <p id="statPending" class="text-3xl font-extrabold text-warning mt-2">0</p>
-        </div>
-        <div class="blinkr-card p-5">
-          <p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Completed</p>
-          <p id="statSelesai" class="text-3xl font-extrabold text-success mt-2">0</p>
-        </div>
-        <div class="blinkr-card p-5 border-info">
-  <p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p>
-  <p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p>
-</div>
+        <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Total Events</p><p id="statTotal" class="text-3xl font-extrabold text-primary mt-2">0</p></div>
+        <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Processing AI</p><p id="statPending" class="text-3xl font-extrabold text-warning mt-2">0</p></div>
+        <div class="blinkr-card p-5"><p class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Completed</p><p id="statSelesai" class="text-3xl font-extrabold text-success mt-2">0</p></div>
+        <div class="blinkr-card p-5 border-info"><p class="text-[11px] font-semibold text-info uppercase tracking-wider">Remaining Quota</p><p id="statQuota" class="text-3xl font-extrabold text-primary mt-2 flex items-baseline gap-2">Memuat...</p></div>
       </div>
 
       <!-- Events Header -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4">
         <div>
-          <h2 class="text-xl font-bold text-primary">Event Management</h2>
+          <h2 class="text-xl font-bold text-primary flex items-center flex-wrap gap-2">Event Management <span id="accountPlanBadge" class="plan-badge plan-badge-free">FREE</span></h2>
           <p class="text-sm text-secondary mt-1">Manage processing queue and AI-generated database for your events.</p>
         </div>
-        <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center gap-2 text-sm shadow-sm">
-          + Upload New Event
-        </button>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <select id="eventSortSelect" class="form-control py-2.5 text-xs sm:w-48 cursor-pointer" aria-label="Sort events">
+            <option value="date-desc">Date: Newest first</option>
+            <option value="date-asc">Date: Oldest first</option>
+            <option value="name-asc">Event Name: A–Z</option>
+            <option value="name-desc">Event Name: Z–A</option>
+          </select>
+          <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap">+ Upload New Event</button>
+        </div>
       </div>
 
       <!-- Events Table -->
       <div class="blinkr-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
-            <thead>
-              <tr>
-                <th class="table-header-cell">Event Name</th>
-                <th class="table-header-cell">Date</th>
-                <th class="table-header-cell">Status</th>
-                <th class="table-header-cell">Photo Summary</th>
-                <th class="table-header-cell">JSON Database</th>
-                <th class="table-header-cell text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="eventListTable" class="text-sm">
-              <tr><td colspan="6" class="py-12 text-center text-secondary">Loading data...</td></tr>
-            </tbody>
+            <thead><tr>
+              <th class="table-header-cell">Event Name</th>
+              <th class="table-header-cell">Date</th>
+              <th class="table-header-cell">Status</th>
+              <th class="table-header-cell">Photo Summary</th>
+              <th class="table-header-cell">JSON Database</th>
+              <th class="table-header-cell text-right">Actions</th>
+            </tr></thead>
+            <tbody id="eventListTable" class="text-sm"><tr><td colspan="6" class="py-12 text-center text-secondary">Loading data...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -265,148 +208,127 @@
   </div>
 
   <!-- ================= MODALS ================= -->
-  <!-- Modals remain identical structurally to preserve all Firebase functionality -->
   <div id="profileModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
     <div class="modal-content-custom max-w-md w-full p-6 relative">
-      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
-        <h3 class="text-lg font-bold text-primary">Edit Profile</h3>
-        <button id="btnCloseProfileModal" class="text-tertiary hover:text-primary transition">✕</button>
-      </div>
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default"><h3 class="text-lg font-bold text-primary">Edit Profile</h3><button id="btnCloseProfileModal" class="text-tertiary hover:text-primary transition">✕</button></div>
       <form id="profileForm" class="space-y-4">
-        <div>
-          <label class="form-label">Display Name</label>
-          <input type="text" id="editDisplayName" required class="form-control">
-        </div>
-        <div>
-          <label class="form-label">Profile Photo URL</label>
-          <input type="url" id="editPhotoURL" class="form-control">
-        </div>
+        <div><label class="form-label">Display Name</label><input type="text" id="editDisplayName" required class="form-control"></div>
+        <div><label class="form-label">Profile Photo URL</label><input type="url" id="editPhotoURL" class="form-control"></div>
         <div class="flex justify-end gap-3 pt-4">
-  <button type="button" id="btnCancelProfileModal"
-    class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">
-    Cancel
-  </button>
-
-  <button type="submit"
-    class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">
-    Save Profile
-  </button>
-</div>
-
-<div class="border-t border-default mt-5 pt-4">
-  <button type="button" id="btnLogout"
-    class="btn-danger-outline w-full py-2.5 rounded-xl font-semibold text-sm">
-    Log Out
-  </button>
-</div>
+          <button type="button" id="btnCancelProfileModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
+          <button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Save Profile</button>
+        </div>
+        <div class="border-t border-default mt-5 pt-4"><button type="button" id="btnLogout" class="btn-danger-outline w-full py-2.5 rounded-xl font-semibold text-sm">Log Out</button></div>
       </form>
     </div>
   </div>
 
   <div id="eventModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
     <div class="modal-content-custom max-w-lg w-full p-6 relative">
-      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
-        <h3 class="text-lg font-bold text-primary">Add New Event</h3>
-        <button id="btnCloseModal" class="text-tertiary hover:text-primary transition">✕</button>
-      </div>
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default"><h3 class="text-lg font-bold text-primary">Add New Event</h3><button id="btnCloseModal" class="text-tertiary hover:text-primary transition">✕</button></div>
       <form id="eventForm" class="space-y-4">
         <div><label class="form-label">Event Name</label><input type="text" id="eventName" required class="form-control"></div>
         <div><label class="form-label">Event Date</label><input type="date" id="eventDate" required class="form-control"></div>
         <div><label class="form-label">Google Drive Link</label><input type="url" id="gdriveUrl" required class="form-control" placeholder="https://drive.google.com/drive/folders/..."></div>
-        <div class="rounded-xl border border-info bg-info-subtle p-4 text-xs leading-relaxed text-info">
-          <p class="font-semibold mb-1">Information:</p>
-          Processing follows your daily quota. If the number of photos exceeds the quota, only photos within the limit are processed by AI. The rest remain safely in Google Drive.
-        </div>
-        <div class="flex justify-end gap-3 pt-4">
-          <button type="button" id="btnCancelModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
-          <button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Send to AI</button>
-        </div>
+        <div class="rounded-xl border border-info bg-info-subtle p-4 text-xs leading-relaxed text-info"><p class="font-semibold mb-1">Information:</p>Processing follows your daily quota. If the number of photos exceeds the quota, only photos within the limit are processed by AI. The rest remain safely in Google Drive.</div>
+        <div class="flex justify-end gap-3 pt-4"><button type="button" id="btnCancelModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button><button type="submit" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Send to AI</button></div>
       </form>
     </div>
   </div>
 
   <div id="appendModal" class="fixed inset-0 modal-backdrop-custom z-50 flex items-center justify-center p-4 hidden">
     <div class="modal-content-custom max-w-lg w-full p-6 relative">
-      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default">
-        <div><h3 class="text-lg font-bold text-primary">Add Photos to Event</h3><p id="appendEventTitle" class="text-xs text-secondary mt-1"></p></div>
-        <button id="btnCloseAppendModal" type="button" class="text-tertiary hover:text-primary transition">✕</button>
-      </div>
+      <div class="flex justify-between items-center mb-5 pb-3 border-b border-default"><div><h3 class="text-lg font-bold text-primary">Add Photos to Event</h3><p id="appendEventTitle" class="text-xs text-secondary mt-1"></p></div><button id="btnCloseAppendModal" type="button" class="text-tertiary hover:text-primary transition">✕</button></div>
       <form id="appendForm" class="space-y-4">
-        <div><label for="appendSourceType" class="form-label">Additional Photo Source</label>
-          <select id="appendSourceType" class="form-control">
-            <option value="existing_folder">Existing registered event folder</option>
-            <option value="new_folder">New Google Drive folder</option>
-          </select>
-        </div>
-        <div id="appendExistingFolderWrap">
-          <label for="appendExistingFolder" class="form-label">Select Event Folder</label>
-          <select id="appendExistingFolder" required class="form-control"></select>
-        </div>
-        <div id="appendNewFolderWrap" class="hidden">
-          <label for="appendNewFolderUrl" class="form-label">New Google Drive Folder Link</label>
-          <input type="url" id="appendNewFolderUrl" placeholder="https://drive.google.com/drive/folders/..." class="form-control">
-        </div>
+        <div><label for="appendSourceType" class="form-label">Additional Photo Source</label><select id="appendSourceType" class="form-control"><option value="existing_folder">Existing registered event folder</option><option value="new_folder">New Google Drive folder</option></select></div>
+        <div id="appendExistingFolderWrap"><label for="appendExistingFolder" class="form-label">Select Event Folder</label><select id="appendExistingFolder" required class="form-control"></select></div>
+        <div id="appendNewFolderWrap" class="hidden"><label for="appendNewFolderUrl" class="form-label">New Google Drive Folder Link</label><input type="url" id="appendNewFolderUrl" placeholder="https://drive.google.com/drive/folders/..." class="form-control"></div>
         <div id="appendError" class="hidden rounded-lg bg-danger-subtle border border-danger p-3 text-xs text-danger font-medium"></div>
-        <div class="flex justify-end gap-3 pt-4">
-          <button type="button" id="btnCancelAppendModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button>
-          <button type="submit" id="btnSubmitAppend" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Add to Queue</button>
-        </div>
+        <div class="flex justify-end gap-3 pt-4"><button type="button" id="btnCancelAppendModal" class="btn-secondary px-5 py-2 rounded-xl font-semibold text-sm">Cancel</button><button type="submit" id="btnSubmitAppend" class="btn-primary px-6 py-2 rounded-xl font-semibold text-sm">Add to Queue</button></div>
       </form>
     </div>
+  </div>
+
+  <!-- Branded Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="fixed inset-0 modal-backdrop-custom z-[60] flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="modal-content-custom max-w-md w-full p-6 relative">
+      <div class="flex items-start gap-4">
+        <div class="delete-icon-wrap shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14M10 11v5m4-5v5"/></svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 id="deleteModalTitle" class="text-lg font-bold text-primary">Delete this event?</h3>
+          <p class="text-sm text-secondary mt-1">This action will remove the event from your dashboard.</p>
+        </div>
+        <button type="button" id="btnCloseDeleteModal" class="text-tertiary hover:text-primary transition" aria-label="Close">✕</button>
+      </div>
+      <div class="mt-5 rounded-xl bg-app border border-default p-4">
+        <p class="text-[10px] uppercase tracking-wider font-bold text-secondary mb-1">Event to delete</p>
+        <p id="deleteEventName" class="delete-event-name text-sm">Event name</p>
+      </div>
+      <p class="text-xs text-secondary leading-relaxed mt-4">If this event is already published, its public catalog entry will also be removed. Photos in your original Google Drive folder will not be deleted.</p>
+      <div id="deleteError" class="hidden mt-4 rounded-lg bg-danger-subtle border border-danger p-3 text-xs text-danger font-medium" role="alert"></div>
+      <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 mt-6">
+        <button type="button" id="btnCancelDelete" class="btn-secondary px-5 py-2.5 rounded-xl font-semibold text-sm">Cancel</button>
+        <button type="button" id="btnConfirmDelete" class="btn-danger-solid px-5 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M8 6V4h8v2m-9 2 1 12h8l1-12"/></svg>
+          Delete Event
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteToast" class="delete-toast" role="status" aria-live="polite">
+    <span class="w-7 h-7 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m5 12 4 4L19 6"/></svg>
+    </span>
+    <span id="deleteToastMessage" class="text-sm font-semibold">Event deleted successfully.</span>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const BLINKR_ROUTES = {
-        home: "./index.html",
-        photographer: "./blinkr_photographer.html",
-        photoFinder: "./blinkr_client.html"
+      home: "./index.html",
+      photographer: "./blinkr_photographer.html",
+      photoFinder: "./blinkr_client.html"
     };
 
     document.querySelectorAll('.btn-route').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const routeKey = button.getAttribute('data-route');
-            if (BLINKR_ROUTES[routeKey] && !BLINKR_ROUTES[routeKey].includes("REPLACE_WITH_")) {
-                window.location.href = BLINKR_ROUTES[routeKey];
-            }
-        });
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const routeKey = button.getAttribute('data-route');
+        if (BLINKR_ROUTES[routeKey] && !BLINKR_ROUTES[routeKey].includes("REPLACE_WITH_")) {
+          window.location.href = BLINKR_ROUTES[routeKey];
+        }
+      });
     });
 
+    // THEME LOGIC (Light / Dark, with initial device detection)
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const htmlElement = document.documentElement;
     const icons = {
-        system: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
-        light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
-        dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+      light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
+      dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
     };
-    const themes = ['system', 'light', 'dark'];
-    let currentThemeIndex = 0;
-
-    function applyTheme(themeName) {
-        let activeTheme = themeName;
-        if (themeName === 'system') {
-            activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            localStorage.removeItem('blinkr-theme');
-        } else localStorage.setItem('blinkr-theme', themeName);
-        htmlElement.setAttribute('data-theme', activeTheme);
-        themeToggleBtn.innerHTML = icons[themeName];
-    }
-
+    const themes = ['light', 'dark'];
     const savedTheme = localStorage.getItem('blinkr-theme');
-    if (savedTheme && themes.includes(savedTheme)) currentThemeIndex = themes.indexOf(savedTheme);
-    applyTheme(themes[currentThemeIndex]);
-
-    themeToggleBtn.addEventListener('click', () => {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        applyTheme(themes[currentThemeIndex]);
-    });
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        if (themes[currentThemeIndex] === 'system') applyTheme('system');
-    });
+    let currentTheme = savedTheme;
+    if (!currentTheme || !themes.includes(currentTheme)) {
+      currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function applyTheme(themeName) {
+      currentTheme = themeName;
+      localStorage.setItem('blinkr-theme', themeName);
+      htmlElement.setAttribute('data-theme', themeName);
+      if (themeToggleBtn) themeToggleBtn.innerHTML = icons[themeName === 'dark' ? 'light' : 'dark'];
+    }
+    applyTheme(currentTheme);
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => applyTheme(currentTheme === 'light' ? 'dark' : 'light'));
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyCO2QRZMA1Ui8J1eQA89o76oSc_YpfdEiU",
@@ -422,10 +344,34 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    let currentCustomName = "", currentCustomPhoto = "", currentQuota = 0, currentPublicId = "", isMasterAccount = false;
-    let unsubscribeSnapshot = null, userSnapshotUnsubscribe = null, userEventsById = {}, appendTasksByParent = {}, appendSelectedEventId = null;
+    let currentCustomName = "";
+    let currentCustomPhoto = "";
+    let currentQuota = 0;
+    let currentPublicId = "";
+    let isMasterAccount = false;
+    let currentPlan = "free";
+    let currentEventDocs = [];
+    let unsubscribeSnapshot = null;
+    let userSnapshotUnsubscribe = null;
+    let userEventsById = {};
+    let appendTasksByParent = {};
+    let appendSelectedEventId = null;
+    let pendingDeleteEventId = null;
+    let deleteInProgress = false;
+    let deleteToastTimer = null;
 
-    function extractFolderId(url) { const match = url.match(/folders\/([a-zA-Z0-9_-]+)/); return match ? match[1] : null; }
+    function extractFolderId(url) {
+      const match = url.match(/folders\/([a-zA-Z0-9_-]+)/);
+      return match ? match[1] : null;
+    }
+
+    function updatePlanBadge() {
+      const badge = document.getElementById("accountPlanBadge");
+      if (!badge) return;
+      const planLabel = isMasterAccount ? "master" : currentPlan;
+      badge.textContent = planLabel.toUpperCase();
+      badge.className = `plan-badge plan-badge-${planLabel}`;
+    }
 
     document.getElementById("btnOpenModal").addEventListener("click", () => {
       if (!isMasterAccount && currentQuota <= 0) return alert("Kuota foto gratis habis.");
@@ -452,20 +398,36 @@
             currentCustomPhoto = data.photo_url || user.photoURL;
             currentQuota = data.remaining_quota ?? 500;
             currentPublicId = data.public_id || "";
-            isMasterAccount = data.role === "master"; 
+            isMasterAccount = data.role === "master";
+            // Plan defaults to FREE. PRO is assigned separately by an authorized admin/backend.
+            const requestedPlan = String(data.plan || "free").toLowerCase().trim();
+            currentPlan = requestedPlan === "pro" ? "pro" : "free";
           } else {
-            await setDoc(userDocRef, { custom_name: user.displayName, photo_url: user.photoURL, email: user.email, remaining_quota: 500, role: "user", updated_at: new Date() });
-            currentCustomName = user.displayName; currentCustomPhoto = user.photoURL; currentQuota = 500; currentPublicId = ""; isMasterAccount = false;
+            await setDoc(userDocRef, {
+              custom_name: user.displayName,
+              photo_url: user.photoURL,
+              email: user.email,
+              remaining_quota: 500,
+              role: "user",
+              updated_at: new Date()
+            });
+            currentCustomName = user.displayName;
+            currentCustomPhoto = user.photoURL;
+            currentQuota = 500;
+            currentPublicId = "";
+            isMasterAccount = false;
+            currentPlan = "free";
           }
-          document.getElementById("userName").textContent = currentCustomName || "Photographer";
 
-const userBadge = document.getElementById("userBadge");
-userBadge.classList.toggle("hidden", !isMasterAccount);
-          document.getElementById("userEmail").textContent = user.email;
-          document.getElementById("userAvatar").src = currentCustomPhoto;
-          document.getElementById("statQuota").innerHTML = isMasterAccount 
-  ? `<div class="flex items-center gap-2 mt-2"><span class="text-3xl font-extrabold text-primary">∞</span><span class="text-xs font-bold text-brand-orange bg-orange-500/10 px-2 py-0.5 rounded">UNLIMITED</span></div>` 
-  : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
+          document.getElementById("userName").textContent = currentCustomName || "Photographer";
+          const userBadge = document.getElementById("userBadge");
+          userBadge.classList.toggle("hidden", !isMasterAccount);
+          document.getElementById("userEmail").textContent = user.email || "";
+          document.getElementById("userAvatar").src = currentCustomPhoto || "https://via.placeholder.com/40";
+          document.getElementById("statQuota").innerHTML = isMasterAccount
+            ? `<div class="flex items-center gap-2 mt-2"><span class="text-3xl font-extrabold text-primary">∞</span><span class="text-xs font-bold text-brand-orange bg-orange-500/10 px-2 py-0.5 rounded">UNLIMITED</span></div>`
+            : `${currentQuota} <span class='text-[10px] text-secondary font-normal uppercase ml-1'>Photos</span>`;
+          updatePlanBadge();
         });
         document.getElementById("loginSection").classList.add("hidden");
         document.getElementById("adminSection").classList.remove("hidden");
@@ -483,14 +445,17 @@ userBadge.classList.toggle("hidden", !isMasterAccount);
 
     document.getElementById("profileForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const nName = document.getElementById("editDisplayName").value.trim(), nPhoto = document.getElementById("editPhotoURL").value.trim() || auth.currentUser.photoURL;
+      const nName = document.getElementById("editDisplayName").value.trim();
+      const nPhoto = document.getElementById("editPhotoURL").value.trim() || auth.currentUser.photoURL;
       await setDoc(doc(db, "users", auth.currentUser.uid), { custom_name: nName, photo_url: nPhoto, updated_at: new Date() }, { merge: true });
       document.getElementById("profileModal").classList.add("hidden");
     });
 
     function closeAppendModal() {
-      document.getElementById("appendModal").classList.add("hidden"); document.getElementById("appendForm").reset();
-      document.getElementById("appendError").classList.add("hidden"); appendSelectedEventId = null;
+      document.getElementById("appendModal").classList.add("hidden");
+      document.getElementById("appendForm").reset();
+      document.getElementById("appendError").classList.add("hidden");
+      appendSelectedEventId = null;
     }
 
     function updateAppendSourceFields() {
@@ -514,30 +479,55 @@ userBadge.classList.toggle("hidden", !isMasterAccount);
       const previousBatchFolders = (appendTasksByParent[eventId] || []).map(b => b.gdrive_folder_id).filter(Boolean);
       const folderIds = [...new Set([ev.gdrive_folder_id, ...previousBatchFolders].filter(Boolean))];
       folderSelect.innerHTML = "";
-      folderIds.forEach((fId, index) => { const opt = document.createElement("option"); opt.value = fId; opt.textContent = index === 0 ? "Main folder" : `Additional folder ${index}`; folderSelect.appendChild(opt); });
+      folderIds.forEach((fId, index) => {
+        const opt = document.createElement("option");
+        opt.value = fId;
+        opt.textContent = index === 0 ? "Main folder" : `Additional folder ${index}`;
+        folderSelect.appendChild(opt);
+      });
       document.getElementById("appendSourceType").value = "existing_folder";
-      document.getElementById("appendModal").classList.remove("hidden"); updateAppendSourceFields();
+      document.getElementById("appendModal").classList.remove("hidden");
+      updateAppendSourceFields();
     };
 
     document.getElementById("appendForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const submitBtn = document.getElementById("btnSubmitAppend"), errBox = document.getElementById("appendError");
-      errBox.classList.add("hidden"); submitBtn.disabled = true; submitBtn.textContent = "Sending...";
+      const submitBtn = document.getElementById("btnSubmitAppend");
+      const errBox = document.getElementById("appendError");
+      errBox.classList.add("hidden");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending...";
       try {
         const parentId = appendSelectedEventId;
         const sourceType = document.getElementById("appendSourceType").value;
-        const folderId = sourceType === "existing_folder" ? document.getElementById("appendExistingFolder").value.trim() : extractFolderId(document.getElementById("appendNewFolderUrl").value.trim());
+        const folderId = sourceType === "existing_folder"
+          ? document.getElementById("appendExistingFolder").value.trim()
+          : extractFolderId(document.getElementById("appendNewFolderUrl").value.trim());
         if (!folderId) throw new Error("Link GDrive tidak valid.");
-        
         const parent = (await getDoc(doc(db, "queues", parentId))).data();
+        if (!parent) throw new Error("Event utama tidak ditemukan.");
         await addDoc(collection(db, "queues"), {
-          task_type: "append_batch", parent_event_id: parentId, event_name: parent.event_name, event_date: parent.event_date,
-          photographer_name: currentCustomName, photographer_email: auth.currentUser.email, photographer_uid: auth.currentUser.uid,
-          gdrive_folder_id: folderId, append_source_type: sourceType, status: "Pending", created_at: new Date()
+          task_type: "append_batch",
+          parent_event_id: parentId,
+          event_name: parent.event_name,
+          event_date: parent.event_date,
+          photographer_name: currentCustomName,
+          photographer_email: auth.currentUser.email,
+          photographer_uid: auth.currentUser.uid,
+          gdrive_folder_id: folderId,
+          append_source_type: sourceType,
+          status: "Pending",
+          created_at: new Date()
         });
-        closeAppendModal(); alert("Antrean berhasil ditambahkan!");
-      } catch (err) { errBox.textContent = err.message; errBox.classList.remove("hidden"); }
-      finally { submitBtn.disabled = false; submitBtn.textContent = "Add to Queue"; }
+        closeAppendModal();
+        alert("Antrean berhasil ditambahkan!");
+      } catch (err) {
+        errBox.textContent = err.message;
+        errBox.classList.remove("hidden");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Add to Queue";
+      }
     });
 
     document.getElementById("eventForm").addEventListener("submit", async (e) => {
@@ -546,59 +536,238 @@ userBadge.classList.toggle("hidden", !isMasterAccount);
       const folderId = extractFolderId(document.getElementById("gdriveUrl").value.trim());
       if (!folderId) return alert("Link Drive tidak valid!");
       await addDoc(collection(db, "queues"), {
-        photographer_name: currentCustomName || auth.currentUser.displayName, photographer_email: auth.currentUser.email,
-        photographer_uid: auth.currentUser.uid, task_type: "event", event_name: document.getElementById("eventName").value.trim(),
-        event_date: document.getElementById("eventDate").value, gdrive_folder_id: folderId, status: "Pending", created_at: new Date()
+        photographer_name: currentCustomName || auth.currentUser.displayName,
+        photographer_email: auth.currentUser.email,
+        photographer_uid: auth.currentUser.uid,
+        task_type: "event",
+        event_name: document.getElementById("eventName").value.trim(),
+        event_date: document.getElementById("eventDate").value,
+        gdrive_folder_id: folderId,
+        status: "Pending",
+        created_at: new Date()
       });
-      document.getElementById("eventModal").classList.add("hidden"); document.getElementById("eventForm").reset();
+      document.getElementById("eventModal").classList.add("hidden");
+      document.getElementById("eventForm").reset();
     });
 
-    function escapeHtml(val) { return String(val ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]); }
+    function escapeHtml(val) {
+      return String(val ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"})[c]);
+    }
+
+    // Event date helpers (week starts on Monday)
+    function parseEventDate(value) {
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return null;
+      const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      if (date.getFullYear() !== Number(match[1]) || date.getMonth() !== Number(match[2]) - 1 || date.getDate() !== Number(match[3])) return null;
+      return date;
+    }
+
+    function getWeekStart(date) {
+      const result = new Date(date);
+      const day = (result.getDay() + 6) % 7;
+      result.setDate(result.getDate() - day);
+      result.setHours(0, 0, 0, 0);
+      return result;
+    }
+
+    function formatWeekRange(start) {
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      const startDay = new Intl.DateTimeFormat("id-ID", { day: "numeric" }).format(start);
+      const endDay = new Intl.DateTimeFormat("id-ID", { day: "numeric" }).format(end);
+      const startMonth = new Intl.DateTimeFormat("id-ID", { month: "short" }).format(start);
+      const endMonth = new Intl.DateTimeFormat("id-ID", { month: "short" }).format(end);
+      const year = new Intl.DateTimeFormat("id-ID", { year: "numeric" }).format(end);
+      return startMonth === endMonth
+        ? `${startDay}–${endDay} ${endMonth} ${year}`
+        : `${startDay} ${startMonth} – ${endDay} ${endMonth} ${year}`;
+    }
+
+    function compareEvents(a, b, mode) {
+      const dateA = parseEventDate(a.event_date);
+      const dateB = parseEventDate(b.event_date);
+      const timeA = dateA ? dateA.getTime() : null;
+      const timeB = dateB ? dateB.getTime() : null;
+
+      if (mode === "name-asc" || mode === "name-desc") {
+        const result = String(a.event_name || "").localeCompare(String(b.event_name || ""), "id", { sensitivity: "base" });
+        if (result !== 0) return mode === "name-asc" ? result : -result;
+      }
+      if (timeA === null && timeB !== null) return 1;
+      if (timeB === null && timeA !== null) return -1;
+      if (timeA === null && timeB === null) return 0;
+      return mode === "date-asc" ? timeA - timeB : timeB - timeA;
+    }
+
+    function renderEventTable(eventDocs) {
+      const tableBody = document.getElementById("eventListTable");
+      if (!eventDocs || eventDocs.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-tertiary">No events found.</td></tr>`;
+        return;
+      }
+
+      const sortMode = document.getElementById("eventSortSelect").value;
+      const groups = new Map();
+      eventDocs.forEach(ev => {
+        const date = parseEventDate(ev.event_date);
+        const weekStart = date ? getWeekStart(date) : null;
+        const key = weekStart ? String(weekStart.getTime()) : "undated";
+        if (!groups.has(key)) groups.set(key, { weekStart, events: [] });
+        groups.get(key).events.push(ev);
+      });
+
+      const sortedGroups = [...groups.values()].sort((a, b) => {
+        if (!a.weekStart) return 1;
+        if (!b.weekStart) return -1;
+        return b.weekStart.getTime() - a.weekStart.getTime();
+      });
+
+      let html = "";
+      sortedGroups.forEach(group => {
+        group.events.sort((a, b) => compareEvents(a, b, sortMode));
+        const groupTitle = group.weekStart ? `Week: ${formatWeekRange(group.weekStart)}` : "Date Unavailable";
+        html += `
+          <tr>
+            <td colspan="6" class="px-5 py-3 bg-surface-hover border-b border-default">
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-xs font-extrabold text-primary uppercase tracking-wide">${groupTitle}</span>
+                <span class="text-[10px] font-semibold text-secondary bg-app px-2.5 py-1 rounded-full border border-default whitespace-nowrap">${group.events.length} Events</span>
+              </div>
+            </td>
+          </tr>`;
+
+        group.events.forEach(ev => {
+          const isDone = ev.status === "Selesai";
+          const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
+          const statusText = String(ev.status || "Pending");
+          const badge = isDone
+            ? `<span class="text-success font-semibold">Selesai</span>`
+            : `<span class="text-warning font-semibold">${escapeHtml(statusText)}</span>`;
+          const addButton = isDone
+            ? `<button onclick="window.openAppendModal('${escapeHtml(ev.id)}')" class="text-info hover:text-primary transition text-xs font-semibold whitespace-nowrap">+ Tambah Foto</button>`
+            : "";
+          html += `
+            <tr class="table-row align-top">
+              <td class="py-4 px-5 text-primary font-semibold">${escapeHtml(ev.event_name)}</td>
+              <td class="py-4 px-5 text-secondary whitespace-nowrap">${escapeHtml(ev.event_date)}</td>
+              <td class="py-4 px-5">${badge}</td>
+              <td class="py-4 px-5 text-xs">${Number(ev.jumlah_foto_ditemukan) || 0} Photos</td>
+              <td class="py-4 px-5 text-tertiary font-mono text-xs">${escapeHtml(jsonName)}</td>
+              <td class="py-4 px-5 text-right">
+                <div class="flex flex-col items-end gap-3">
+                  ${addButton}
+                  <button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+      });
+      tableBody.innerHTML = html;
+    }
+
+    document.getElementById("eventSortSelect").addEventListener("change", () => renderEventTable(currentEventDocs));
 
     function loadUserEvents(email) {
-      onSnapshot(query(collection(db, "queues"), where("photographer_email", "==", email)), (snapshot) => {
-        let allDocs = []; snapshot.forEach(d => allDocs.push({ id: d.id, ...d.data() }));
-        allDocs.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      unsubscribeSnapshot = onSnapshot(query(collection(db, "queues"), where("photographer_email", "==", email)), (snapshot) => {
+        const allDocs = [];
+        snapshot.forEach(d => allDocs.push({ id: d.id, ...d.data() }));
 
         const appendTasks = allDocs.filter(d => d.task_type === "append_batch");
         const eventDocs = allDocs.filter(d => d.task_type !== "append_batch" && !d.parent_event_id);
         userEventsById = Object.fromEntries(eventDocs.map(ev => [ev.id, ev]));
         appendTasksByParent = {};
-        appendTasks.forEach(b => { if(!appendTasksByParent[b.parent_event_id]) appendTasksByParent[b.parent_event_id] = []; appendTasksByParent[b.parent_event_id].push(b); });
+        appendTasks.forEach(b => {
+          if (!appendTasksByParent[b.parent_event_id]) appendTasksByParent[b.parent_event_id] = [];
+          appendTasksByParent[b.parent_event_id].push(b);
+        });
 
+        currentEventDocs = eventDocs;
         document.getElementById("statTotal").textContent = eventDocs.length;
         document.getElementById("statSelesai").textContent = eventDocs.filter(d => d.status === "Selesai").length;
-        
-        const tableBody = document.getElementById("eventListTable");
-        if (eventDocs.length === 0) return tableBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-tertiary">No events found.</td></tr>`;
-
-        tableBody.innerHTML = eventDocs.map(ev => {
-          const isDone = ev.status === "Selesai";
-          const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
-          const badge = isDone ? `<span class="text-success font-semibold">Selesai</span>` : `<span class="text-warning font-semibold">${ev.status}</span>`;
-          const addButton = isDone ? `<button onclick="window.openAppendModal('${ev.id}')" class="text-info hover:text-primary transition text-xs font-semibold whitespace-nowrap">+ Tambah Foto</button>` : ``;
-          return `
-            <tr class="table-row align-top">
-              <td class="py-4 px-5 text-primary font-semibold">${escapeHtml(ev.event_name)}</td>
-              <td class="py-4 px-5 text-secondary whitespace-nowrap">${escapeHtml(ev.event_date)}</td>
-              <td class="py-4 px-5">${badge}</td>
-              <td class="py-4 px-5 text-xs">${ev.jumlah_foto_ditemukan || 0} Photos</td>
-              <td class="py-4 px-5 text-tertiary font-mono text-xs">${escapeHtml(jsonName)}</td>
-              <td class="py-4 px-5 text-right"><div class="flex flex-col items-end gap-3">${addButton}<button onclick="deleteEvent('${ev.id}')" class="text-danger text-xs font-semibold">Hapus</button></div></td>
-            </tr>`;
-        }).join("");
+        renderEventTable(currentEventDocs);
+      }, (error) => {
+        console.error("Failed to load events:", error);
+        document.getElementById("eventListTable").innerHTML = `<tr><td colspan="6" class="py-12 text-center text-danger">Failed to load events. Please refresh the page.</td></tr>`;
       });
     }
 
-    window.deleteEvent = async (docId) => {
-      if (confirm("Hapus event ini beserta riwayat batch tambahannya dari dashboard dan katalog publik?")) {
-        try {
-          const eventData = userEventsById[docId] || {};
-          if (eventData.public_index_synced === true) { await deleteDoc(doc(db, "public_events", docId)); await deleteDoc(doc(db, "public_event_owners", docId)); }
-          await deleteDoc(doc(db, "queues", docId));
-        } catch (e) { alert("Gagal menghapus."); }
-      }
+    // Branded delete dialog: open first, delete only after explicit confirmation
+    window.openDeleteModal = (docId) => {
+      if (!userEventsById[docId]) return;
+      pendingDeleteEventId = docId;
+      deleteInProgress = false;
+      document.getElementById("deleteEventName").textContent = userEventsById[docId].event_name || "Untitled event";
+      document.getElementById("deleteError").classList.add("hidden");
+      document.getElementById("btnConfirmDelete").disabled = false;
+      document.getElementById("btnConfirmDelete").innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M8 6V4h8v2m-9 2 1 12h8l1-12"/></svg>
+        Delete Event`;
+      document.getElementById("deleteConfirmModal").classList.remove("hidden");
     };
+
+    function closeDeleteModal() {
+      if (deleteInProgress) return;
+      document.getElementById("deleteConfirmModal").classList.add("hidden");
+      pendingDeleteEventId = null;
+      document.getElementById("deleteError").classList.add("hidden");
+    }
+
+    document.getElementById("btnCloseDeleteModal").addEventListener("click", closeDeleteModal);
+    document.getElementById("btnCancelDelete").addEventListener("click", closeDeleteModal);
+    document.getElementById("deleteConfirmModal").addEventListener("click", (event) => {
+      if (event.target.id === "deleteConfirmModal") closeDeleteModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !document.getElementById("deleteConfirmModal").classList.contains("hidden")) closeDeleteModal();
+    });
+
+    function showDeleteToast(message) {
+      const toast = document.getElementById("deleteToast");
+      document.getElementById("deleteToastMessage").textContent = message;
+      toast.classList.add("show");
+      clearTimeout(deleteToastTimer);
+      deleteToastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    document.getElementById("btnConfirmDelete").addEventListener("click", async () => {
+      if (!pendingDeleteEventId || deleteInProgress) return;
+      const docId = pendingDeleteEventId;
+      const confirmBtn = document.getElementById("btnConfirmDelete");
+      const errorBox = document.getElementById("deleteError");
+      const eventData = userEventsById[docId] || {};
+
+      deleteInProgress = true;
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Deleting...";
+      errorBox.classList.add("hidden");
+
+      try {
+        if (eventData.public_index_synced === true) {
+          await deleteDoc(doc(db, "public_events", docId));
+          await deleteDoc(doc(db, "public_event_owners", docId));
+        }
+        await deleteDoc(doc(db, "queues", docId));
+
+        document.getElementById("deleteConfirmModal").classList.add("hidden");
+        pendingDeleteEventId = null;
+        showDeleteToast("Event deleted successfully.");
+      } catch (error) {
+        console.error("Failed to delete event:", error);
+        errorBox.textContent = "Event gagal dihapus. Periksa koneksi atau izin Firebase, lalu coba lagi.";
+        errorBox.classList.remove("hidden");
+      } finally {
+        deleteInProgress = false;
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = `
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M8 6V4h8v2m-9 2 1 12h8l1-12"/></svg>
+          Delete Event`;
+      }
+    });
+
+    // Backward-compatible alias in case another part of the page calls deleteEvent().
+    window.deleteEvent = (docId) => window.openDeleteModal(docId);
   </script>
 </body>
 </html>
