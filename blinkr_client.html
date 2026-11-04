@@ -164,7 +164,6 @@
         .tidak-terlihat { background-color: rgba(71, 85, 105, 0.8); color: white; }
         
         /* GALLERY INFO INTERACTION */
-
         .gallery-card .gallery-card-overlay {
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -190,16 +189,37 @@
 
         /* Hover hanya berlaku untuk perangkat yang mendukung hover */
         @media (hover: hover) and (pointer: fine) {
-        .gallery-card:hover .gallery-card-overlay {
-            opacity: 1;
+            .gallery-card:hover .gallery-card-overlay {
+                opacity: 1;
+            }
+
+            .gallery-card:hover .gallery-card-info {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
         }
 
-        .gallery-card:hover .gallery-card-info {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+        /* PICKER MODAL: independent scrolling and mobile background lock */
+        .picker-modal {
+            height: 100vh;
+            height: 100dvh;
+            overscroll-behavior: none;
         }
-}
+
+        .picker-modal-panel {
+            min-height: 0;
+            max-height: 80vh;
+            max-height: 80dvh;
+        }
+
+        .picker-modal-list {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -218,7 +238,7 @@
             <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                 <!-- Status Bar -->
                 <div id="status-bar" class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] text-[var(--text-status)] border border-default text-xs font-semibold rounded-full transition-all">
-                    <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 014.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     Connecting...
                 </div>
                 <!-- Desktop Theme Toggle -->
@@ -253,11 +273,23 @@
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
                 <div class="md:col-span-4">
-                    <label for="select-photographer" class="form-label">1. Photographer</label>
-                    <select id="select-photographer" class="form-select" disabled>
+                    <label for="btn-open-photographer-modal" class="form-label">1. Photographer</label>
+
+                    <!-- Select asli tetap dipertahankan untuk kompatibilitas JavaScript -->
+                    <select id="select-photographer" class="hidden" disabled>
                         <option value="">Memuat Fotografer...</option>
                     </select>
+
+                    <!-- Custom Select Button -->
+                    <button type="button" id="btn-open-photographer-modal" disabled
+                        class="form-select w-full text-left flex items-center justify-between opacity-50 cursor-not-allowed">
+                        <span id="selected-photographer-label" class="truncate">Memuat Fotografer...</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
                 </div>
+
                 <div class="md:col-span-5">
                     <label for="btn-open-event-modal" class="form-label">2. Event / Session</label>
                     
@@ -275,9 +307,25 @@
                     </div>
                 </div>
 
+                <!-- Custom Modal Pilihan Photographer -->
+                <div id="custom-photographer-modal" class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+                    <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+                        <div class="p-4 border-b border-default flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-primary text-base">Select Photographer</h3>
+                                <p class="text-xs text-secondary">Pilih fotografer untuk melihat event</p>
+                            </div>
+                            <button type="button" id="btn-close-photographer-modal" class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
+                        </div>
+                        <div id="custom-photographer-list" class="picker-modal-list p-3 space-y-2 flex-1">
+                            <!-- Opsi fotografer disuntikkan via JS -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Custom Modal Pilihan Event (Tersembunyi by default) -->
-                <div id="custom-event-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-300">
-                    <div class="bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+                <div id="custom-event-modal" class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-300">
+                    <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
                         <div class="p-4 border-b border-default flex justify-between items-center">
                             <div>
                                 <h3 class="font-bold text-primary text-base">Select Event / Session</h3>
@@ -285,11 +333,12 @@
                             </div>
                             <button type="button" id="btn-close-event-modal" class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
                         </div>
-                        <div id="custom-event-list" class="overflow-y-auto p-3 space-y-2 flex-1">
+                        <div id="custom-event-list" class="picker-modal-list p-3 space-y-2 flex-1">
                             <!-- Opsi event disuntikkan via JS -->
                         </div>
                     </div>
                 </div>
+
                 <div class="md:col-span-3 flex items-end">
                     <button id="btn-load-event" class="w-full btn-primary font-semibold rounded-md text-sm px-5 py-3 text-center transition" disabled>
                         Load Photos
@@ -489,7 +538,13 @@
         window.database = [];
 
         const selPhoto = document.getElementById('select-photographer');
-        // Variabel baru untuk Custom Modal
+        const btnOpenPhotographerModal = document.getElementById('btn-open-photographer-modal');
+        const selectedPhotographerLabel = document.getElementById('selected-photographer-label');
+        const customPhotographerModal = document.getElementById('custom-photographer-modal');
+        const customPhotographerList = document.getElementById('custom-photographer-list');
+        const btnClosePhotographerModal = document.getElementById('btn-close-photographer-modal');
+
+        // Variabel untuk Custom Modal Event
         const hiddenSelectEvent = document.getElementById('select-event');
         const btnOpenEventModal = document.getElementById('btn-open-event-modal');
         const btnCloseEventModal = document.getElementById('btn-close-event-modal');
@@ -502,6 +557,45 @@
         const badgePhotographer = document.getElementById('photographer-badge');
         const avatarPhotographer = document.getElementById('photographer-avatar');
         const namePhotographer = document.getElementById('photographer-display-name');
+
+        // Kunci scroll halaman saat salah satu picker terbuka
+        let savedPageScrollY = 0;
+
+        function openPickerModal(modal) {
+            if (document.body.dataset.pickerLocked !== "true") {
+                savedPageScrollY = window.scrollY;
+
+                document.body.dataset.pickerLocked = "true";
+                document.body.style.position = "fixed";
+                document.body.style.top = `-${savedPageScrollY}px`;
+                document.body.style.left = "0";
+                document.body.style.right = "0";
+                document.body.style.width = "100%";
+                document.documentElement.style.overflow = "hidden";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closePickerModal(modal) {
+            modal.classList.add('hidden');
+
+            const anotherModalOpen = [customEventModal, customPhotographerModal]
+                .some(item => !item.classList.contains('hidden'));
+
+            if (!anotherModalOpen && document.body.dataset.pickerLocked === "true") {
+                document.body.style.position = "";
+                document.body.style.top = "";
+                document.body.style.left = "";
+                document.body.style.right = "";
+                document.body.style.width = "";
+                document.documentElement.style.overflow = "";
+
+                delete document.body.dataset.pickerLocked;
+                window.scrollTo(0, savedPageScrollY);
+            }
+        }
+
         async function fetchEventsFromFirebase() {
             try {
                 const publicQuery = query(collection(db, "public_events"), where("is_public", "==", true));
@@ -542,9 +636,13 @@
         function populatePhotographers() {
             const photographerIds = Object.keys(eventMap);
             selPhoto.innerHTML = '<option value="">-- Select Photographer --</option>';
+            customPhotographerList.innerHTML = '';
 
             if (photographerIds.length === 0) {
-                selPhoto.innerHTML = '<option value="">No events available yet</option>';
+                selPhoto.disabled = true;
+                btnOpenPhotographerModal.disabled = true;
+                btnOpenPhotographerModal.classList.add('opacity-50', 'cursor-not-allowed');
+                selectedPhotographerLabel.textContent = 'No events available yet';
                 setStatus("ℹ️ No processed events found.", "text-secondary");
                 return;
             }
@@ -556,24 +654,72 @@
                 option.textContent = pInfo.name;
                 selPhoto.appendChild(option);
             });
+
+            // Render pilihan fotografer ke custom modal
+            customPhotographerList.innerHTML = photographerIds.map(photographerId => {
+                const pInfo = eventMap[photographerId];
+                return `
+                    <button type="button"
+                        data-photographer-id="${escapeHtml(photographerId)}"
+                        class="w-full text-left p-3.5 rounded-xl border border-default hover:border-brand-orange bg-app cursor-pointer transition flex items-center gap-3">
+                        <img src="${escapeHtml(pInfo.photo)}"
+                            class="w-10 h-10 rounded-full object-cover shadow-sm shrink-0"
+                            alt="Foto fotografer">
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm text-primary truncate">${escapeHtml(pInfo.name)}</p>
+                            <p class="text-xs text-secondary mt-0.5">${pInfo.events.length} Events</p>
+                        </div>
+                        <span class="ml-auto text-secondary">›</span>
+                    </button>
+                `;
+            }).join('');
+
+            customPhotographerList.querySelectorAll('[data-photographer-id]').forEach(item => {
+                item.addEventListener('click', function() {
+                    selPhoto.value = this.dataset.photographerId;
+                    selPhoto.dispatchEvent(new Event('change'));
+                    closePickerModal(customPhotographerModal);
+                });
+            });
+
             selPhoto.disabled = false;
+            btnOpenPhotographerModal.disabled = false;
+            btnOpenPhotographerModal.classList.remove('opacity-50', 'cursor-not-allowed');
+            selectedPhotographerLabel.textContent = '-- Select Photographer --';
+
             setStatus("🟢 Connected. Please select a photographer.", "text-green-500");
         }
 
-        // 1. Logika Buka/Tutup Modal
-        btnOpenEventModal.addEventListener('click', () => {
-            if (!btnOpenEventModal.disabled) customEventModal.classList.remove('hidden');
-        });
-        btnCloseEventModal.addEventListener('click', () => {
-            customEventModal.classList.add('hidden');
-        });
-        customEventModal.addEventListener('click', (e) => {
-            if (e.target === customEventModal) customEventModal.classList.add('hidden');
+        // Buka/Tutup Custom Modal Photographer
+        btnOpenPhotographerModal.addEventListener('click', () => {
+            if (!btnOpenPhotographerModal.disabled) openPickerModal(customPhotographerModal);
         });
 
-        // 2. Logika Saat Fotografer Dipilih
+        btnClosePhotographerModal.addEventListener('click', () => {
+            closePickerModal(customPhotographerModal);
+        });
+
+        customPhotographerModal.addEventListener('click', (e) => {
+            if (e.target === customPhotographerModal) closePickerModal(customPhotographerModal);
+        });
+
+        // Buka/Tutup Custom Modal Event
+        btnOpenEventModal.addEventListener('click', () => {
+            if (!btnOpenEventModal.disabled) openPickerModal(customEventModal);
+        });
+
+        btnCloseEventModal.addEventListener('click', () => {
+            closePickerModal(customEventModal);
+        });
+
+        customEventModal.addEventListener('click', (e) => {
+            if (e.target === customEventModal) closePickerModal(customEventModal);
+        });
+
+        // Logika Saat Fotografer Dipilih
         selPhoto.addEventListener('change', function() {
             const photographerId = this.value;
+            selectedPhotographerLabel.textContent = eventMap[photographerId]?.name || '-- Select Photographer --';
             
             // Reset state
             customEventList.innerHTML = '';
@@ -598,6 +744,7 @@
             if (pInfo.events.length === 0) {
                 selectedEventLabel.textContent = 'Tidak Ada Event';
                 btnOpenEventModal.disabled = true;
+                btnOpenEventModal.classList.add('opacity-50', 'cursor-not-allowed');
                 return;
             }
 
@@ -638,12 +785,12 @@
                     indicator.innerHTML = '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
 
                     btnLoad.disabled = false;
-                    customEventModal.classList.add('hidden'); // Tutup modal otomatis
+                    closePickerModal(customEventModal);
                 });
             });
         });
 
-        // 3. Logika Tombol Load Photos
+        // Logika Tombol Load Photos
         btnLoad.addEventListener('click', function() {
             const jsonFilename = hiddenSelectEvent.value;
             const version = hiddenSelectEvent.dataset.version || "1";
@@ -651,7 +798,7 @@
         });
 
         async function muatDataDariGAS(filename, version = "1") {
-            setStatus('<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...', "text-brand-orange");
+            setStatus('<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 014.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...', "text-brand-orange");
             btnLoad.disabled = true;
 
             const fetchUrl = `${GAS_API_URL}?filename=${encodeURIComponent(filename)}&v=${encodeURIComponent(version || "1")}`;
@@ -675,7 +822,7 @@
                 console.error("Error loading JSON from GAS:", error);
                 setStatus("🔴 Failed to fetch data from Drive API.", "text-red-500");
             } finally {
-                btnLoad.disabled = !selEvent.value;
+                btnLoad.disabled = !hiddenSelectEvent.value;
             }
         }
 
@@ -748,71 +895,70 @@
         let galleryRenderedCount = 0;
 
         window.toggleCardInfo = function(element, event) {
+            const isActive = element.classList.contains('active-info');
 
-    const isActive = element.classList.contains('active-info');
+            // Tutup seluruh foto yang sedang terbuka
+            document.querySelectorAll('#hasil-galeri .gallery-card').forEach(card => {
+                card.classList.remove('active-info');
+            });
 
-    // Tutup seluruh foto yang sedang terbuka
-    document.querySelectorAll('#hasil-galeri .gallery-card').forEach(card => {
-        card.classList.remove('active-info');
-    });
+            // Jika foto sebelumnya belum terbuka, tampilkan informasinya
+            // Jika sudah terbuka, biarkan tertutup
+            if (!isActive) {
+                element.classList.add('active-info');
+            }
+        };
 
-    // Jika foto sebelumnya belum terbuka, tampilkan informasinya
-    // Jika sudah terbuka, biarkan tertutup
-    if (!isActive) {
-        element.classList.add('active-info');
-    }
-}
+        function createGalleryCard(item) {
+            let fileId = "";
+            const webView = item.url_view_gdrive || "";
+            const gdriveUrl = item.url_gdrive || "";
+            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
+                || webView.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) fileId = match[1];
 
-function createGalleryCard(item) {
-    let fileId = "";
-    const webView = item.url_view_gdrive || "";
-    const gdriveUrl = item.url_gdrive || "";
-    const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
-        || webView.match(/id=([a-zA-Z0-9_-]+)/)
-        || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
-        || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) fileId = match[1];
+            const imgSource = fileId
+                ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
+                : "https://via.placeholder.com/260?text=No+Image";
+            const fullResUrl = safeDriveViewUrl(webView);
+            const dataItem = item.data || {};
+            const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
+            const mColor = String(dataItem.motor || "none");
+            const hColor = String(pDepan.helm || "none");
+            const jColor = String(pDepan.jaket || "none");
+            const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
+            const waktuJam = escapeHtml(item.waktu_jam || "-");
+            const safeUrl = escapeHtml(fullResUrl);
 
-    const imgSource = fileId
-        ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
-        : "https://via.placeholder.com/260?text=No+Image";
-    const fullResUrl = safeDriveViewUrl(webView);
-    const dataItem = item.data || {};
-    const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
-    const mColor = String(dataItem.motor || "none");
-    const hColor = String(pDepan.helm || "none");
-    const jColor = String(pDepan.jaket || "none");
-    const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
-    const waktuJam = escapeHtml(item.waktu_jam || "-");
-    const safeUrl = escapeHtml(fullResUrl);
-
-    return `
-        <div class="gallery-card relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer"
-     onclick="window.toggleCardInfo(this, event)">
-            <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
-            
-            <!-- Gradient Overlay -->
-            <div class="gallery-card-overlay absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
-            
-            <!-- Info Box -->
-            <div class="gallery-card-info relative z-20 p-4 flex flex-col justify-end h-full">
-                <div class="flex justify-between items-center mb-2 mt-auto">
-                    <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
-                    <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
-                </div>
-                <div class="flex flex-wrap gap-1.5 mb-3">
-                    ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
-                    ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
-                    ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
-                </div>
-                <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" 
-                   onclick="event.stopPropagation()" 
-                   class="block w-full py-2.5 text-center bg-white/25 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/30 transition-all shadow-sm active:scale-95 pointer-events-auto">
-                   Buka di Google Drive ↗
-                </a>
-            </div>
-        </div>`;
-}
+            return `
+                <div class="gallery-card relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer"
+                     onclick="window.toggleCardInfo(this, event)">
+                    <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="gallery-card-overlay absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                    
+                    <!-- Info Box -->
+                    <div class="gallery-card-info relative z-20 p-4 flex flex-col justify-end h-full">
+                        <div class="flex justify-between items-center mb-2 mt-auto">
+                            <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
+                            <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
+                            ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
+                            ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
+                        </div>
+                        <a href="${safeUrl}" target="_blank" rel="noopener noreferrer"
+                           onclick="event.stopPropagation()"
+                           class="block w-full py-2.5 text-center bg-white/25 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/30 transition-all shadow-sm active:scale-95 pointer-events-auto">
+                           Buka di Google Drive ↗
+                        </a>
+                    </div>
+                </div>`;
+        }
 
         function renderNextGalleryPage() {
             const galeri = document.getElementById("hasil-galeri");
