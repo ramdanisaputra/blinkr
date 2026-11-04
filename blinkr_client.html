@@ -222,6 +222,65 @@
         }
 
 
+        /* VISUAL ATTRIBUTE CUSTOM PICKERS */
+        .filter-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            text-align: left;
+            background-image: none;
+            cursor: pointer;
+        }
+
+        .filter-picker-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            z-index: 35;
+            max-height: min(300px, 45vh);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card);
+            padding: 6px;
+        }
+
+        .filter-picker-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--text-primary);
+            background: transparent;
+            text-align: left;
+            font-size: 0.8125rem;
+            cursor: pointer;
+        }
+
+        .filter-picker-option:hover {
+            background: var(--bg-surface-hover);
+        }
+
+        .filter-picker-option.is-selected {
+            background: rgba(255, 145, 77, 0.10);
+            border-color: rgba(255, 145, 77, 0.45);
+        }
+
+        @media (max-width: 1023px) {
+            .filter-picker-options {
+                display: none !important;
+            }
+        }
+
         /* VISUAL ATTRIBUTES COLLAPSE ON TABLET & MOBILE */
         @media (max-width: 1023px) {
             #filter-content {
@@ -409,11 +468,23 @@
             </div>
             <div id="filter-content">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <select id="filter-waktu" onchange="cariFoto()" class="form-select">
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-waktu">
+                    <select id="filter-waktu" class="hidden" tabindex="-1" aria-hidden="true">
                     <option value="">⏱️ Semua Rentang Waktu</option>
                 </select>
+                    <button type="button" id="filter-trigger-filter-waktu"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-waktu" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-waktu">⏱️ Semua Rentang Waktu</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-waktu" role="listbox"></div>
+                </div>
 
-                <select id="filter-motor" onchange="cariFoto()" class="form-select">
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-motor">
+                    <select id="filter-motor" class="hidden" tabindex="-1" aria-hidden="true">
                     <option value="">🏍️ Semua Warna Motor</option>
                     <option value="hitam">Hitam</option>
                     <option value="putih">Putih</option>
@@ -435,8 +506,19 @@
                     <option value="emas">Emas</option>
                     <option value="tidak_terlihat">Tidak Terlihat</option>
                 </select>
+                    <button type="button" id="filter-trigger-filter-motor"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-motor" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-motor">🏍️ Semua Warna Motor</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-motor" role="listbox"></div>
+                </div>
 
-                <select id="filter-helm" onchange="cariFoto()" class="form-select">
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-helm">
+                    <select id="filter-helm" class="hidden" tabindex="-1" aria-hidden="true">
                     <option value="">🪖 Semua Helm Depan</option>
                     <option value="hitam">Hitam</option>
                     <option value="putih">Putih</option>
@@ -458,8 +540,19 @@
                     <option value="emas">Emas</option>
                     <option value="tidak_terlihat">Tidak Terlihat</option>
                 </select>
+                    <button type="button" id="filter-trigger-filter-helm"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-helm" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-helm">🪖 Semua Helm Depan</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-helm" role="listbox"></div>
+                </div>
 
-                <select id="filter-jaket" onchange="cariFoto()" class="form-select">
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-jaket">
+                    <select id="filter-jaket" class="hidden" tabindex="-1" aria-hidden="true">
                     <option value="">🧥 Semua Jaket Depan</option>
                     <option value="hitam">Hitam</option>
                     <option value="putih">Putih</option>
@@ -481,7 +574,33 @@
                     <option value="emas">Emas</option>
                     <option value="tidak_terlihat">Tidak Terlihat</option>
                 </select>
+                    <button type="button" id="filter-trigger-filter-jaket"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-jaket" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-jaket">🧥 Semua Jaket Depan</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-jaket" role="listbox"></div>
+                </div>
             </div>
+            </div>
+        </div>
+
+        <!-- Custom Filter Picker Modal: mobile/tablet only -->
+        <div id="custom-filter-modal"
+            class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+                <div class="p-4 border-b border-default flex justify-between items-center">
+                    <div>
+                        <h3 id="custom-filter-title" class="font-bold text-primary text-base">Pilih Filter</h3>
+                        <p class="text-xs text-secondary">Pilih salah satu opsi</p>
+                    </div>
+                    <button type="button" id="btn-close-filter-modal"
+                        class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
+                </div>
+                <div id="custom-filter-list" class="picker-modal-list p-3 space-y-2 flex-1"></div>
             </div>
         </div>
 
@@ -597,6 +716,10 @@
         const customPhotographerModal = document.getElementById('custom-photographer-modal');
         const customPhotographerList = document.getElementById('custom-photographer-list');
         const btnClosePhotographerModal = document.getElementById('btn-close-photographer-modal');
+        const customFilterModal = document.getElementById('custom-filter-modal');
+        const customFilterList = document.getElementById('custom-filter-list');
+        const customFilterTitle = document.getElementById('custom-filter-title');
+        const btnCloseFilterModal = document.getElementById('btn-close-filter-modal');
 
         // Variabel untuk Custom Modal Event
         const hiddenSelectEvent = document.getElementById('select-event');
@@ -634,7 +757,7 @@
         function closePickerModal(modal) {
             modal.classList.add('hidden');
 
-            const anotherModalOpen = [customEventModal, customPhotographerModal]
+            const anotherModalOpen = [customEventModal, customPhotographerModal, customFilterModal]
                 .some(item => !item.classList.contains('hidden'));
 
             if (!anotherModalOpen && document.body.dataset.pickerLocked === "true") {
@@ -656,8 +779,10 @@
         const filterActiveCount = document.getElementById('filter-active-count');
         const filterContent = document.getElementById('filter-content');
         const filterResponsiveQuery = window.matchMedia('(max-width: 1023px)');
+        const filterIds = ['filter-waktu', 'filter-motor', 'filter-helm', 'filter-jaket'];
 
         function syncFilterPanelLayout() {
+            closeDesktopFilterMenus();
             if (filterResponsiveQuery.matches) {
                 filterSection.classList.remove('is-expanded');
                 filterToggle.setAttribute('aria-expanded', 'false');
@@ -681,8 +806,126 @@
         }
         syncFilterPanelLayout();
 
+        // CUSTOM FILTER PICKERS
+        const filterPickerTitles = {
+            'filter-waktu': 'Pilih Rentang Waktu',
+            'filter-motor': 'Pilih Warna Motor',
+            'filter-helm': 'Pilih Warna Helm Depan',
+            'filter-jaket': 'Pilih Warna Jaket Depan'
+        };
+
+        function syncFilterPickerLabels() {
+            filterIds.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                const selectedOption = select.options[select.selectedIndex];
+                const label = document.querySelector(`[data-filter-label="${filterId}"]`);
+                if (label && selectedOption) label.textContent = selectedOption.textContent.trim();
+            });
+        }
+
+        function closeDesktopFilterMenus(exceptId = null) {
+            document.querySelectorAll('[data-filter-options]').forEach(menu => {
+                if (menu.dataset.filterOptions !== exceptId) {
+                    menu.classList.add('hidden');
+                    const trigger = document.querySelector(`[data-filter-trigger="${menu.dataset.filterOptions}"]`);
+                    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        function buildFilterOptionButton(option, filterId, mobile = false) {
+            const selected = document.getElementById(filterId).value === option.value;
+            const optionClass = mobile
+                ? 'w-full text-left p-3.5 rounded-xl border border-default hover:border-brand-orange bg-app cursor-pointer transition flex items-center justify-between'
+                : 'filter-picker-option' + (selected ? ' is-selected' : '');
+            return `<button type="button" class="${optionClass}" data-filter-choice="${escapeHtml(filterId)}" data-filter-value="${escapeHtml(option.value)}">
+                <span>${escapeHtml(option.textContent.trim())}</span>
+                ${selected
+                    ? '<span class="text-brand-orange font-bold">✓</span>'
+                    : (mobile ? '<span class="w-5 h-5 rounded-full border-2 border-default shrink-0"></span>' : '<span class="w-4 shrink-0"></span>')}
+            </button>`;
+        }
+
+        function chooseFilterOption(filterId, value) {
+            const select = document.getElementById(filterId);
+            select.value = value;
+            syncFilterPickerLabels();
+            updateFilterActiveCount();
+            closeDesktopFilterMenus();
+            window.cariFoto();
+        }
+
+        function openDesktopFilterMenu(filterId) {
+            const menu = document.querySelector(`[data-filter-options="${filterId}"]`);
+            const trigger = document.querySelector(`[data-filter-trigger="${filterId}"]`);
+            const wasOpen = !menu.classList.contains('hidden');
+            closeDesktopFilterMenus();
+            if (wasOpen) return;
+
+            const select = document.getElementById(filterId);
+            menu.innerHTML = Array.from(select.options)
+                .map(option => buildFilterOptionButton(option, filterId, false)).join('');
+            menu.classList.remove('hidden');
+            trigger.setAttribute('aria-expanded', 'true');
+        }
+
+        function openMobileFilterModal(filterId) {
+            const select = document.getElementById(filterId);
+            customFilterTitle.textContent = filterPickerTitles[filterId] || 'Pilih Filter';
+            customFilterList.innerHTML = Array.from(select.options)
+                .map(option => buildFilterOptionButton(option, filterId, true)).join('');
+            customFilterModal.dataset.activeFilter = filterId;
+            openPickerModal(customFilterModal);
+        }
+
+        document.querySelectorAll('[data-filter-trigger]').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const filterId = trigger.dataset.filterTrigger;
+                if (filterResponsiveQuery.matches) {
+                    openMobileFilterModal(filterId);
+                } else {
+                    openDesktopFilterMenu(filterId);
+                }
+            });
+        });
+
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.filter-picker')) closeDesktopFilterMenus();
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                closeDesktopFilterMenus();
+                if (!customFilterModal.classList.contains('hidden')) {
+                    closePickerModal(customFilterModal);
+                }
+            }
+        });
+
+        customFilterList.addEventListener('click', event => {
+            const choice = event.target.closest('[data-filter-choice]');
+            if (!choice) return;
+            chooseFilterOption(choice.dataset.filterChoice, choice.dataset.filterValue);
+            closePickerModal(customFilterModal);
+        });
+
+        customFilterModal.addEventListener('click', event => {
+            if (event.target === customFilterModal) closePickerModal(customFilterModal);
+        });
+
+        btnCloseFilterModal.addEventListener('click', () => closePickerModal(customFilterModal));
+
+        document.querySelectorAll('[data-filter-options]').forEach(menu => {
+            menu.addEventListener('click', event => {
+                const choice = event.target.closest('[data-filter-choice]');
+                if (!choice) return;
+                chooseFilterOption(choice.dataset.filterChoice, choice.dataset.filterValue);
+            });
+        });
+
+        syncFilterPickerLabels();
+
         function updateFilterActiveCount() {
-            const filterIds = ['filter-waktu', 'filter-motor', 'filter-helm', 'filter-jaket'];
             const activeCount = filterIds.filter(id => document.getElementById(id).value !== '').length;
 
             filterActiveCount.textContent = `${activeCount} Active`;
@@ -939,6 +1182,7 @@
                     selectWaktu.appendChild(option);
                 }
             });
+            syncFilterPickerLabels();
         }
 
         function warnaCocok(filterValue, warnaData) {
