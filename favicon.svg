@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Latar Belakang Lingkaran -->
+  <circle cx="256" cy="256" r="256" fill="#101D38" />
+  
+  <!-- Posisi digeser sedikit saja agar pas di tengah -->
+  <g transform="translate(18, 0)">
+    <!-- Batang Huruf 'b' -->
+    <rect x="135" y="115" width="65" height="282" rx="32" fill="#FFFFFF" />
+    <!-- Lingkaran Huruf 'b' -->
+    <circle cx="255" cy="290" r="75" fill="none" stroke="#FFFFFF" stroke-width="65" />
+    <!-- Titik Oranye -->
+    <circle cx="405" cy="358" r="36" fill="#FF914D" />
+  </g>
+</svg>
