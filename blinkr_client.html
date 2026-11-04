@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blinkr | Find your moment.</title>
+    
+<!-- Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Fonts Lexend ultra-bold -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Tailwind for layout utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* 1. BRAND TOKENS & CSS VARIABLES */
+        :root {
+            --brand-navy: #101D38;
+            --brand-orange: #FF914D;
+            --brand-orange-hover: #E67A35;
+            --brand-lavender: #8580CF;
+            
+            --font-primary: 'Lexend', system-ui, -apple-system, sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            
+            --transition-theme: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            --transition-interaction: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* LIGHT MODE TOKENS */
+        [data-theme="light"] {
+            --bg-app: #F7F8FA;
+            --bg-surface: #FFFFFF;
+            --bg-surface-hover: #F0F1F5;
+            --text-primary: #101D38;
+            --text-secondary: #667085;
+            --text-tertiary: #98A2B3;
+            --border-default: #E4E7EC;
+            --border-active: #101D38;
+            --shadow-card: 0 8px 24px rgba(16, 29, 56, 0.04);
+            --icon-color: #101D38;
+            
+            --bg-status: #F0F1F5;
+            --text-status: #667085;
+        }
+
+        /* DARK MODE TOKENS */
+        [data-theme="dark"] {
+            --bg-app: #0B1426; 
+            --bg-surface: #101D38;
+            --bg-surface-hover: #17243E;
+            --text-primary: #F0F1F5;
+            --text-secondary: #A0AABF;
+            --text-tertiary: #718096;
+            --border-default: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 255, 255, 0.3);
+            --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.3);
+            --icon-color: #F0F1F5;
+            
+            --bg-status: rgba(255, 255, 255, 0.05);
+            --text-status: #A0AABF;
+        }
+
+        /* 2. BASE STYLES & COMPONENTS */
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            transition: var(--transition-theme);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Brand Logo */
+        .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); display: flex; align-items: baseline; }
+        .logo .dot { color: var(--brand-orange); font-size: 1.5rem; line-height: 0; margin-left: 1px; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: var(--radius-full);
+            background-color: var(--bg-surface-hover); color: var(--icon-color);
+            border: 1px solid var(--border-default); transition: var(--transition-interaction);
+            cursor: pointer;
+        }
+        .theme-toggle:hover { border-color: var(--border-active); }
+        .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+        /* Cards */
+        .blinkr-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-theme);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--brand-orange);
+            color: #FFFFFF;
+            transition: var(--transition-interaction);
+        }
+        .btn-primary:hover {
+            background-color: var(--brand-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 145, 77, 0.25);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;
+        }
+        
+        /* Form Controls */
+        .form-label {
+            display: block; font-size: 0.65rem; font-weight: 700;
+            color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .form-select {
+            width: 100%;
+            background-color: var(--bg-app);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition-interaction);
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23667085'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+        .form-select:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.15);
+        }
+        .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Original Color Badges (Preserved logic, updated aesthetic) */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 9999px; font-size: 9px; font-weight: 700; text-transform: capitalize; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); letter-spacing: 0.02em; }
+        .hitam { background-color: rgba(15, 23, 42, 0.8); color: #f8fafc; }
+        .putih { background-color: rgba(255, 255, 255, 0.9); color: #0f172a; }
+        .merah { background-color: rgba(239, 68, 68, 0.85); color: white; }
+        .biru { background-color: rgba(59, 130, 246, 0.85); color: white; }
+        .biru-muda { background-color: rgba(96, 165, 250, 0.9); color: #0f172a; }
+        .biru-tua { background-color: rgba(30, 64, 175, 0.9); color: white; }
+        .hijau { background-color: rgba(34, 197, 94, 0.85); color: white; }
+        .hijau-muda { background-color: rgba(134, 239, 172, 0.9); color: #14532d; }
+        .kuning { background-color: rgba(234, 179, 8, 0.9); color: #422006; }
+        .oranye { background-color: rgba(249, 115, 22, 0.85); color: white; }
+        .abu-abu, .silver { background-color: rgba(148, 163, 184, 0.85); color: white; }
+        .pink { background-color: rgba(236, 72, 153, 0.85); color: white; }
+        .cyan { background-color: rgba(6, 182, 212, 0.85); color: #083344; }
+        .cokelat { background-color: rgba(139, 92, 246, 0.85); color: white; }
+        .ungu { background-color: rgba(168, 85, 247, 0.85); color: white; }
+        .marun { background-color: rgba(159, 18, 57, 0.85); color: white; }
+        .krem { background-color: rgba(245, 222, 179, 0.9); color: #451a03; }
+        .emas { background-color: rgba(234, 179, 8, 0.9); color: #422006; }
+        .tidak-terlihat { background-color: rgba(71, 85, 105, 0.8); color: white; }
+        
+        /* GALLERY INFO INTERACTION */
+        .gallery-card .gallery-card-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-card .gallery-card-info {
+            opacity: 0;
+            transform: translateY(16px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Ketika gambar diklik */
+        .gallery-card.active-info .gallery-card-overlay {
+            opacity: 1;
+        }
+
+        .gallery-card.active-info .gallery-card-info {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Hover hanya berlaku untuk perangkat yang mendukung hover */
+        @media (hover: hover) and (pointer: fine) {
+            .gallery-card:hover .gallery-card-overlay {
+                opacity: 1;
+            }
+
+            .gallery-card:hover .gallery-card-info {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+        }
+
+        /* PICKER MODAL: independent scrolling and mobile background lock */
+        .picker-modal {
+            height: 100vh;
+            height: 100dvh;
+            overscroll-behavior: none;
+        }
+
+        .picker-modal-panel {
+            min-height: 0;
+            max-height: 80vh;
+            max-height: 80dvh;
+        }
+
+        .picker-modal-list {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
+
+
+        /* VISUAL ATTRIBUTE CUSTOM PICKERS */
+        .filter-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            text-align: left;
+            background-image: none;
+            cursor: pointer;
+        }
+
+        .filter-picker-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            z-index: 35;
+            max-height: min(300px, 45vh);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card);
+            padding: 6px;
+        }
+
+        .filter-picker-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--text-primary);
+            background: transparent;
+            text-align: left;
+            font-size: 0.8125rem;
+            cursor: pointer;
+        }
+
+        .filter-picker-option:hover {
+            background: var(--bg-surface-hover);
+        }
+
+        .filter-picker-option.is-selected {
+            background: rgba(255, 145, 77, 0.10);
+            border-color: rgba(255, 145, 77, 0.45);
+        }
+
+        @media (max-width: 1023px) {
+            .filter-picker-options {
+                display: none !important;
+            }
+        }
+
+        /* VISUAL ATTRIBUTES COLLAPSE ON TABLET & MOBILE */
+        @media (max-width: 1023px) {
+            #filter-content {
+                display: none;
+            }
+
+            #filter-section.is-expanded #filter-content {
+                display: block;
+            }
+
+            #filter-section:not(.is-expanded) .filter-header {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: 0;
+            }
+
+            #filter-section.is-expanded .filter-header {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border-default);
+            }
+
+            #filter-section.is-expanded #filter-chevron {
+                transform: rotate(180deg);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #filter-content {
+                display: block !important;
+            }
+
+            #filter-toggle {
+                cursor: default;
+                pointer-events: none;
+            }
+
+            #filter-chevron {
+                display: none;
+            }
+        }
+        /* Pengaturan Logo Berdasarkan Tema */
+.logo-dark-mode { display: none; }
+.logo-light-mode { display: block; }
+
+/* Jika tema aktif adalah dark, balik tampilannya */
+[data-theme="dark"] .logo-dark-mode { display: block; }
+[data-theme="dark"] .logo-light-mode { display: none; }
+
+    </style>
+</head>
+<body class="pb-20">
+
+   <!-- Header Navigation (Wide Layout) -->
+   <header class="bg-[var(--bg-surface)] border-b border-default sticky top-0 z-40 px-4 md:px-8 py-3 shadow-sm transition-all duration-300">
+        <div class="w-full max-w-[1536px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                <a href="#" class="btn-route block hover:opacity-85 transition-opacity" data-route="home">
+    <!-- Logo Light Mode (Gelap) -->
+    <img src="logo-full.svg" alt="Blinkr Logo" class="logo-light-mode h-8 sm:h-9 w-auto object-contain">
+    <!-- Logo Dark Mode (Putih) -->
+    <img src="logo-full-white.svg" alt="Blinkr Logo" class="logo-dark-mode h-8 sm:h-9 w-auto object-contain">
+</a>
+                <span class="text-[10px] font-bold text-secondary px-3 py-1 rounded-full border border-default hidden sm:block uppercase tracking-wider">Photo Finder</span>
+                
+                <!-- Mobile Theme Toggle -->
+                <button id="themeToggleBtnMobile" class="theme-toggle sm:hidden" title="Toggle Theme"></button>
+            </div>
+
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Status Bar -->
+                <div id="status-bar" class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] text-[var(--text-status)] border border-default text-xs font-semibold rounded-full transition-all">
+                    <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 014.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Connecting...
+                </div>
+                <!-- Desktop Theme Toggle -->
+                <button id="themeToggleBtnDesktop" class="theme-toggle hidden sm:flex" title="Toggle Theme (System/Light/Dark)"></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-[1536px] mx-auto px-4 md:px-8 pt-6">
+
+        <!-- Hero Title -->
+        <div class="mb-6 text-center sm:text-left">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-primary mb-1">Find your moment.</h1>
+            <p class="text-secondary text-sm md:text-base">Your event photos are closer than you think. Select an event to start.</p>
+        </div>
+
+        <!-- Selektor Event & Fotografer -->
+        <div class="blinkr-card p-5 md:p-6 mb-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-default">
+                <h2 class="text-sm font-bold text-primary flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Event Selection
+                </h2>
+
+                <div id="photographer-badge" class="hidden items-center gap-3 bg-app border border-default px-4 py-2 rounded-full transition">
+                    <img id="photographer-avatar" src="" class="w-6 h-6 rounded-full object-cover shadow-sm" alt="Foto fotografer">
+                    <div>
+                        <p id="photographer-display-name" class="text-xs font-bold text-primary leading-tight"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                <div class="md:col-span-4">
+                    <label for="btn-open-photographer-modal" class="form-label">1. Photographer</label>
+
+                    <!-- Select asli tetap dipertahankan untuk kompatibilitas JavaScript -->
+                    <select id="select-photographer" class="hidden" disabled>
+                        <option value="">Memuat Fotografer...</option>
+                    </select>
+
+                    <!-- Custom Select Button -->
+                    <button type="button" id="btn-open-photographer-modal" disabled
+                        class="form-select w-full text-left flex items-center justify-between opacity-50 cursor-not-allowed">
+                        <span id="selected-photographer-label" class="truncate">Memuat Fotografer...</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="md:col-span-5">
+                    <label for="btn-open-event-modal" class="form-label">2. Event / Session</label>
+                    
+                    <!-- Custom Select Button -->
+                    <div class="relative">
+                        <button type="button" id="btn-open-event-modal" disabled
+                            class="form-select w-full text-left flex items-center justify-between opacity-50 cursor-not-allowed">
+                            <span id="selected-event-label" class="truncate">Pilih Fotografer Dahulu</span>
+                            <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <!-- Hidden input untuk menyimpan value -->
+                        <input type="hidden" id="select-event" value="">
+                    </div>
+                </div>
+
+                <!-- Custom Modal Pilihan Photographer -->
+                <div id="custom-photographer-modal" class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+                    <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+                        <div class="p-4 border-b border-default flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-primary text-base">Select Photographer</h3>
+                                <p class="text-xs text-secondary">Pilih fotografer untuk melihat event</p>
+                            </div>
+                            <button type="button" id="btn-close-photographer-modal" class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
+                        </div>
+                        <div id="custom-photographer-list" class="picker-modal-list p-3 space-y-2 flex-1">
+                            <!-- Opsi fotografer disuntikkan via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Modal Pilihan Event (Tersembunyi by default) -->
+                <div id="custom-event-modal" class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-300">
+                    <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+                        <div class="p-4 border-b border-default flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-primary text-base">Select Event / Session</h3>
+                                <p class="text-xs text-secondary">Pilih event untuk memuat foto</p>
+                            </div>
+                            <button type="button" id="btn-close-event-modal" class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
+                        </div>
+                        <div id="custom-event-list" class="picker-modal-list p-3 space-y-2 flex-1">
+                            <!-- Opsi event disuntikkan via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 flex items-end">
+                    <button id="btn-load-event" class="w-full btn-primary font-semibold rounded-md text-sm px-5 py-3 text-center transition" disabled>
+                        Load Photos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Ciri-ciri -->
+        <div id="filter-section" class="blinkr-card p-5 md:p-6 mb-8 transition-all duration-300 opacity-50 pointer-events-none">
+            <div class="filter-header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 pb-4 border-b border-default gap-3">
+                <button type="button" id="filter-toggle"
+                    class="w-full flex items-center justify-between text-left focus:outline-none"
+                    aria-expanded="false" aria-controls="filter-content">
+                    <span class="text-sm font-bold text-primary flex items-center gap-2">
+                        <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586l-.293.707-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                        Visual Attributes
+                    </span>
+                    <span class="flex items-center gap-2 shrink-0 ml-3">
+                        <span id="filter-active-count" class="hidden text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-brand-orange">0 Active</span>
+                        <svg id="filter-chevron" class="w-4 h-4 text-secondary transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </span>
+                </button>
+            </div>
+            <div id="filter-content">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-waktu">
+                    <select id="filter-waktu" class="hidden" tabindex="-1" aria-hidden="true">
+                    <option value="">⏱️ Semua Rentang Waktu</option>
+                </select>
+                    <button type="button" id="filter-trigger-filter-waktu"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-waktu" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-waktu">⏱️ Semua Rentang Waktu</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-waktu" role="listbox"></div>
+                </div>
+
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-motor">
+                    <select id="filter-motor" class="hidden" tabindex="-1" aria-hidden="true">
+                    <option value="">🏍️ Semua Warna Motor</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+                    <button type="button" id="filter-trigger-filter-motor"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-motor" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-motor">🏍️ Semua Warna Motor</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-motor" role="listbox"></div>
+                </div>
+
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-helm">
+                    <select id="filter-helm" class="hidden" tabindex="-1" aria-hidden="true">
+                    <option value="">🪖 Semua Helm Depan</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+                    <button type="button" id="filter-trigger-filter-helm"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-helm" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-helm">🪖 Semua Helm Depan</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-helm" role="listbox"></div>
+                </div>
+
+                <div class="filter-picker relative min-w-0" data-filter-id="filter-jaket">
+                    <select id="filter-jaket" class="hidden" tabindex="-1" aria-hidden="true">
+                    <option value="">🧥 Semua Jaket Depan</option>
+                    <option value="hitam">Hitam</option>
+                    <option value="putih">Putih</option>
+                    <option value="abu-abu,silver">Abu-abu / Silver</option>
+                    <option value="merah">Merah</option>
+                    <option value="marun">Marun</option>
+                    <option value="pink">Pink</option>
+                    <option value="ungu">Ungu</option>
+                    <option value="biru">Biru</option>
+                    <option value="biru muda">Biru Muda</option>
+                    <option value="biru tua">Biru Tua</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="hijau">Hijau</option>
+                    <option value="hijau muda">Hijau Muda</option>
+                    <option value="kuning">Kuning</option>
+                    <option value="oranye">Oranye</option>
+                    <option value="cokelat">Cokelat</option>
+                    <option value="krem">Krem</option>
+                    <option value="emas">Emas</option>
+                    <option value="tidak_terlihat">Tidak Terlihat</option>
+                </select>
+                    <button type="button" id="filter-trigger-filter-jaket"
+                        class="filter-picker-trigger form-select w-full"
+                        data-filter-trigger="filter-jaket" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="truncate" data-filter-label="filter-jaket">🧥 Semua Jaket Depan</span>
+                        <svg class="w-4 h-4 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="filter-picker-options hidden" data-filter-options="filter-jaket" role="listbox"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Custom Filter Picker Modal: mobile/tablet only -->
+        <div id="custom-filter-modal"
+            class="picker-modal fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="picker-modal-panel bg-[var(--bg-surface)] border border-default w-full max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+                <div class="p-4 border-b border-default flex justify-between items-center">
+                    <div>
+                        <h3 id="custom-filter-title" class="font-bold text-primary text-base">Pilih Filter</h3>
+                        <p class="text-xs text-secondary">Pilih salah satu opsi</p>
+                    </div>
+                    <button type="button" id="btn-close-filter-modal"
+                        class="text-secondary hover:text-primary p-2 text-lg font-bold">✕</button>
+                </div>
+                <div id="custom-filter-list" class="picker-modal-list p-3 space-y-2 flex-1"></div>
+            </div>
+        </div>
+
+        <!-- Galeri Hasil (Responsive Expansion) -->
+        <div id="hasil-galeri" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-5">
+            <!-- Empty State -->
+            <div class="col-span-full text-center py-16">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app text-tertiary mb-4 border border-default">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-primary">No Event Selected</h3>
+                <p class="text-sm text-secondary mt-1 max-w-md mx-auto">Please select a photographer and an event from the menu above to start exploring photos.</p>
+            </div>
+        </div>
+        
+        <!-- Scroll to Top Button -->
+        <button id="scrollTopBtn" title="Kembali ke atas" 
+            class="fixed bottom-6 right-6 md:bottom-8 md:right-8 p-3 md:p-4 rounded-full text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50 hover:-translate-y-1 hover:shadow-xl"
+            style="background-color: var(--brand-orange);">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path></svg>
+        </button>
+        
+    </main>
+
+    <!-- ================= BLINKR ROUTING & THEME LOGIC ================= -->
+    <script>
+        // ROUTING
+        const BLINKR_ROUTES = {
+            home: "./index.html",
+            photographer: "./blinkr_photographer.html"
+        };
+
+        document.querySelectorAll('.btn-route').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const routeKey = button.getAttribute('data-route');
+                if (BLINKR_ROUTES[routeKey] && !BLINKR_ROUTES[routeKey].includes("REPLACE_WITH_")) {
+                    window.location.href = BLINKR_ROUTES[routeKey];
+                } else {
+                    alert(`Routing to: ${routeKey}\n(URL is not configured yet in BLINKR_ROUTES)`);
+                }
+            });
+        });
+
+        // THEME LOGIC (2 Modes: Light & Dark with Initial Device Detection)
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        const icons = {
+            light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
+            dark: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+        };
+
+        const themes = ['light', 'dark'];
+        
+        // Deteksi preferensi device jika belum ada pilihan tersimpan di localStorage
+        const savedTheme = localStorage.getItem('blinkr-theme');
+        let currentTheme = savedTheme;
+        if (!currentTheme || !themes.includes(currentTheme)) {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+
+        function applyTheme(themeName) {
+            currentTheme = themeName;
+            localStorage.setItem('blinkr-theme', themeName);
+            htmlElement.setAttribute('data-theme', themeName);
+            // Ikon berganti kelawanan dari mode aktif agar user tahu apa yang terjadi saat diklik
+            const nextIconKey = themeName === 'dark' ? 'light' : 'dark';
+            themeToggleBtns.forEach(btn => btn.innerHTML = icons[nextIconKey]);
+        }
+
+        applyTheme(currentTheme);
+
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
+        });
+    </script>
+
+    <!-- ================= FIREBASE SCRIPT (PRESERVED) ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCO2QRZMA1Ui8J1eQA89o76oSc_YpfdEiU",
+            authDomain: "find-your-photo-188a0.firebaseapp.com",
+            projectId: "find-your-photo-188a0",
+            storageBucket: "find-your-photo-188a0.firebasestorage.app",
+            messagingSenderId: "212497999030",
+            appId: "1:212497999030:web:82380565489f6140ebf217"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwCnZTJmkfKnxjXiEudEEO01ApI4-kIcj0pJbXM-iLy4EqWuzPSRVVAuABuDAswhy7b/exec";
+
+        let eventMap = {};
+        window.database = [];
+
+        const selPhoto = document.getElementById('select-photographer');
+        const btnOpenPhotographerModal = document.getElementById('btn-open-photographer-modal');
+        const selectedPhotographerLabel = document.getElementById('selected-photographer-label');
+        const customPhotographerModal = document.getElementById('custom-photographer-modal');
+        const customPhotographerList = document.getElementById('custom-photographer-list');
+        const btnClosePhotographerModal = document.getElementById('btn-close-photographer-modal');
+        const customFilterModal = document.getElementById('custom-filter-modal');
+        const customFilterList = document.getElementById('custom-filter-list');
+        const customFilterTitle = document.getElementById('custom-filter-title');
+        const btnCloseFilterModal = document.getElementById('btn-close-filter-modal');
+
+        // Variabel untuk Custom Modal Event
+        const hiddenSelectEvent = document.getElementById('select-event');
+        const btnOpenEventModal = document.getElementById('btn-open-event-modal');
+        const btnCloseEventModal = document.getElementById('btn-close-event-modal');
+        const customEventModal = document.getElementById('custom-event-modal');
+        const customEventList = document.getElementById('custom-event-list');
+        const selectedEventLabel = document.getElementById('selected-event-label');
+        
+        const btnLoad = document.getElementById('btn-load-event');
+        const statusBar = document.getElementById('status-bar');
+        const badgePhotographer = document.getElementById('photographer-badge');
+        const avatarPhotographer = document.getElementById('photographer-avatar');
+        const namePhotographer = document.getElementById('photographer-display-name');
+
+        // Kunci scroll halaman saat salah satu picker terbuka
+        let savedPageScrollY = 0;
+
+        function openPickerModal(modal) {
+            if (document.body.dataset.pickerLocked !== "true") {
+                savedPageScrollY = window.scrollY;
+
+                document.body.dataset.pickerLocked = "true";
+                document.body.style.position = "fixed";
+                document.body.style.top = `-${savedPageScrollY}px`;
+                document.body.style.left = "0";
+                document.body.style.right = "0";
+                document.body.style.width = "100%";
+                document.documentElement.style.overflow = "hidden";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closePickerModal(modal) {
+            modal.classList.add('hidden');
+
+            const anotherModalOpen = [customEventModal, customPhotographerModal, customFilterModal]
+                .some(item => !item.classList.contains('hidden'));
+
+            if (!anotherModalOpen && document.body.dataset.pickerLocked === "true") {
+                document.body.style.position = "";
+                document.body.style.top = "";
+                document.body.style.left = "";
+                document.body.style.right = "";
+                document.body.style.width = "";
+                document.documentElement.style.overflow = "";
+
+                delete document.body.dataset.pickerLocked;
+                window.scrollTo(0, savedPageScrollY);
+            }
+        }
+
+        // VISUAL ATTRIBUTES: collapsible on mobile/tablet, always open on desktop
+        const filterSection = document.getElementById('filter-section');
+        const filterToggle = document.getElementById('filter-toggle');
+        const filterActiveCount = document.getElementById('filter-active-count');
+        const filterContent = document.getElementById('filter-content');
+        const filterResponsiveQuery = window.matchMedia('(max-width: 1023px)');
+        const filterIds = ['filter-waktu', 'filter-motor', 'filter-helm', 'filter-jaket'];
+
+        function syncFilterPanelLayout() {
+            closeDesktopFilterMenus();
+            if (filterResponsiveQuery.matches) {
+                filterSection.classList.remove('is-expanded');
+                filterToggle.setAttribute('aria-expanded', 'false');
+            } else {
+                filterSection.classList.add('is-expanded');
+                filterToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        filterToggle.addEventListener('click', () => {
+            if (!filterResponsiveQuery.matches) return;
+
+            const isExpanded = filterSection.classList.toggle('is-expanded');
+            filterToggle.setAttribute('aria-expanded', String(isExpanded));
+        });
+
+        if (filterResponsiveQuery.addEventListener) {
+            filterResponsiveQuery.addEventListener('change', syncFilterPanelLayout);
+        } else {
+            filterResponsiveQuery.addListener(syncFilterPanelLayout);
+        }
+        syncFilterPanelLayout();
+
+        // CUSTOM FILTER PICKERS
+        const filterPickerTitles = {
+            'filter-waktu': 'Pilih Rentang Waktu',
+            'filter-motor': 'Pilih Warna Motor',
+            'filter-helm': 'Pilih Warna Helm Depan',
+            'filter-jaket': 'Pilih Warna Jaket Depan'
+        };
+
+        function syncFilterPickerLabels() {
+            filterIds.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                const selectedOption = select.options[select.selectedIndex];
+                const label = document.querySelector(`[data-filter-label="${filterId}"]`);
+                if (label && selectedOption) label.textContent = selectedOption.textContent.trim();
+            });
+        }
+
+        function closeDesktopFilterMenus(exceptId = null) {
+            document.querySelectorAll('[data-filter-options]').forEach(menu => {
+                if (menu.dataset.filterOptions !== exceptId) {
+                    menu.classList.add('hidden');
+                    const trigger = document.querySelector(`[data-filter-trigger="${menu.dataset.filterOptions}"]`);
+                    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        function buildFilterOptionButton(option, filterId, mobile = false) {
+            const selected = document.getElementById(filterId).value === option.value;
+            const optionClass = mobile
+                ? 'w-full text-left p-3.5 rounded-xl border border-default hover:border-brand-orange bg-app cursor-pointer transition flex items-center justify-between'
+                : 'filter-picker-option' + (selected ? ' is-selected' : '');
+            return `<button type="button" class="${optionClass}" data-filter-choice="${escapeHtml(filterId)}" data-filter-value="${escapeHtml(option.value)}">
+                <span>${escapeHtml(option.textContent.trim())}</span>
+                ${selected
+                    ? '<span class="text-brand-orange font-bold">✓</span>'
+                    : (mobile ? '<span class="w-5 h-5 rounded-full border-2 border-default shrink-0"></span>' : '<span class="w-4 shrink-0"></span>')}
+            </button>`;
+        }
+
+        function chooseFilterOption(filterId, value) {
+            const select = document.getElementById(filterId);
+            select.value = value;
+            syncFilterPickerLabels();
+            updateFilterActiveCount();
+            closeDesktopFilterMenus();
+            window.cariFoto();
+        }
+
+        function openDesktopFilterMenu(filterId) {
+            const menu = document.querySelector(`[data-filter-options="${filterId}"]`);
+            const trigger = document.querySelector(`[data-filter-trigger="${filterId}"]`);
+            const wasOpen = !menu.classList.contains('hidden');
+            closeDesktopFilterMenus();
+            if (wasOpen) return;
+
+            const select = document.getElementById(filterId);
+            menu.innerHTML = Array.from(select.options)
+                .map(option => buildFilterOptionButton(option, filterId, false)).join('');
+            menu.classList.remove('hidden');
+            trigger.setAttribute('aria-expanded', 'true');
+        }
+
+        function openMobileFilterModal(filterId) {
+            const select = document.getElementById(filterId);
+            customFilterTitle.textContent = filterPickerTitles[filterId] || 'Pilih Filter';
+            customFilterList.innerHTML = Array.from(select.options)
+                .map(option => buildFilterOptionButton(option, filterId, true)).join('');
+            customFilterModal.dataset.activeFilter = filterId;
+            openPickerModal(customFilterModal);
+        }
+
+        document.querySelectorAll('[data-filter-trigger]').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const filterId = trigger.dataset.filterTrigger;
+                if (filterResponsiveQuery.matches) {
+                    openMobileFilterModal(filterId);
+                } else {
+                    openDesktopFilterMenu(filterId);
+                }
+            });
+        });
+
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.filter-picker')) closeDesktopFilterMenus();
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                closeDesktopFilterMenus();
+                if (!customFilterModal.classList.contains('hidden')) {
+                    closePickerModal(customFilterModal);
+                }
+            }
+        });
+
+        customFilterList.addEventListener('click', event => {
+            const choice = event.target.closest('[data-filter-choice]');
+            if (!choice) return;
+            chooseFilterOption(choice.dataset.filterChoice, choice.dataset.filterValue);
+            closePickerModal(customFilterModal);
+        });
+
+        customFilterModal.addEventListener('click', event => {
+            if (event.target === customFilterModal) closePickerModal(customFilterModal);
+        });
+
+        btnCloseFilterModal.addEventListener('click', () => closePickerModal(customFilterModal));
+
+        document.querySelectorAll('[data-filter-options]').forEach(menu => {
+            menu.addEventListener('click', event => {
+                const choice = event.target.closest('[data-filter-choice]');
+                if (!choice) return;
+                chooseFilterOption(choice.dataset.filterChoice, choice.dataset.filterValue);
+            });
+        });
+
+        syncFilterPickerLabels();
+
+        function updateFilterActiveCount() {
+            const activeCount = filterIds.filter(id => document.getElementById(id).value !== '').length;
+
+            filterActiveCount.textContent = `${activeCount} Active`;
+            filterActiveCount.classList.toggle('hidden', activeCount === 0);
+        }
+
+        async function fetchEventsFromFirebase() {
+            try {
+                const publicQuery = query(collection(db, "public_events"), where("is_public", "==", true));
+                const querySnapshot = await getDocs(publicQuery);
+
+                eventMap = {};
+                querySnapshot.forEach(docSnap => {
+                    const data = docSnap.data() || {};
+                    const photographerId = String(data.photographer_id || docSnap.id);
+                    const profile = {
+                        name: data.photographer_name || "Fotografer",
+                        photo: data.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.photographer_name || "F")}`
+                    };
+
+                    if (!eventMap[photographerId]) {
+                        eventMap[photographerId] = { name: profile.name, photo: profile.photo, events: [] };
+                    }
+
+                    if (data.json_filename) {
+                        eventMap[photographerId].events.push({
+                            eventId: docSnap.id,
+                            eventName: data.event_name || "Unnamed Event",
+                            jsonFile: String(data.json_filename).split(/[\\/]/).pop(),
+                            date: data.event_date || "-",
+                            version: data.updated_at && data.updated_at.seconds ? String(data.updated_at.seconds) : "1"
+                        });
+                    }
+                });
+
+                Object.values(eventMap).forEach(profile => profile.events.sort((a, b) => String(b.date).localeCompare(String(a.date))));
+                populatePhotographers();
+            } catch (error) {
+                console.error("Error fetching public event catalog:", error);
+                setStatus("🔴 Failed to load event catalog.", "text-red-500");
+            }
+        }
+
+        function populatePhotographers() {
+            const photographerIds = Object.keys(eventMap);
+            selPhoto.innerHTML = '<option value="">-- Select Photographer --</option>';
+            customPhotographerList.innerHTML = '';
+
+            if (photographerIds.length === 0) {
+                selPhoto.disabled = true;
+                btnOpenPhotographerModal.disabled = true;
+                btnOpenPhotographerModal.classList.add('opacity-50', 'cursor-not-allowed');
+                selectedPhotographerLabel.textContent = 'No events available yet';
+                setStatus("ℹ️ No processed events found.", "text-secondary");
+                return;
+            }
+
+            photographerIds.forEach(photographerId => {
+                const pInfo = eventMap[photographerId];
+                const option = document.createElement('option');
+                option.value = photographerId;
+                option.textContent = pInfo.name;
+                selPhoto.appendChild(option);
+            });
+
+            // Render pilihan fotografer ke custom modal
+            customPhotographerList.innerHTML = photographerIds.map(photographerId => {
+                const pInfo = eventMap[photographerId];
+                return `
+                    <button type="button"
+                        data-photographer-id="${escapeHtml(photographerId)}"
+                        class="w-full text-left p-3.5 rounded-xl border border-default hover:border-brand-orange bg-app cursor-pointer transition flex items-center gap-3">
+                        <img src="${escapeHtml(pInfo.photo)}"
+                            class="w-10 h-10 rounded-full object-cover shadow-sm shrink-0"
+                            alt="Foto fotografer">
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm text-primary truncate">${escapeHtml(pInfo.name)}</p>
+                            <p class="text-xs text-secondary mt-0.5">${pInfo.events.length} Events</p>
+                        </div>
+                        <span class="ml-auto text-secondary">›</span>
+                    </button>
+                `;
+            }).join('');
+
+            customPhotographerList.querySelectorAll('[data-photographer-id]').forEach(item => {
+                item.addEventListener('click', function() {
+                    selPhoto.value = this.dataset.photographerId;
+                    selPhoto.dispatchEvent(new Event('change'));
+                    closePickerModal(customPhotographerModal);
+                });
+            });
+
+            selPhoto.disabled = false;
+            btnOpenPhotographerModal.disabled = false;
+            btnOpenPhotographerModal.classList.remove('opacity-50', 'cursor-not-allowed');
+            selectedPhotographerLabel.textContent = '-- Select Photographer --';
+
+            setStatus("🟢 Connected. Please select a photographer.", "text-green-500");
+        }
+
+        // Buka/Tutup Custom Modal Photographer
+        btnOpenPhotographerModal.addEventListener('click', () => {
+            if (!btnOpenPhotographerModal.disabled) openPickerModal(customPhotographerModal);
+        });
+
+        btnClosePhotographerModal.addEventListener('click', () => {
+            closePickerModal(customPhotographerModal);
+        });
+
+        customPhotographerModal.addEventListener('click', (e) => {
+            if (e.target === customPhotographerModal) closePickerModal(customPhotographerModal);
+        });
+
+        // Buka/Tutup Custom Modal Event
+        btnOpenEventModal.addEventListener('click', () => {
+            if (!btnOpenEventModal.disabled) openPickerModal(customEventModal);
+        });
+
+        btnCloseEventModal.addEventListener('click', () => {
+            closePickerModal(customEventModal);
+        });
+
+        customEventModal.addEventListener('click', (e) => {
+            if (e.target === customEventModal) closePickerModal(customEventModal);
+        });
+
+        // Logika Saat Fotografer Dipilih
+        selPhoto.addEventListener('change', function() {
+            const photographerId = this.value;
+            selectedPhotographerLabel.textContent = eventMap[photographerId]?.name || '-- Select Photographer --';
+            
+            // Reset state
+            customEventList.innerHTML = '';
+            hiddenSelectEvent.value = '';
+            btnLoad.disabled = true;
+
+            if (!photographerId || !eventMap[photographerId]) {
+                btnOpenEventModal.disabled = true;
+                btnOpenEventModal.classList.add('opacity-50', 'cursor-not-allowed');
+                selectedEventLabel.textContent = 'Pilih Fotografer Dahulu';
+                badgePhotographer.classList.add("hidden");
+                badgePhotographer.classList.remove("flex");
+                return;
+            }
+
+            const pInfo = eventMap[photographerId];
+            avatarPhotographer.src = pInfo.photo;
+            namePhotographer.textContent = pInfo.name;
+            badgePhotographer.classList.remove("hidden");
+            badgePhotographer.classList.add("flex");
+
+            if (pInfo.events.length === 0) {
+                selectedEventLabel.textContent = 'Tidak Ada Event';
+                btnOpenEventModal.disabled = true;
+                btnOpenEventModal.classList.add('opacity-50', 'cursor-not-allowed');
+                return;
+            }
+
+            selectedEventLabel.textContent = '-- Select Event --';
+            btnOpenEventModal.disabled = false;
+            btnOpenEventModal.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Render opsi ke dalam Modal
+            customEventList.innerHTML = pInfo.events.map(ev => `
+                <div class="event-option-item p-3.5 rounded-xl border border-default hover:border-brand-orange bg-app cursor-pointer transition flex items-center justify-between"
+                     data-json="${ev.jsonFile}" data-version="${ev.version || '1'}" data-name="${escapeHtml(ev.eventName)} (${ev.date})">
+                    <div>
+                        <p class="font-bold text-sm text-primary">${escapeHtml(ev.eventName)}</p>
+                        <p class="text-xs text-secondary mt-0.5">📅 ${escapeHtml(ev.date)}</p>
+                    </div>
+                    <span class="w-5 h-5 rounded-full border-2 border-default flex items-center justify-center check-indicator"></span>
+                </div>
+            `).join('');
+
+            // Pasang event klik pada masing-masing opsi event
+            document.querySelectorAll('.event-option-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    hiddenSelectEvent.value = this.dataset.json;
+                    hiddenSelectEvent.dataset.version = this.dataset.version;
+                    selectedEventLabel.textContent = this.dataset.name;
+
+                    // Hapus highlight dari semua opsi
+                    document.querySelectorAll('.event-option-item').forEach(el => {
+                        el.classList.remove('border-brand-orange', 'bg-orange-500/10');
+                        el.querySelector('.check-indicator').classList.remove('bg-brand-orange', 'border-brand-orange');
+                        el.querySelector('.check-indicator').innerHTML = '';
+                    });
+
+                    // Tambahkan highlight ke opsi yang dipilih
+                    this.classList.add('border-brand-orange', 'bg-orange-500/10');
+                    const indicator = this.querySelector('.check-indicator');
+                    indicator.classList.add('bg-brand-orange', 'border-brand-orange');
+                    indicator.innerHTML = '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
+
+                    btnLoad.disabled = false;
+                    closePickerModal(customEventModal);
+                });
+            });
+        });
+
+        // Logika Tombol Load Photos
+        btnLoad.addEventListener('click', function() {
+            const jsonFilename = hiddenSelectEvent.value;
+            const version = hiddenSelectEvent.dataset.version || "1";
+            if (jsonFilename) muatDataDariGAS(jsonFilename, version);
+        });
+
+        async function muatDataDariGAS(filename, version = "1") {
+            setStatus('<svg class="w-3.5 h-3.5 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 014.582 9m0 0H9m11 11v-5h-.581a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Loading photos...', "text-brand-orange");
+            btnLoad.disabled = true;
+
+            const fetchUrl = `${GAS_API_URL}?filename=${encodeURIComponent(filename)}&v=${encodeURIComponent(version || "1")}`;
+
+            try {
+                const response = await fetch(fetchUrl);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                if (data.status === "error") {
+                    setStatus(`🔴 ${data.message || "Failed to fetch database."}`, "text-red-500");
+                    window.database = [];
+                } else {
+                    window.database = Array.isArray(data) ? data : [];
+                    setStatus(`✅ Successfully loaded ${window.database.length} photos!`, "text-green-500");
+                    document.getElementById('filter-section').classList.remove('opacity-50', 'pointer-events-none');
+                    updateDropdownWaktu();
+                    window.cariFoto();
+                }
+            } catch (error) {
+                console.error("Error loading JSON from GAS:", error);
+                setStatus("🔴 Failed to fetch data from Drive API.", "text-red-500");
+            } finally {
+                btnLoad.disabled = !hiddenSelectEvent.value;
+            }
+        }
+
+        function setStatus(html, colorClasses) {
+            statusBar.className = `inline-flex items-center gap-2 px-4 py-2 bg-[var(--bg-status)] border border-default text-xs font-semibold rounded-full transition-all ${colorClasses}`;
+            statusBar.innerHTML = html;
+        }
+
+        function updateDropdownWaktu() {
+            const selectWaktu = document.getElementById('filter-waktu');
+            const nilaiTerpilih = selectWaktu.value;
+            const daftarKelompok = [...new Set(window.database.map(i => i.kelompok_waktu || 'Lainnya'))].sort();
+
+            selectWaktu.innerHTML = '<option value="">⏱️ Semua Rentang Waktu</option>';
+            daftarKelompok.forEach(waktu => {
+                if (waktu && waktu !== '-') {
+                    const option = document.createElement('option');
+                    option.value = waktu;
+                    option.textContent = `⏰ Rentang ${waktu}`;
+                    if (waktu === nilaiTerpilih) option.selected = true;
+                    selectWaktu.appendChild(option);
+                }
+            });
+            syncFilterPickerLabels();
+        }
+
+        function warnaCocok(filterValue, warnaData) {
+            if (filterValue === "") return true;
+            return filterValue.split(",").includes(String(warnaData || ""));
+        }
+
+        window.cariFoto = function() {
+            updateFilterActiveCount();
+
+            const fWaktu = document.getElementById('filter-waktu').value;
+            const fMotor = document.getElementById('filter-motor').value;
+            const fHelm = document.getElementById('filter-helm').value;
+            const fJaket = document.getElementById('filter-jaket').value;
+
+            const hasilFilter = window.database.filter(item => {
+                const dataItem = item.data || {};
+                const pDepan = dataItem.pengendara_depan || {};
+                const cocokWaktu = fWaktu === "" || item.kelompok_waktu === fWaktu;
+                const cocokMotor = warnaCocok(fMotor, dataItem.motor);
+                const cocokHelm = warnaCocok(fHelm, pDepan.helm);
+                const cocokJaket = warnaCocok(fJaket, pDepan.jaket);
+
+                return cocokWaktu && cocokMotor && cocokHelm && cocokJaket;
+            });
+            tampilkanGaleri(hasilFilter);
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char]);
+        }
+
+        function classWarna(warna) {
+            const allowed = new Set(["hitam", "putih", "abu-abu", "silver", "merah", "marun", "pink", "ungu", "biru", "biru-muda", "biru-tua", "cyan", "hijau", "hijau-muda", "kuning", "oranye", "cokelat", "krem", "emas", "tidak-terlihat", "none"]);
+            const value = String(warna || "none").trim().toLowerCase().replace(/\s+/g, "-");
+            return allowed.has(value) ? value : "none";
+        }
+
+        function safeDriveViewUrl(value) {
+            try {
+                const parsed = new URL(String(value || ""));
+                if (parsed.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(parsed.hostname)) return parsed.href;
+            } catch (ignored) {}
+            return "#";
+        }
+
+        const GALLERY_PAGE_SIZE = 60;
+        let galleryFilteredData = [];
+        let galleryRenderedCount = 0;
+
+        window.toggleCardInfo = function(element, event) {
+            const isActive = element.classList.contains('active-info');
+
+            // Tutup seluruh foto yang sedang terbuka
+            document.querySelectorAll('#hasil-galeri .gallery-card').forEach(card => {
+                card.classList.remove('active-info');
+            });
+
+            // Jika foto sebelumnya belum terbuka, tampilkan informasinya
+            // Jika sudah terbuka, biarkan tertutup
+            if (!isActive) {
+                element.classList.add('active-info');
+            }
+        };
+
+        function createGalleryCard(item) {
+            let fileId = "";
+            const webView = item.url_view_gdrive || "";
+            const gdriveUrl = item.url_gdrive || "";
+            const match = webView.match(/\/d\/([a-zA-Z0-9_-]+)/)
+                || webView.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/id=([a-zA-Z0-9_-]+)/)
+                || gdriveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) fileId = match[1];
+
+            const imgSource = fileId
+                ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`
+                : "https://via.placeholder.com/260?text=No+Image";
+            const fullResUrl = safeDriveViewUrl(webView);
+            const dataItem = item.data || {};
+            const pDepan = dataItem.pengendara_depan || { helm: "none", jaket: "none" };
+            const mColor = String(dataItem.motor || "none");
+            const hColor = String(pDepan.helm || "none");
+            const jColor = String(pDepan.jaket || "none");
+            const namaFile = escapeHtml(item.nama_file || "Unknown Photo");
+            const waktuJam = escapeHtml(item.waktu_jam || "-");
+            const safeUrl = escapeHtml(fullResUrl);
+
+            return `
+                <div class="gallery-card relative rounded-xl overflow-hidden group aspect-[3/4] border border-default shadow-sm hover:shadow-lg transition duration-300 flex flex-col justify-end bg-app cursor-pointer"
+                     onclick="window.toggleCardInfo(this, event)">
+                    <img src="${imgSource}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition duration-500 ease-out" alt="${namaFile}">
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="gallery-card-overlay absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                    
+                    <!-- Info Box -->
+                    <div class="gallery-card-info relative z-20 p-4 flex flex-col justify-end h-full">
+                        <div class="flex justify-between items-center mb-2 mt-auto">
+                            <h3 class="font-bold text-white text-xs truncate shadow-sm" title="${namaFile}">${namaFile}</h3>
+                            <span class="bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md border border-white/20 whitespace-nowrap shadow-sm">⏰ ${waktuJam}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            ${mColor !== "none" ? `<span class="badge ${classWarna(mColor)}">🏍️ ${escapeHtml(mColor)}</span>` : ""}
+                            ${hColor !== "none" ? `<span class="badge ${classWarna(hColor)}">🪖 ${escapeHtml(hColor)}</span>` : ""}
+                            ${jColor !== "none" ? `<span class="badge ${classWarna(jColor)}">🧥 ${escapeHtml(jColor)}</span>` : ""}
+                        </div>
+                        <a href="${safeUrl}" target="_blank" rel="noopener noreferrer"
+                           onclick="event.stopPropagation()"
+                           class="block w-full py-2.5 text-center bg-white/25 hover:bg-brand-orange text-white font-semibold text-xs rounded-lg backdrop-blur-md border border-white/30 transition-all shadow-sm active:scale-95 pointer-events-auto">
+                           Buka di Google Drive ↗
+                        </a>
+                    </div>
+                </div>`;
+        }
+
+        function renderNextGalleryPage() {
+            const galeri = document.getElementById("hasil-galeri");
+            const oldButton = document.getElementById("btn-load-more-gallery");
+            if (oldButton) oldButton.remove();
+
+            const nextItems = galleryFilteredData.slice(galleryRenderedCount, galleryRenderedCount + GALLERY_PAGE_SIZE);
+            if (nextItems.length) {
+                galeri.insertAdjacentHTML("beforeend", nextItems.map(createGalleryCard).join(""));
+                galleryRenderedCount += nextItems.length;
+            }
+
+            if (galleryRenderedCount < galleryFilteredData.length) {
+                const wrapper = document.createElement("div");
+                wrapper.id = "btn-load-more-gallery";
+                wrapper.className = "col-span-full flex justify-center py-6";
+                wrapper.innerHTML = `<button type="button" class="px-6 py-2.5 rounded-full bg-surface border border-default shadow-sm hover:border-brand-orange text-sm font-semibold text-primary transition-all">Load More (${galleryFilteredData.length - galleryRenderedCount} remaining)</button>`;
+                wrapper.querySelector("button").addEventListener("click", renderNextGalleryPage);
+                galeri.appendChild(wrapper);
+            }
+        }
+
+        function tampilkanGaleri(data) {
+            const galeri = document.getElementById("hasil-galeri");
+            galeri.innerHTML = "";
+            galleryFilteredData = Array.isArray(data) ? data : [];
+            galleryRenderedCount = 0;
+
+            if (galleryFilteredData.length === 0) {
+                galeri.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app text-tertiary mb-4 border border-default">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-primary">No Photos Found</h3>
+                        <p class="text-sm text-secondary mt-1">Try broadening your search criteria.</p>
+                    </div>`;
+                return;
+            }
+            renderNextGalleryPage();
+        }
+
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 400) {
+                scrollBtn.classList.remove("opacity-0", "pointer-events-none");
+                scrollBtn.classList.add("opacity-100", "pointer-events-auto");
+            } else {
+                scrollBtn.classList.add("opacity-0", "pointer-events-none");
+                scrollBtn.classList.remove("opacity-100", "pointer-events-auto");
+            }
+        });
+        scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+        fetchEventsFromFirebase();
+    </script>
+</body>
+</html>
