@@ -131,14 +131,6 @@
     .week-group-chevron { color: var(--brand-orange); font-size: 13px; transition: transform .2s ease; }
     .week-group-button[aria-expanded="false"] .week-group-chevron { transform: rotate(-90deg); }
     .sort-header-button { cursor: pointer; }
-    /* Theme-aware logo */
-[data-theme="light"] .logo-dark-mode {
-    display: none;
-}
-
-[data-theme="dark"] .logo-light-mode {
-    display: none;
-}
   </style>
 </head>
 <body class="min-h-screen selection:bg-brand-orange selection:text-white">
@@ -306,7 +298,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, setDoc, getDoc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const BLINKR_ROUTES = {
       home: "./index.html",
@@ -788,29 +780,25 @@
         if (isCollapsed) return;
 
         group.events.forEach(ev => {
+          const isDone = ev.status === "Selesai";
+          const relatedBatches = appendTasksByParent[ev.id] || [];
+          const hasActiveAppendBatch = relatedBatches.some(batch =>
+            !["Append_Selesai", "Gagal"].includes(String(batch.status || ""))
+          );
+          const canDeleteEvent = ev.status !== "Diproses"
+            && !String(ev.append_lock_batch_id || "").trim()
+            && !hasActiveAppendBatch;
+          const deleteButton = canDeleteEvent
+            ? `<button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>`
+            : `<button disabled title="Event atau batch tambahan masih diproses" class="text-tertiary text-xs cursor-not-allowed">Hapus</button>`;
+          const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
           const statusText = String(ev.status || "Pending");
-          const isDone = statusText === "Selesai";
-
-          const jsonName = ev.json_filename
-            ? String(ev.json_filename).split(/[\\/]/).pop()
-            : "-";
-
           const badge = isDone
             ? `<span class="text-success font-semibold">Selesai</span>`
             : `<span class="text-warning font-semibold">${escapeHtml(statusText)}</span>`;
-
           const addButton = isDone
             ? `<button onclick="window.openAppendModal('${escapeHtml(ev.id)}')" class="text-info hover:text-primary transition text-xs font-semibold whitespace-nowrap">+ Tambah Foto</button>`
             : "";
-
-          // Hapus hanya tersedia untuk status yang diizinkan Firebase Rules.
-          const canDelete =
-            ["Pending", "Selesai", "Gagal", "Gagal_Kuota_Habis"].includes(statusText)
-            && !String(ev.append_lock_batch_id || "").trim();
-
-          const deleteButton = canDelete
-            ? `<button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>`
-            : `<span class="text-tertiary text-xs">Sedang diproses / terkunci</span>`;
           html += `
             <tr class="table-row align-top">
               <td class="py-4 px-5 text-primary font-semibold">${escapeHtml(ev.event_name)}</td>
@@ -867,7 +855,20 @@
 
     // Branded delete dialog: open first, delete only after explicit confirmation
     window.openDeleteModal = (docId) => {
-      if (!userEventsById[docId]) return;
+      const eventData = userEventsById[docId];
+      if (!eventData) return;
+      const relatedBatches = appendTasksByParent[docId] || [];
+      const hasActiveAppendBatch = relatedBatches.some(batch =>
+        !["Append_Selesai", "Gagal"].includes(String(batch.status || ""))
+      );
+      if (
+        eventData.status === "Diproses"
+        || String(eventData.append_lock_batch_id || "").trim()
+        || hasActiveAppendBatch
+      ) {
+        alert("Event tidak bisa dihapus karena event atau batch tambahannya masih menunggu/diproses.");
+        return;
+      }
       pendingDeleteEventId = docId;
       deleteInProgress = false;
       document.getElementById("deleteEventName").textContent = userEventsById[docId].event_name || "Untitled event";
@@ -916,11 +917,62 @@
       errorBox.classList.add("hidden");
 
       try {
-        if (eventData.public_index_synced === true) {
-          await deleteDoc(doc(db, "public_events", docId));
-          await deleteDoc(doc(db, "public_event_owners", docId));
+        const parentRef = doc(db, "queues", docId);
+        const parentSnap = await getDoc(parentRef);
+        if (!parentSnap.exists()) throw new Error("Event sudah tidak ditemukan.");
+        const latestEventData = parentSnap.data() || {};
+
+        // Refresh daftar queue milik akun ini agar batch baru yang belum masuk
+        // snapshot realtime tidak tertinggal saat proses penghapusan.
+        if (!auth.currentUser || !auth.currentUser.email) {
+          throw new Error("Sesi login tidak tersedia. Silakan login ulang.");
         }
-        await deleteDoc(doc(db, "queues", docId));
+        const ownerQueues = await getDocs(query(
+          collection(db, "queues"),
+          where("photographer_email", "==", auth.currentUser.email)
+        ));
+        const relatedBatchDocs = ownerQueues.docs.filter(queueDoc => {
+          const data = queueDoc.data() || {};
+          return data.task_type === "append_batch" && data.parent_event_id === docId;
+        });
+
+        const blockedBatch = relatedBatchDocs.find(queueDoc =>
+          !["Append_Selesai", "Gagal"].includes(String((queueDoc.data() || {}).status || ""))
+        );
+        if (
+          latestEventData.status === "Diproses"
+          || String(latestEventData.append_lock_batch_id || "").trim()
+          || blockedBatch
+        ) {
+          throw new Error("Event atau salah satu batch tambahan masih menunggu/diproses. Selesaikan dahulu sebelum menghapus event.");
+        }
+
+        // Baca semua manifest parent dan append batch, lalu hapus dalam satu
+        // writeBatch agar tidak meninggalkan parent tanpa manifest parsial.
+        const queueIds = [docId, ...relatedBatchDocs.map(queueDoc => queueDoc.id)];
+        const deleteRefs = [];
+        for (const queueId of queueIds) {
+          const manifestSnapshot = await getDocs(collection(db, "queues", queueId, "quota_manifest"));
+          manifestSnapshot.docs.forEach(manifestDoc => deleteRefs.push(manifestDoc.ref));
+        }
+
+        relatedBatchDocs.forEach(queueDoc => deleteRefs.push(queueDoc.ref));
+        if (latestEventData.public_index_synced === true) {
+          deleteRefs.push(doc(db, "public_events", docId));
+          deleteRefs.push(doc(db, "public_event_owners", docId));
+        }
+        deleteRefs.push(parentRef);
+
+        const uniqueDeleteRefs = [...new Map(deleteRefs.map(ref => [ref.path, ref])).values()];
+        if (uniqueDeleteRefs.length > 450) {
+          throw new Error(
+            `Event memiliki ${uniqueDeleteRefs.length} dokumen yang perlu dihapus. Batas aman penghapusan dashboard adalah 450 dokumen per event; belum ada data yang dihapus. Hubungi admin untuk pembersihan backend.`
+          );
+        }
+
+        const deleteBatch = writeBatch(db);
+        uniqueDeleteRefs.forEach(ref => deleteBatch.delete(ref));
+        await deleteBatch.commit();
 
         document.getElementById("deleteConfirmModal").classList.add("hidden");
         pendingDeleteEventId = null;
