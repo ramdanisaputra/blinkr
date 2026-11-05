@@ -154,8 +154,7 @@
       <div class="w-full max-w-[1536px] mx-auto flex justify-between items-center">
         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
           <a href="#" class="btn-route block hover:opacity-85 transition-opacity" data-route="home">
-            <img src="logo-full.svg" alt="Blinkr Logo" class="logo-light-mode h-8 sm:h-9 w-auto object-contain">
-            <img src="logo-full-white.svg" alt="Blinkr Logo" class="logo-dark-mode h-8 sm:h-9 w-auto object-contain">
+            <img id="blinkrLogo" src="logo-full.svg" alt="Blinkr Logo" class="h-8 sm:h-9 w-auto object-contain">
           </a>
           <span class="text-xs font-semibold text-secondary px-3 py-1 rounded-full bg-surface-hover border border-default hidden sm:block">Photographer Portal</span>
         </div>
@@ -333,6 +332,13 @@
       currentTheme = themeName;
       localStorage.setItem('blinkr-theme', themeName);
       htmlElement.setAttribute('data-theme', themeName);
+
+      // Gunakan satu elemen logo; ganti file sesuai tema aktif.
+      const blinkrLogo = document.getElementById('blinkrLogo');
+      if (blinkrLogo) {
+        blinkrLogo.src = themeName === 'dark' ? 'logo-full-white.svg' : 'logo-full.svg';
+      }
+
       if (themeToggleBtn) themeToggleBtn.innerHTML = icons[themeName === 'dark' ? 'light' : 'dark'];
     }
     applyTheme(currentTheme);
