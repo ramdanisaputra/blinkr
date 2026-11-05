@@ -516,12 +516,20 @@ document.getElementById("btnTopUpQuota").addEventListener("click", () => {
   const photographerEmail =
     auth.currentUser?.email || "-";
 
-  const message = `Halo Blinkr! Saya ingin melakukan top up kuota.
-
-Nama: ${photographerName}
-Email: ${photographerEmail}
-
-Mohon kirimkan pricelist dan informasi cara pembayarannya. Terima kasih!`;
+  const message = [
+  "Halo *Blinkr!* 👋📸",
+  "",
+  "Saya ingin melakukan top up kuota.",
+  "",
+  "👤 *Data Fotografer*",
+  "",
+  `Nama: _${photographerName}_`,
+  `Email: _${photographerEmail}_`,
+  "",
+  "Mohon kirimkan pricelist dan informasi cara pembayarannya.",
+  "",
+  "Terima kasih! 🙏"
+].join("\n");
 
   const whatsappURL =
     `https://wa.me/${BLINKR_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
