@@ -788,15 +788,29 @@
         if (isCollapsed) return;
 
         group.events.forEach(ev => {
-          const isDone = ev.status === "Selesai";
-          const jsonName = ev.json_filename ? String(ev.json_filename).split(/[\\/]/).pop() : "-";
           const statusText = String(ev.status || "Pending");
+          const isDone = statusText === "Selesai";
+
+          const jsonName = ev.json_filename
+            ? String(ev.json_filename).split(/[\\/]/).pop()
+            : "-";
+
           const badge = isDone
             ? `<span class="text-success font-semibold">Selesai</span>`
             : `<span class="text-warning font-semibold">${escapeHtml(statusText)}</span>`;
+
           const addButton = isDone
             ? `<button onclick="window.openAppendModal('${escapeHtml(ev.id)}')" class="text-info hover:text-primary transition text-xs font-semibold whitespace-nowrap">+ Tambah Foto</button>`
             : "";
+
+          // Hapus hanya tersedia untuk status yang diizinkan Firebase Rules.
+          const canDelete =
+            ["Pending", "Selesai", "Gagal", "Gagal_Kuota_Habis"].includes(statusText)
+            && !String(ev.append_lock_batch_id || "").trim();
+
+          const deleteButton = canDelete
+            ? `<button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>`
+            : `<span class="text-tertiary text-xs">Sedang diproses / terkunci</span>`;
           html += `
             <tr class="table-row align-top">
               <td class="py-4 px-5 text-primary font-semibold">${escapeHtml(ev.event_name)}</td>
@@ -807,7 +821,7 @@
               <td class="py-4 px-5 text-right">
                 <div class="flex flex-col items-end gap-3">
                   ${addButton}
-                  <button onclick="window.openDeleteModal('${escapeHtml(ev.id)}')" class="text-danger text-xs font-semibold">Hapus</button>
+                  ${deleteButton}
                 </div>
               </td>
             </tr>`;
