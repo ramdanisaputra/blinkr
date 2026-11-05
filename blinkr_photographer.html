@@ -193,8 +193,26 @@
           <p class="text-sm text-secondary mt-1">Manage processing queue and AI-generated database for your events.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-          <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap">+ Upload New Event</button>
-        </div>
+
+  <!-- WhatsApp Top Up Button -->
+  <button
+    type="button"
+    id="btnTopUpQuota"
+    style="background-color: #25D366;"
+    class="font-semibold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap text-white transition hover:brightness-95"
+  >
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.52 3.48A11.87 11.87 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L.06 24l6.29-1.65a11.88 11.88 0 0 0 5.7 1.45h.01c6.56 0 11.9-5.34 11.9-11.9 0-3.18-1.24-6.17-3.44-8.42ZM12.06 21.8a9.85 9.85 0 0 1-5.02-1.37l-.36-.21-3.73.98.99-3.64-.24-.37a9.87 9.87 0 0 1-1.52-5.29c0-5.45 4.44-9.89 9.9-9.89a9.8 9.8 0 0 1 6.99 2.9 9.8 9.8 0 0 1 2.9 6.99c0 5.46-4.44 9.9-9.9 9.9Zm5.43-7.41c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.48-.88-.78-1.48-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.47s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.48.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.75-.72 2-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35Z"/>
+    </svg>
+    Top Up Kuota
+  </button>
+
+  <!-- Existing Upload Button -->
+  <button id="btnOpenModal" class="btn-primary font-semibold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm whitespace-nowrap">
+    + Upload New Event
+  </button>
+
+</div>
       </div>
 
       <!-- Events Table -->
@@ -302,7 +320,8 @@
     const BLINKR_ROUTES = {
       home: "./index.html",
       photographer: "./blinkr_photographer.html",
-      photoFinder: "./blinkr_client.html"
+      photoFinder: "./blinkr_client.html",
+      BLINKR_WHATSAPP_NUMBER:"6285759063832"
     };
 
     document.querySelectorAll('.btn-route').forEach(button => {
@@ -480,6 +499,35 @@
       if (!isMasterAccount && currentQuota <= 0) return alert("Kuota foto habis. Periksa saldo kuota harian atau kuota pembelian.");
       document.getElementById("eventModal").classList.remove("hidden");
     });
+    // WHATSAPP TOP UP
+document.getElementById("btnTopUpQuota").addEventListener("click", () => {
+
+  if (!/^\d{8,15}$/.test(BLINKR_WHATSAPP_NUMBER)) {
+    alert("Nomor WhatsApp Blinkr belum diatur.");
+    return;
+  }
+
+  const photographerName =
+    currentCustomName ||
+    auth.currentUser?.displayName ||
+    "Photographer";
+
+  const photographerEmail =
+    auth.currentUser?.email || "-";
+
+  const message = `Halo Blinkr! Saya ingin melakukan top up kuota.
+
+Nama: ${photographerName}
+Email: ${photographerEmail}
+
+Mohon kirimkan pricelist dan informasi cara pembayarannya. Terima kasih!`;
+
+  const whatsappURL =
+    `https://wa.me/${BLINKR_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+  window.open(whatsappURL, "_blank", "noopener,noreferrer");
+
+});
     document.getElementById("btnCloseModal").addEventListener("click", () => document.getElementById("eventModal").classList.add("hidden"));
     document.getElementById("btnCancelModal").addEventListener("click", () => document.getElementById("eventModal").classList.add("hidden"));
 
@@ -963,10 +1011,13 @@
         }
 
         relatedBatchDocs.forEach(queueDoc => deleteRefs.push(queueDoc.ref));
-        if (latestEventData.public_index_synced === true) {
-          deleteRefs.push(doc(db, "public_events", docId));
-          deleteRefs.push(doc(db, "public_event_owners", docId));
-        }
+
+        // Hapus katalog publik tanpa bergantung pada public_index_synced.
+        // Ini mencegah event tertinggal di Client setelah queue dihapus.
+        deleteRefs.push(doc(db, "public_events", docId));
+        deleteRefs.push(doc(db, "public_event_owners", docId));
+
+        // Parent queue dihapus paling akhir.
         deleteRefs.push(parentRef);
 
         const uniqueDeleteRefs = [...new Map(deleteRefs.map(ref => [ref.path, ref])).values()];
